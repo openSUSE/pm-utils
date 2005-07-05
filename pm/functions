@@ -1,0 +1,140 @@
+#!/bin/bash
+
+. /etc/rc.d/init.d/functions
+. /etc/sysconfig/pm
+
+get_video_type()
+{
+(
+	vendor=$(/sbin/lspci -n | grep 'Class 0300' | cut -d\  -f4 | \
+		cut -d: -f1)
+	[ -z "$vendor" ] && return 1
+	case "$vendor" in
+		1002)
+			echo ATI
+			return 0
+			;;
+		10de)
+			echo nVidia
+			return 0
+			;;
+		*)
+			echo $vendor
+			return 0
+			;;
+	esac
+)
+}
+
+get_lcd_status()
+{
+	return 0
+}
+
+lcd_on()
+{
+	return 0
+}
+
+lcd_off()
+{
+	return 0
+}
+
+get_crt_status()
+{
+	return 0
+}
+
+crt_on()
+{
+	return 0
+}
+
+crt_off()
+{
+	return 0
+}
+
+suspend_video()
+{
+	return 0;
+}
+
+resume_video()
+{
+	return 0;
+}
+
+rotate_video_state()
+{
+    STATUS="$(get_crt_status) $(get_lcd_status)"
+    case "$STATUS" in
+    "off off")
+        crt_off
+        lcd_on
+        ;;
+    "off on")
+        crt_on
+        lcd_on
+        ;;
+    "on on")
+        crt_on
+        lcd_off
+        ;;
+    "on off")
+        crt_off
+        lcd_off
+        ;;
+    *)
+        ;;
+    esac
+}
+
+take_suspend_lock()
+{
+	if [ -f ./suspended ]; then
+		pid=$(cat /.suspended)
+		if [ -d /proc/$pid ]; then
+			return 1
+		fi
+	fi
+        echo "$$" > /.suspended
+	return 0
+}
+
+remove_suspend_lock()
+{
+	openvt -- sh -c "usleep $1 ; rm -f /.suspended >/dev/null 2>&1 0<&1" >/dev/null 2>&1 0<&1 &
+}
+
+run_hooks()
+{
+	[ -z "$1" ] && return 0
+	files="/etc/pm/hooks/*"
+	if [ "$2" = "reverse" ]; then
+		files=$(echo $files | awk '{ for (i=NF; i>=1; i--) print $i }')
+	fi
+	for file in $files ; do
+		[ -x $file ] && $file $1
+	done
+}
+
+get_power_status()
+{
+	RETVAL=0
+	on_ac_power
+	case "$?" in
+		"0")
+			echo "ac"
+			;;
+		"1")
+			echo "battery"
+			;;
+		"255")
+			echo "error"
+			RETVAL=1
+			;;
+	esac
+	return $RETVAL
+}

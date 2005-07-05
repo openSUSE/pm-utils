@@ -1,0 +1,25 @@
+#!/bin/bash
+
+. /etc/pm/functions
+
+case "$(get_video_type)" in
+        ATI)
+		. /etc/acpi/actions/functions-ati
+	;;
+	nVidia)
+		. /etc/acpi/actions/functions-nvidia
+	;;
+esac
+
+case "$1" in
+	suspend)
+		suspend_video
+		;;
+	resume)
+		resume_video
+		;;
+	*)
+		;;
+esac
+
+exit $?

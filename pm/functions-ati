@@ -1,0 +1,93 @@
+#!/bin/bash
+
+suspend_video()
+{
+(
+	/usr/sbin/vbetool dpms suspend
+) >/dev/null 2>&1
+}
+
+resume_video()
+{
+(
+	/usr/sbin/vbetool dpms on
+)
+}
+
+get_lcd_status()
+{
+	STATUS=$(/usr/sbin/radeontool light | cut -d\  -f5 2>/dev/null)
+	RETVAL=0
+	case "x$STATUS" in
+		"xon")
+			echo "on"
+			RETVAL=0
+			;;
+		"xoff")
+			echo "off"
+			RETVAL=1
+			;;
+		*)
+			echo "error"
+			RETVAL=2
+			;;
+	esac
+	return $RETVAL
+}
+
+lcd_off()
+{
+	acpi_video_cmd "Disabling LCD"
+	if [ "$(get_lcd_status)" != "on" ]; then
+		return
+	fi
+	/usr/sbin/radeontool light off
+}
+
+lcd_on()
+{
+	acpi_video_cmd "Enabling LCD" lcd_enable
+	if [ "$(get_lcd_status)" != "off" ]; then
+		return
+	fi
+	/usr/sbin/radeontool light on
+}
+
+get_crt_status()
+{
+	STATUS=$(/usr/sbin/radeontool light | cut -d\  -f5 2>/dev/null)
+	RETVAL=0
+	case "x$STATUS" in
+		"xon")
+			echo "on"
+			RETVAL=0
+			;;
+		"xoff")
+			echo "off"
+			RETVAL=1
+			;;
+		*)
+			echo "error"
+			RETVAL=2
+			;;
+	esac
+	return $RETVAL
+}
+
+crt_off()
+{
+	acpi_video_cmd "Disabling CRT" crt_disable
+	if [ "$(get_lcd_status)" != "on" ]; then
+		return
+	fi
+	/usr/sbin/radeontool dac off
+}
+
+crt_on()
+{
+	acpi_video_cmd "Enabling CRT" crt_enable
+	if [ "$(get_lcd_status)" != "on" ]; then
+		return
+	fi
+	/usr/sbin/radeontool dac on
+}

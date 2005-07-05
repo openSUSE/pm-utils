@@ -1,0 +1,41 @@
+#!/bin/sh
+
+. /etc/pm/functions
+
+suspend_clock() {
+    # Shut down ntpd
+    service ntpd status >/dev/null 2>&1 0<&1
+    SUSPEND_MDNSRESPONDER_RUNNING=$?
+    if test x$SUSPEND_MDNSRESPONDER_RUNNING = x0; then
+	service ntpd stop >/dev/null 2>&1 0<&1
+	touch /var/run/pm-suspend-ntpd.lock
+    fi
+
+    /sbin/hwclock --systohc >/dev/null 2>&1 0<&1
+    return $?
+}
+
+resume_clock() {
+    /sbin/hwclock --hctosys >/dev/null 2>&1 0<&1
+    rc=$?
+
+    # Bring back ntpd
+    if [ -f /var/run/pm-suspend-ntpd.lock ] ; then
+	service ntpd start >/dev/null 2>&1 0<&1
+	rm -f /var/run/pm-suspend-ntpd.lock
+    fi
+    return $rc
+}
+
+case "$1" in
+	suspend)
+		suspend_clock
+		;;
+	resume)
+		resume_clock
+		;;
+	*)
+		;;
+esac
+
+exit $?

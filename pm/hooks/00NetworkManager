@@ -1,0 +1,51 @@
+#!/bin/sh
+
+. /etc/pm/functions
+
+suspend_nm() {
+    # Shut down mDNSResponder
+    service mDNSResponder status >/dev/null 2>&1 0<&1
+    SUSPEND_MDNSRESPONDER_RUNNING=$?
+    if test x$SUSPEND_MDNSRESPONDER_RUNNING = x0; then
+	service mDNSResponder stop >/dev/null 2>&1 0<&1
+	touch /var/run/pm-suspend-mDNSResponder.lock
+    fi
+
+    # Tell NetworkManager to shut down networking
+    dbus-send --system                         \
+        --print-reply                          \
+        --reply-timeout=2000                   \
+        --dest=org.freedesktop.NetworkManager  \
+        /org/freedesktop/NetworkManager        \
+        org.freedesktop.NetworkManager.sleep >/dev/null 2>&1 0<&1
+    return $?
+}
+
+resume_nm() {
+    # Wake up NetworkManager and make it do a new connection
+    dbus-send --system                        \
+        --dest=org.freedesktop.NetworkManager \
+        /org/freedesktop/NetworkManager       \
+        org.freedesktop.NetworkManager.wake >/dev/null 2>&1 0<&1
+    rc=$?
+
+    # Bring back mDNSResponder
+    if [ -f /var/run/pm-suspend-mDNSResponder.lock ] ; then
+	service mDNSResponder start 2>&1 0<&1
+	rm -f /var/run/pm-suspend-mDNSResponder.lock
+    fi
+    return $rc
+}
+
+case "$1" in
+	suspend)
+		suspend_nm
+		;;
+	resume)
+		resume_nm
+		;;
+	*)
+		;;
+esac
+
+exit $?
