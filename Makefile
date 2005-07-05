@@ -29,7 +29,7 @@ install:
 	install -m 755 -d $(mandir)/man1
 	install -m 644 on_ac_power.1 $(mandir)/man1
 
-	ln -s consolehelper $(bindir)
+	ln -s consolehelper $(bindir)/pm-suspend
 	
 	install -m 755 -d $(sbindir)
 	install -m 755 pm-suspend $(sbindir)
