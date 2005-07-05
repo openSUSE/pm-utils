@@ -18,10 +18,10 @@ CVSTAG = pm-utils-$(subst .,-,$(VERSION))
 
 all: on_ac_power
 
-ON_AC_POWER_CFLAGS:=$(pkg-config --cflags --libs hal)
+ON_AC_POWER_CFLAGS:=$(shell pkg-config --cflags --libs hal)
 
 on_ac_power: on_ac_power.c
-	$(CC) -o $@ $(CFLAGS) $< $(ON_AC_POWER_CLFAGS)
+	$(CC) -o $@ $(CFLAGS) $(ON_AC_POWER_CFLAGS) $<
 
 install:
 	install -m 755 -d $(bindir)
@@ -37,8 +37,11 @@ install:
 	install -m 755 -d $(sysconfdir)/pam.d
 	install -m 755 -d $(sysconfdir)/security/console.apps
 	install -m 755 -d $(sysconfdir)/pm
-	install -m 644 pm-suspend.pam $(sysconfdir)/pam.d
-	install -m 644 pm-suspend.app $(sysconfdir)/console.apps
+	install -m 755 -d $(sysconfdir)/pm/hooks
+	install -m 755 -d $(sysconfdir)/sysconfig
+	install -m 644 pm-suspend.pam $(sysconfdir)/pam.d/pm-suspend
+	install -m 644 pm-suspend.app $(sysconfdir)/console.apps/pm-suspend
+	install -m 644 pm.sysconfig $(sysconfdir)/sysconfig/pm
 
 tag-archive:
 	@cvs -Q tag -F $(CVSTAG)
