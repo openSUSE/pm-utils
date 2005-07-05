@@ -42,6 +42,12 @@ install:
 	install -m 644 pm-suspend.pam $(sysconfdir)/pam.d/pm-suspend
 	install -m 644 pm-suspend.app $(sysconfdir)/security/console.apps/pm-suspend
 	install -m 644 pm.sysconfig $(sysconfdir)/sysconfig/pm
+	for file in pm/functions* ; do \
+		install -m 644 $$file $(sysconfdir)/pm ; \
+	done
+	for file in pm/hooks/* ; do \
+		install -m 755 $$file $(sysconfdir)/pm/hooks ; \
+	done
 
 tag-archive:
 	@cvs -Q tag -F $(CVSTAG)
