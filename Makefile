@@ -40,7 +40,7 @@ install:
 	install -m 755 -d $(sysconfdir)/pm/hooks
 	install -m 755 -d $(sysconfdir)/sysconfig
 	install -m 644 pm-suspend.pam $(sysconfdir)/pam.d/pm-suspend
-	install -m 644 pm-suspend.app $(sysconfdir)/console.apps/pm-suspend
+	install -m 644 pm-suspend.app $(sysconfdir)/security/console.apps/pm-suspend
 	install -m 644 pm.sysconfig $(sysconfdir)/sysconfig/pm
 
 tag-archive:
