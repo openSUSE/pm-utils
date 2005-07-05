@@ -31,7 +31,7 @@ resume_nm() {
 
     # Bring back mDNSResponder
     if [ -f /var/run/pm-suspend-mDNSResponder.lock ] ; then
-	service mDNSResponder start 2>&1 0<&1
+	service mDNSResponder start >/dev/null 2>&1 0<&1
 	rm -f /var/run/pm-suspend-mDNSResponder.lock
     fi
     return $rc
