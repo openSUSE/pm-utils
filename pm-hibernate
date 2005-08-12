@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Simple hibernate script
+# Based on work from:
+#    Bill Nottingham <notting@redhat.com>
+#    Peter Jones <pjones@redhat.com>
+#    David Zeuthen <davidz@redhat.com>
+
+# The rule here? Simplicity.
+
+. /etc/pm/functions
+
+take_suspend_lock || exit 1
+
+run_hooks suspend
+
+sync ; sync ; sync
+
+echo -n "platform" > /sys/power/disk
+echo -n "disk" > /sys/power/state
+
+run_hooks resume reverse
+
+remove_suspend_lock 200
+

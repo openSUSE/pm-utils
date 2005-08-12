@@ -1,4 +1,4 @@
-VERSION:=0.03
+VERSION:=0.04
 
 CFLAGS= $(RPM_OPT_FLAGS) -Wall -D_GNU_SOURCE -g
 LDFLAGS = 
@@ -30,9 +30,11 @@ install:
 	install -m 644 on_ac_power.1 $(mandir)/man1
 
 	ln -s consolehelper $(bindir)/pm-suspend
-	
+	ln -s consolehelper $(bindir)/pm-hibernate
+
 	install -m 755 -d $(sbindir)
 	install -m 755 pm-suspend $(sbindir)
+	install -m 755 pm-hibernate $(sbindir)
 
 	install -m 755 -d $(sysconfdir)/pam.d
 	install -m 755 -d $(sysconfdir)/security/console.apps
@@ -41,6 +43,9 @@ install:
 	install -m 755 -d $(sysconfdir)/sysconfig
 	install -m 644 pm-suspend.pam $(sysconfdir)/pam.d/pm-suspend
 	install -m 644 pm-suspend.app $(sysconfdir)/security/console.apps/pm-suspend
+	install -m 644 pm-hibernate.pam $(sysconfdir)/pam.d/pm-hibernate
+	install -m 644 pm-hibernate.app $(sysconfdir)/security/console.apps/pm-hibernate
+
 	install -m 644 pm.sysconfig $(sysconfdir)/sysconfig/pm
 	for file in pm/functions* ; do \
 		install -m 644 $$file $(sysconfdir)/pm ; \
