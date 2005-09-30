@@ -8,6 +8,8 @@
 
 # The rule here? Simplicity.
 
+[ -f /sys/power/state ] || exit 1
+
 . /etc/pm/functions
 
 take_suspend_lock || exit 1

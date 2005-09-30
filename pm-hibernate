@@ -10,6 +10,9 @@
 
 . /etc/pm/functions
 
+[ -f /sys/power/disk ] || exit 1
+[ -f /sys/power/state ] || exit 1
+
 take_suspend_lock || exit 1
 
 run_hooks suspend

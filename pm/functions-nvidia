@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[ -x /usr/sbin/vbetool ] || return
+
 suspend_video()
 {
 (
