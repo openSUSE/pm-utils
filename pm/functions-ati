@@ -28,7 +28,6 @@ get_lcd_status()
 
 lcd_off()
 {
-	acpi_video_cmd "Disabling LCD"
 	if [ "$(get_lcd_status)" != "on" ]; then
 		return
 	fi
@@ -37,11 +36,10 @@ lcd_off()
 
 lcd_on()
 {
-	acpi_video_cmd "Enabling LCD" lcd_enable
 	if [ "$(get_lcd_status)" != "off" ]; then
 		return
 	fi
-	[ -x /usr/sbin/radeontool ] && light on
+	[ -x /usr/sbin/radeontool ] && /usr/sbin/radeontool light on
 }
 
 get_crt_status()
@@ -71,7 +69,6 @@ get_crt_status()
 
 crt_off()
 {
-	acpi_video_cmd "Disabling CRT" crt_disable
 	if [ "$(get_lcd_status)" != "on" ]; then
 		return
 	fi
@@ -80,7 +77,6 @@ crt_off()
 
 crt_on()
 {
-	acpi_video_cmd "Enabling CRT" crt_enable
 	if [ "$(get_lcd_status)" != "on" ]; then
 		return
 	fi
