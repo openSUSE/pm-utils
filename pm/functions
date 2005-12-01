@@ -93,6 +93,8 @@ rotate_video_state()
 
 take_suspend_lock()
 {
+	VT=$(/usr/bin/fgconsole)
+	chvt 63
 	if [ -f ./suspended ]; then
 		pid=$(cat /.suspended)
 		if [ -d /proc/$pid ]; then
@@ -105,6 +107,7 @@ take_suspend_lock()
 
 remove_suspend_lock()
 {
+	chvt $VT
 	openvt -- sh -c "usleep $1 ; rm -f /.suspended >/dev/null 2>&1 0<&1" >/dev/null 2>&1 0<&1 &
 }
 
