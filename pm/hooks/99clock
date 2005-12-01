@@ -21,8 +21,10 @@ resume_clock() {
 
     # Bring back ntpd
     if [ -f /var/run/pm-suspend-ntpd.lock ] ; then
-	service ntpd start >/dev/null 2>&1 0<&1
-	rm -f /var/run/pm-suspend-ntpd.lock
+	( sleep 20 ; 
+	  service ntpd start >/dev/null 2>&1 0<&1 ;
+	  rm -f /var/run/pm-suspend-ntpd.lock
+	  ) &
     fi
     return $rc
 }
