@@ -6,8 +6,8 @@
 get_video_type()
 {
 (
-	vendor=$(/sbin/lspci -n | grep 'Class 0300' | cut -d\  -f4 | \
-		cut -d: -f1)
+	vendor=$(eval echo \
+		$(/sbin/lspci -mn | awk '{if ($2 ~ /^"0300"$/ ) print $3 }'))
 	[ -z "$vendor" ] && return 1
 	case "$vendor" in
 		1002)
