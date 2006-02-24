@@ -9,6 +9,9 @@ case "$(get_video_type)" in
 	nVidia)
 		. /etc/pm/functions-nvidia
 	;;
+	Intel)
+		. /etc/pm/functions-intel
+	;;
 esac
 
 case "$1" in

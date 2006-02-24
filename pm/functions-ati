@@ -88,6 +88,7 @@ crt_on()
 suspend_video()
 {
 (
+	/usr/sbin/vbetool vbestate save > /var/run/vbestate
 	/usr/sbin/vbetool dpms suspend
 ) >/dev/null 2>&1
 }
@@ -96,5 +97,6 @@ resume_video()
 {
 (
 	/usr/sbin/vbetool dpms on
+	/usr/sbin/vbetool vbestate restore < /var/run/vbestate
 ) >/dev/null 2>&1
 }

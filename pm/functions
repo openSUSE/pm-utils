@@ -18,6 +18,10 @@ get_video_type()
 			echo nVidia
 			return 0
 			;;
+		8086)
+			echo Intel
+			return 0
+			;;
 		*)
 			echo $vendor
 			return 0

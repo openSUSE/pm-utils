@@ -1,0 +1,12 @@
+#!/bin/sh
+
+[ -f /proc/acpi/ibm/led ] || exit 0;
+
+case "$1" in
+	suspend)
+		: ;;
+	resume)
+		echo "7 blink" > /proc/acpi/ibm/led > /dev/null 2>&1 ;;
+esac
+
+exit $?
