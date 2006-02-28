@@ -8,6 +8,8 @@
 
 # The rule here? Simplicity.
 
+export PM_MODE="hibernate"
+
 . /etc/pm/functions
 
 [ -f /sys/power/disk ] || exit 1

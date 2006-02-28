@@ -3,6 +3,11 @@
 . /etc/rc.d/init.d/functions
 . /etc/sysconfig/pm
 
+if [ -z "$HIBERNATE_RESUME_POST_VIDEO" ]; then
+	HIBERNATE_RESUME_POST_VIDEO="no"
+fi
+export HIBERNATE_RESUME_POST_VIDEO
+
 get_video_type()
 {
 (
