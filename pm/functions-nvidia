@@ -14,6 +14,7 @@ resume_video()
 {
 (
 	/usr/sbin/vbetool post
+	/usr/sbin/vbetool dpms on
 	/usr/sbin/vbetool vbestate restore < /var/run/vbestate
 ) >/dev/null 2>&1
 }
