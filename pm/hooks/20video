@@ -19,7 +19,7 @@ case "$1" in
 		suspend_video
 		;;
 	resume)
-		if [ "x$PM_MODE" != "hibernate" -o \
+		if [ "x$PM_MODE" != "xhibernate" -a \
 		     "x$HIBERNATE_RESUME_POST_VIDEO" == "xyes" ]; then
 			resume_video
 		fi
