@@ -21,10 +21,10 @@ resume_modules()
 }
 
 case "$1" in
-	suspend)
+	hibernate|suspend)
 		suspend_modules
 		;;
-	resume)
+	thaw|resume)
 		resume_modules
 		;;
 	*)

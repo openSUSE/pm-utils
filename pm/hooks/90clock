@@ -30,10 +30,10 @@ resume_clock() {
 }
 
 case "$1" in
-	suspend)
+	hibernate|suspend)
 		suspend_clock
 		;;
-	resume)
+	thaw|resume)
 		resume_clock
 		;;
 	*)

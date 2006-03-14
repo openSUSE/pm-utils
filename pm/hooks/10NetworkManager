@@ -38,10 +38,10 @@ resume_nm() {
 }
 
 case "$1" in
-	suspend)
+	hibernate|suspend)
 		suspend_nm
 		;;
-	resume)
+	thaw|resume)
 		resume_nm
 		;;
 	*)

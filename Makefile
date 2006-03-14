@@ -37,9 +37,10 @@ install:
 	ln -s consolehelper $(bindir)/pm-powersave
 
 	install -m 755 -d $(sbindir)
-	install -m 755 pm-suspend $(sbindir)
-	install -m 755 pm-hibernate $(sbindir)
 	install -m 755 pm-powersave $(sbindir)
+	install -m 755 pm-action $(sbindir)
+	ln -s pm-action $(sbindir)/pm-suspend
+	ln -s pm-action $(sbindir)/pm-hibernate
 
 	install -m 755 -d $(sysconfdir)/pam.d
 	install -m 755 -d $(sysconfdir)/security/console.apps

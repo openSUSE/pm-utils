@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Simple suspend script
 # Based on work from:
@@ -8,21 +8,14 @@
 
 # The rule here? Simplicity.
 
-export PM_MODE="sleep"
-
-[ -f /sys/power/state ] || exit 1
-
 . /etc/pm/functions
 
-take_suspend_lock || exit 1
+[ -f /sys/power/disk ] || exit 1
+[ -f /sys/power/state ] || exit 1
 
-run_hooks suspend
+ACTION=$(basename "$0")
+ACTION=${ACTION#pm-}
 
-sync ; sync ; sync
+pm_main "$ACTION"
 
-echo -n "mem" > /sys/power/state
-
-run_hooks resume reverse
-
-remove_suspend_lock 200
-
+exit $?

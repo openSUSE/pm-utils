@@ -10,8 +10,6 @@
 # Values are taken from the laptop-tools package
 #    Bart Samwel <bart@samwel.tk>
 
-export PM_MODE="powersave"
-
 if [ "$1" == "true" ] ; then
     echo "SetLowPower ON"
     DISK_IDLE_SECS=2

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+RETVAL=0
+case "$1" in
+	hibernate|suspend)
+		TERM=linux openvt -w -s -f -c 63 -- clear >/dev/null 2>&1
+		RETVAL=$?
+		;;
+	*)
+		;;
+esac
+
+exit $RETVAL

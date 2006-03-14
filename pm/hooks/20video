@@ -14,18 +14,20 @@ case "$(get_video_type)" in
 	;;
 esac
 
-DO_RESUME=yes
-if [ "x$PM_MODE" == "xhibernate" -a \
-		"x$HIBERNATE_RESUME_POST_VIDEO" != "xyes" ]; then
-	DO_RESUME=no
-fi
-
 case "$1" in
 	suspend)
 		suspend_video
 		;;
 	resume)
-		if [ "$DO_RESUME" == "yes" ]; then
+		resume_video
+		;;
+	hibernate)
+		if [ "x$HIBERNATE_RESUME_POST_VIDEO" == "xyes" ]; then
+			suspend_video
+		fi
+		;;
+	thaw)
+		if [ "x$HIBERNATE_RESUME_POST_VIDEO" == "xyes" ]; then
 			resume_video
 		fi
 		;;
