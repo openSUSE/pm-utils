@@ -160,14 +160,15 @@ pm_main()
 	case "$1" in
 		suspend)
 			echo -n "mem" > /sys/power/state
+			run_hooks resume reverse
 			;;
 		hibernate)
 			echo -n "platform" > /sys/power/disk
 			echo -n "disk" > /sys/power/state
+			run_hooks thaw reverse
 			;;
 	esac
 
-	run_hooks "$1" reverse
 
 	remove_suspend_lock 200
 
