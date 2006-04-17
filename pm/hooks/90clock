@@ -3,12 +3,9 @@
 . /etc/pm/functions
 
 suspend_clock() {
-    # Shut down ntpd
-    service ntpd status >/dev/null 2>&1 0<&1
-    SUSPEND_MDNSRESPONDER_RUNNING=$?
-    if test x$SUSPEND_MDNSRESPONDER_RUNNING = x0; then
-	service ntpd stop >/dev/null 2>&1 0<&1
-	touch /var/run/pm-suspend-ntpd.lock
+    if [ ! -f /var/run/pm-ntpd.lock ]; then
+	touch /var/run/pm-ntpd.lock
+    	stopservice ntpd
     fi
 
     /sbin/hwclock --systohc >/dev/null 2>&1 0<&1
@@ -19,13 +16,12 @@ resume_clock() {
     /sbin/hwclock --hctosys >/dev/null 2>&1 0<&1
     rc=$?
 
-    # Bring back ntpd
-    if [ -f /var/run/pm-suspend-ntpd.lock ] ; then
-	( sleep 20 ; 
-	  service ntpd start >/dev/null 2>&1 0<&1 ;
-	  rm -f /var/run/pm-suspend-ntpd.lock
-	  ) &
-    fi
+    # Bring back ntpd _after_ NetworkManager and such come back...
+    ( touch /var/run/pm-ntpd.lock ;
+      sleep 20 ; 
+      restartservice ntpd ;
+      rm -f /var/run/pm-ntpd.lock
+    ) &
     return $rc
 }
 
