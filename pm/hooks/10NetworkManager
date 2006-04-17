@@ -1,7 +1,5 @@
 #!/bin/sh
 
-. /etc/pm/functions
-
 suspend_nm() {
     # Shut down mDNSResponder
     service mDNSResponder status >/dev/null 2>&1 0<&1
