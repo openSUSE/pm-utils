@@ -1,16 +1,19 @@
 #!/bin/bash
 
 . /etc/rc.d/init.d/functions
-. /etc/sysconfig/pm
 
-if [ -z "$HIBERNATE_RESUME_POST_VIDEO" ]; then
-	HIBERNATE_RESUME_POST_VIDEO="no"
-fi
+# default values go here
+HIBERNATE_RESUME_POST_VIDEO=no
+SUSPEND_MODULES=""
+
+[ -f /etc/sysconfig/pm ] && . /etc/sysconfig/pm
+
+# export them all here
 export HIBERNATE_RESUME_POST_VIDEO
+export SUSPEND_MODULES
 
 get_video_type()
 {
-(
 	vendor=$(eval echo \
 		$(/sbin/lspci -mn | awk '{if ($2 ~ /^"0300"$/ ) print $3 }'))
 	[ -z "$vendor" ] && return 1
@@ -32,7 +35,6 @@ get_video_type()
 			return 0
 			;;
 	esac
-)
 }
 
 get_lcd_status()
