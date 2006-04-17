@@ -1,12 +1,10 @@
 #!/bin/bash
 
-. /etc/pm/functions
-
 suspend_modules()
 {
 	[ -z "$SUSPEND_MODULES" ] && return 0
 	for x in $SUSPEND_MODULES ; do
-		/sbin/rmmod $x >/dev/null 2>&1 0<&1
+		/sbin/modprobe -r $x >/dev/null 2>&1 0<&1
 	done
 	return 0
 }
