@@ -1,10 +1,12 @@
 #!/bin/bash
 
+. /etc/pm/functions
+
 suspend_modules()
 {
 	[ -z "$SUSPEND_MODULES" ] && return 0
 	for x in $SUSPEND_MODULES ; do
-		/sbin/modprobe -r $x >/dev/null 2>&1 0<&1
+		modunload $x
 	done
 	return 0
 }
@@ -13,7 +15,7 @@ resume_modules()
 {
 	[ -z "$SUSPEND_MODULES" ] && return 0
 	for x in $SUSPEND_MODULES ; do
-		/sbin/modprobe $x >/dev/null 2>&1 0<&1
+		modreload $x
 	done
 	return 0
 }
