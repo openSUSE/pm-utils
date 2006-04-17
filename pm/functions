@@ -106,18 +106,21 @@ take_suspend_lock()
 {
 	VT=$(/usr/bin/fgconsole)
 	chvt 63
-	if [ -f ./suspended ]; then
+	if [ -f ./.suspended ]; then
 		pid=$(cat /.suspended)
 		if [ -d /proc/$pid ]; then
 			return 1
 		fi
 	fi
         echo "$$" > /.suspended
+	rm -f /var/run/pm-suspend
+	touch /var/run/pm-suspend
 	return 0
 }
 
 remove_suspend_lock()
 {
+	rm -f /var/run/pm-suspend
 	chvt $VT
 	openvt -- sh -c "usleep $1 ; rm -f /.suspended >/dev/null 2>&1 0<&1" >/dev/null 2>&1 0<&1 &
 }
@@ -125,6 +128,10 @@ remove_suspend_lock()
 run_hooks()
 {
 	[ -z "$1" ] && return 0
+
+	[ -f /var/run/pm-suspend ] && . /var/run/pm-suspend
+	rm -f /var/run/pm-suspend
+
 	files="/etc/pm/hooks/*"
 	if [ "$2" = "reverse" ]; then
 		files=$(echo $files | awk '{ for (i=NF; i>=1; i--) print $i }')
@@ -171,8 +178,49 @@ pm_main()
 			;;
 	esac
 
-
 	remove_suspend_lock 200
 
 	return 0
+}
+
+modunload()
+{
+	/sbin/lsmod 2>/dev/null | grep -q "$1"
+	if [ "$?" == "0" ]; then
+		echo "export ${1}_MODULE_LOAD=yes" >> /var/run/pm-suspend
+		/sbin/modprobe -r "$1" >/dev/null 2>&1
+	fi
+}
+
+modreload()
+{
+	if [ "$(eval echo \$${1}_MODULE_LOAD)" == "yes" ]; then
+		/sbin/modprobe "$1" >/dev/null 2>&1
+	fi
+}
+
+stopservice()
+{
+	/sbin/service "$1" status 2>/dev/null | grep -c -q running
+	if [ "$?" == "0" ]; then
+		echo "export ${1}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
+		/sbin/service "$1" stop >/dev/null 2>&1
+	fi
+}
+
+restartservice()
+{
+	if [ "$(eval echo \$${1}_SERVICE_ACTIVATE)" == "yes" ]; then
+		/sbin/service "$1" start >/dev/null 2>&1
+	fi
+}
+
+savestate()
+{
+	echo "export ${1}_STATE=$2" >> /var/run/pm-suspend
+}
+
+restorestate()
+{
+	eval echo \$${1}_STATE
 }
