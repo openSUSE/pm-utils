@@ -23,7 +23,7 @@ resume_nm() {
         org.freedesktop.NetworkManager.wake >/dev/null 2>&1 0<&1
     rc=$?
 
-    startservice mDNSResponder
+    restartservice mDNSResponder
     return $rc
 }
 
