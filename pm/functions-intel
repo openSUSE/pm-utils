@@ -4,30 +4,26 @@
 
 suspend_video()
 {
-(
+{
 	/usr/sbin/vbetool vbestate save > /var/run/vbestate
 	/usr/sbin/vbetool dpms suspend
-) >/dev/null 2>&1
+} >/dev/null 2>&1
 }
 
 resume_video()
 {
-(
+{
 	/usr/sbin/vbetool post
 	/usr/sbin/vbetool vbestate restore < /var/run/vbestate
-) >/dev/null 2>&1
+} >/dev/null 2>&1
 }
 
 lcd_on()
 {
-(
-	/usr/sbin/vbetool dpms on
-) >/dev/null 2>&1
+	/usr/sbin/vbetool dpms on >/dev/null 2>&1
 }
 
 lcd_off()
 {
-(
-	/usr/sbin/vbetool dpms off
-) >/dev/null 2>&1
+	/usr/sbin/vbetool dpms off >/dev/null 2>&1
 }
