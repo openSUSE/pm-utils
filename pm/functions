@@ -14,8 +14,9 @@ export SUSPEND_MODULES
 
 get_video_type()
 {
-	vendor=$(eval echo \
-		$(/sbin/lspci -mn | awk '{if ($2 ~ /^"0300"$/ ) print $3 }'))
+	vendor=""
+	vendor=$(/sbin/lspci -mn|awk '{if ($2 ~ /^"0300"$/ ) {print $3;exit;}}')
+	vendor=$(eval echo $vendor)
 	[ -z "$vendor" ] && return 1
 	case "$vendor" in
 		1002)
@@ -106,7 +107,7 @@ take_suspend_lock()
 {
 	VT=$(/usr/bin/fgconsole)
 	chvt 63
-	if [ -f ./.suspended ]; then
+	if [ -f /.suspended ]; then
 		pid=$(cat /.suspended)
 		if [ -d /proc/$pid ]; then
 			return 1
