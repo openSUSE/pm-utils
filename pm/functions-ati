@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 get_lcd_status()
 {
 	if [ ! -x /usr/sbin/radeontool ]; then
@@ -87,14 +86,10 @@ crt_on()
 
 suspend_video()
 {
-(
-	/usr/sbin/vbetool dpms suspend
-) >/dev/null 2>&1
+	/usr/sbin/vbetool dpms suspend >/dev/null 2>&1
 }
 
 resume_video()
 {
-(
-	/usr/sbin/vbetool dpms on
-) >/dev/null 2>&1
+	/usr/sbin/vbetool dpms on >/dev/null 2>&1
 }
