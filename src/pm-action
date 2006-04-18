@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # Simple suspend script
+#
+# Copyright 2006 Red Hat, Inc.
+#
 # Based on work from:
 #    Bill Nottingham <notting@redhat.com>
 #    Peter Jones <pjones@redhat.com>
