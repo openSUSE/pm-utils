@@ -91,5 +91,6 @@ suspend_video()
 
 resume_video()
 {
-	/usr/sbin/vbetool dpms on >/dev/null 2>&1
+#	/usr/sbin/vbetool dpms on >/dev/null 2>&1
+	:
 }
