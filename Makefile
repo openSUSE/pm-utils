@@ -81,4 +81,3 @@ clean:
 	rm -f *.o on_ac_power
 
 dummy:
-
