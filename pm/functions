@@ -6,7 +6,7 @@
 HIBERNATE_RESUME_POST_VIDEO=no
 SUSPEND_MODULES=""
 
-[ -f /etc/sysconfig/pm ] && . /etc/sysconfig/pm
+[ -f /etc/pm/config ] && . /etc/pm/config
 
 # export them all here
 export HIBERNATE_RESUME_POST_VIDEO

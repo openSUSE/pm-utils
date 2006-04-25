@@ -46,7 +46,6 @@ install:
 	install -m 755 -d $(sysconfdir)/security/console.apps
 	install -m 755 -d $(sysconfdir)/pm
 	install -m 755 -d $(sysconfdir)/pm/hooks
-	install -m 755 -d $(sysconfdir)/sysconfig
 	install -m 644 pm-suspend.pam $(sysconfdir)/pam.d/pm-suspend
 	install -m 644 pm-suspend.app $(sysconfdir)/security/console.apps/pm-suspend
 	install -m 644 pm-hibernate.pam $(sysconfdir)/pam.d/pm-hibernate
@@ -54,7 +53,7 @@ install:
 	install -m 644 pm-powersave.pam $(sysconfdir)/pam.d/pm-powersave
 	install -m 644 pm-powersave.app $(sysconfdir)/security/console.apps/pm-powersave
 
-	install -m 644 pm.sysconfig $(sysconfdir)/sysconfig/pm
+	install -m 644 pm.sysconfig $(sysconfdir)/pm/config
 	for file in pm/functions* ; do \
 		install -m 644 $$file $(sysconfdir)/pm ; \
 	done
