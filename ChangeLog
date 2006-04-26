@@ -1,0 +1,5 @@
+2006-04-26  Peter Jones  <pjones@redhat.com>
+
+	* Add COPYING
+	* Add ChangeLog
+	* Add license notice in pm-action
