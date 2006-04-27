@@ -1,3 +1,21 @@
+2006-04-27  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
+	Don't stop/start services unless the initscript is executable
+	Use /etc/init.d/$name instead of "service", as per LSB.
+
+2006-04-27  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
+	Add support for /etc/pm/config.d/
+	* Makefile:
+	Create /etc/pm/config.d/
+	* README:
+	Add docs about hooks and config files
+
+	* pm-action:
+	Set LC_COLLATE=C .
+
 2006-04-27  Richard Hughes  <richard@hughsie.com>
 
 	* pm/functions:
