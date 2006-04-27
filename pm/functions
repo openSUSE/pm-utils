@@ -130,16 +130,17 @@ modreload()
 stopservice()
 {
 	/sbin/service "$1" status 2>/dev/null | grep -c -q running
-	if [ "$?" == "0" ]; then
+	if [ "$?" == "0" -a -x "/etc/init.d/$1" ]; then
 		echo "export ${1}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
-		/sbin/service "$1" stop >/dev/null 2>&1
+		"/etc/init.d/$1" stop >/dev/null 2>&1
 	fi
 }
 
 restartservice()
 {
-	if [ "$(eval echo \$${1}_SERVICE_ACTIVATE)" == "yes" ]; then
-		/sbin/service "$1" start >/dev/null 2>&1
+	if [ "x$(eval echo \$${1}_SERVICE_ACTIVATE)" == "xyes" \
+			-a -x "/etc/init.d/$1" ]; then
+		"/etc/init.d/$1" start >/dev/null 2>&1
 	fi
 }
 
