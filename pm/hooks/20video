@@ -2,19 +2,27 @@
 
 . /etc/pm/functions
 
-case "$(get_video_type)" in
-        ATI)
-		. /etc/pm/functions-ati
-		;;
-	nVidia)
-		. /etc/pm/functions-nvidia
-		;;
-	Intel)
-		. /etc/pm/functions-intel
-		;;
-	*)
-		;;
-esac
+suspend_video()
+{
+	# Suspend all video devices using the HAL dbus methods
+	devices=`hal-find-by-capability --capability video_adapter_pm`
+	for device in $devices
+	do
+		dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+			  $device org.freedesktop.Hal.Device.VideoAdapterPM.SuspendVideo
+	done
+}
+
+resume_video()
+{
+	# Resume all video devices using the HAL dbus methods
+	devices=`hal-find-by-capability --capability video_adapter_pm`
+	for device in $devices
+	do
+		dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+			  $device org.freedesktop.Hal.Device.VideoAdapterPM.ResumeVideo
+	done
+}
 
 case "$1" in
 	suspend)

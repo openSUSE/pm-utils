@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# THESE FILE IS UNUSED AND WILL BE REMOVED WHEN FULL FUNCTIONALITY IS IN HAL
+
 get_lcd_status()
 {
 	if [ ! -x /usr/sbin/radeontool ]; then

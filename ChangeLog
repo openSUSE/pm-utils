@@ -1,3 +1,17 @@
+2006-04-27  Richard Hughes  <richard@hughsie.com>
+
+	* pm/functions:
+	Remove the video handling logic, as it is moving to HAL.
+
+	* pm/functions-ati:
+	* pm/functions-intel:
+	* pm/functions-nvidia:
+	Add a comment saying that the files are unused. When HAL video stuff
+	is completed, they can be removed.
+
+	* pm/hooks/20video:
+	Switch to using the HAL methods as discussed.
+
 2006-04-26  Richard Hughes  <richard@hughsie.com>
 
 	* Add README

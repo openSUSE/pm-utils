@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# THESE FILE IS UNUSED AND WILL BE REMOVED WHEN FULL FUNCTIONALITY IS IN HAL
+
 [ -x /usr/sbin/vbetool ] || return
 
 suspend_video()
