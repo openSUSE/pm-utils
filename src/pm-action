@@ -25,6 +25,8 @@
 
 # The rule here? Simplicity.
 
+export LC_COLLATE=C
+
 . /etc/pm/functions
 
 [ -f /sys/power/disk ] || exit 1
