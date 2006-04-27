@@ -1,5 +1,12 @@
 2006-04-27  Peter Jones  <pjones@redhat.com>
 
+	* Makefile:
+	Remove references to *.app and *.pam
+	* *.{app,pam}:
+	Kill'em.
+
+2006-04-27  Peter Jones  <pjones@redhat.com>
+
 	* pm/functions:
 	Don't stop/start services unless the initscript is executable
 	Use /etc/init.d/$name instead of "service", as per LSB.
