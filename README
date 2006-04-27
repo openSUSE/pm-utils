@@ -23,3 +23,30 @@ file into the hooks directory, for example:
 - removing and modprobing modules when needed 
 - setting grub to be the default target for a hibernate-resume 
 - other wacky things that need doing on specific systems
+
+How do "hooks" work?
+
+* You put a file in /etc/pm/hooks, which is executable.  When suspend or
+  hibernate is called, several things happen:
+  
+  1) a new virtual terminal is alloced and switched to
+  2) /etc/pm/config is evaluated .  This config file that should only be
+     modified by end-users.
+  3) /etc/pm/config.d/* are evaluated in C sort order.  These files can be
+     provided by individual packages outside of pm-utils.  If a global config
+     variable is set, the value set to will be appended to the previous value.
+     If any other variable is set, it will be ignored.
+  4) each of /etc/pm/hooks/* are executed in C sort order.  The first command
+     line argument is "suspend" or "hibernate".  These files may source
+     configuration files from /etc/pm/config.d/ on their own in order to pick
+     up variables set there that aren't part of the global list.  Note that
+     hooks should take care to preserve any global configuration variable
+     which _that_ hook will later need to use, as sourcing this config file
+     will clobber any such variables.
+  5) the system suspends or hibernates.
+  6) some event happens to wake the machine up
+  7) each of /etc/pm/hooks/* are executed in reverse C sort order.  The first
+     command line argument is "resume" or "thaw".
+  8) the system switches back to the original virtual terminal from step 1.
+
+  That's it!

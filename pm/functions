@@ -12,6 +12,24 @@ SUSPEND_MODULES=""
 export HIBERNATE_RESUME_POST_VIDEO
 export SUSPEND_MODULES
 
+GLOBAL_CONFIG_VARIABLES="HIBERNATE_RESUME_POST_VIDEO SUSPEND_MODULES"
+
+source_configs()
+{
+	for cfg in /etc/pm/config.d/* ; do
+		STR=". $cfg"
+		for v in $GLOBAL_CONFIG_VARIABLES ; do
+			STR="$STR ; echo x_$v=\"\$(eval echo \$$v)\""
+		done
+		eval $(bash -c "$STR")
+		for v in $GLOBAL_CONFIG_VARIABLES ; do
+			eval $v="$(eval echo $(eval echo \$$v) \$x_$v)"
+		done
+	done
+}
+
+source_configs
+
 take_suspend_lock()
 {
 	VT=$(/usr/bin/fgconsole)

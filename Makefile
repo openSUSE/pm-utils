@@ -46,6 +46,7 @@ install:
 	install -m 755 -d $(sysconfdir)/security/console.apps
 	install -m 755 -d $(sysconfdir)/pm
 	install -m 755 -d $(sysconfdir)/pm/hooks
+	install -m 755 -d $(sysconfdir)/pm/config.d
 	install -m 644 pm-suspend.pam $(sysconfdir)/pam.d/pm-suspend
 	install -m 644 pm-suspend.app $(sysconfdir)/security/console.apps/pm-suspend
 	install -m 644 pm-hibernate.pam $(sysconfdir)/pam.d/pm-hibernate
