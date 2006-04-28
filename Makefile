@@ -16,12 +16,7 @@ CVSROOT:=$(shell cat CVS/Root 2>/dev/null || :)
 
 CVSTAG = pm-utils-$(subst .,-,$(VERSION))
 
-all: on_ac_power
-
-ON_AC_POWER_CFLAGS:=$(shell pkg-config --cflags --libs hal)
-
-on_ac_power: on_ac_power.c
-	$(CC) -o $@ $(CFLAGS) $(ON_AC_POWER_CFLAGS) $<
+all:
 
 install:
 	install -m 755 -d $(bindir)

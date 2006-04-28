@@ -1,5 +1,11 @@
 2006-04-28  Peter Jones  <pjones@redhat.com>
 
+	* Makefile: don't build on_ac_power
+	* on_ac_power: add shell version of this
+	* on_ac_power.c: no longer needed.
+
+2006-04-28  Peter Jones  <pjones@redhat.com>
+
 	* pm/hooks/05led: Resurrect this
 	* pm/hooks/95led: ditto
 	* pm/hooks/95ibm_led: remove this; it changes the behavior incorrectly.

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Test if the computer is running on line power
+# Exit status:
+# - 0 (true)  System is on AC power
+# - 1 (false) System is not on AC power
+#
+# NOTE: Absence of batteries is taken to mean that the system is on ac power.
+
+# Check for AC/DC/etc adapters
+for device in $(hal-find-by-capability --capability ac_adapter) ; do
+	present=$(hal-get-property --udi $device --key ac_adapter.present)
+	[ "$present" == "true" ] && exit 0
+done
+
+# If there are no ac_adapters, check for batteries.
+hal-find-by-capability --capability battery >/dev/null 2>&1 && exit 1
+
+# If there are no batteries assume AC.
+exit 0
