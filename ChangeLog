@@ -1,5 +1,13 @@
 2006-04-28  Richard Hughes  <richard@hughsie.com>
 
+	* pm/functions-ati:
+	* pm/functions-intel:
+	* pm/functions-nvidia:
+	Remove these files as we've now agreed that this belongs in HAL, and
+	a HAL patch is close to being accepted.
+
+2006-04-28  Richard Hughes  <richard@hughsie.com>
+
 	* pm/hooks/05led: Remove this file as we want the led to turn on at
 	the *end* of the hooks stuff. We shouldn't have this and 95led.
 
