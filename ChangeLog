@@ -1,6 +1,7 @@
 2006-05-01  Peter Jones  <pjones@redhat.com>
 
 	* Makefile: add "make test-archive"
+	* pm/functions: handle an empty config.d correctly
 
 2006-05-01  Peter Jones  <pjones@redhat.com>
 

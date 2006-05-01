@@ -16,7 +16,7 @@ GLOBAL_CONFIG_VARIABLES="HIBERNATE_RESUME_POST_VIDEO SUSPEND_MODULES"
 
 source_configs()
 {
-	for cfg in /etc/pm/config.d/* ; do
+	for cfg in $(ls -1 /etc/pm/config.d/* 2>/dev/null) ; do
 		STR=". $cfg"
 		for v in $GLOBAL_CONFIG_VARIABLES ; do
 			STR="$STR ; echo x_$v=\"\$(eval echo \$$v)\""
