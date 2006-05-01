@@ -14,7 +14,11 @@ libdir=$(prefix)/lib
 
 CVSROOT:=$(shell cat CVS/Root 2>/dev/null || :)
 
-CVSTAG = pm-utils-$(subst .,-,$(VERSION))
+CVSTAG ?= pm-utils-$(subst .,-,$(VERSION))
+TESTTAG ?= HEAD
+ifneq ($(origin TESTTAG), file)
+  TESTTAG = pm-utils-$(subst .,-,$(TESTTAG))
+endif
 
 all:
 
@@ -64,6 +68,9 @@ create-archive:
 	@echo "The final archive is in pm-utils-$(VERSION).tar.gz"
 
 archive: clean tag-archive create-archive
+
+test-archive: clean
+	$(MAKE) CVSTAG=$(TESTTAG) create-archive
 
 clean:
 

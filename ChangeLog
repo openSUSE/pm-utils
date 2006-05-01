@@ -1,5 +1,9 @@
 2006-05-01  Peter Jones  <pjones@redhat.com>
 
+	* Makefile: add "make test-archive"
+
+2006-05-01  Peter Jones  <pjones@redhat.com>
+
 	* Makefile: don't remove on_ac_power in "make clean"
 
 2006-04-28  Peter Jones  <pjones@redhat.com>
