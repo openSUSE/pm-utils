@@ -66,6 +66,5 @@ create-archive:
 archive: clean tag-archive create-archive
 
 clean:
-	rm -f *.o on_ac_power
 
 dummy:
