@@ -14,10 +14,10 @@ libdir=$(prefix)/lib
 
 CVSROOT:=$(shell cat CVS/Root 2>/dev/null || :)
 
-CVSTAG ?= pm-utils-$(subst .,-,$(VERSION))
-TESTTAG?=HEAD
-ifneq ($(origin TESTTAG), file)
-	override TESTTAG := pm-utils-$(subst .,-,$(TESTTAG))
+ifeq ($(VERSION), HEAD)
+	CVSTAG ?= HEAD
+else
+	CVSTAG ?= pm-utils-$(subst .,-,$(VERSION))
 endif
 
 all:
@@ -70,7 +70,11 @@ create-archive:
 archive: clean tag-archive create-archive
 
 test-archive: clean
-	echo $(MAKE) CVSTAG=$(TESTTAG) create-archive
+	@if [ "$(origin VERSION)" == "command line" ]; then	\
+		$(MAKE) VERSION=$(VERSION) create-archive ;	\
+	else							\
+		$(MAKE) VERSION=HEAD create-archive ;		\
+	fi
 
 clean:
 
