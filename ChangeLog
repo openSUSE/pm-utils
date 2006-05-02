@@ -1,5 +1,9 @@
 2006-05-02  Peter Jones  <pjones@redhat.com>
 
+	* pm-pmu.c: Add a hack for bad system headers.
+
+2006-05-02  Peter Jones  <pjones@redhat.com>
+
 	* pm-action: add copyright and license notice.
 	* Makefile: Add pm-pmu.c and pm-pmu.1 .
 	* Makefile: Change CFLAGS; -g and friends should come from

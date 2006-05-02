@@ -30,7 +30,10 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
+/* XXX this is a total hack for bad system headers. */
+typedef u_int32_t __u32;
 #include <linux/pmu.h>
 
 #if !defined(PMU_IOC_CAN_SLEEP) || !defined(PMU_IOC_SLEEP)
