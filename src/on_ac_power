@@ -1,11 +1,32 @@
 #!/bin/bash
-
+#
 # Test if the computer is running on line power
 # Exit status:
 # - 0 (true)  System is on AC power
 # - 1 (false) System is not on AC power
 #
 # NOTE: Absence of batteries is taken to mean that the system is on ac power.
+#
+# Copyright 2006 Red Hat, Inc.
+# Copyright 2006 Richard Hughes
+#
+# Based on work from:
+#    Richard Hughes <hughsient@gmail.com>
+#    Peter Jones <pjones@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of version 2 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
 
 # Check for AC/DC/etc adapters
 for device in $(hal-find-by-capability --capability ac_adapter) ; do

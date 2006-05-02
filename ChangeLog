@@ -1,3 +1,7 @@
+2006-05-02  Peter Jones  <pjones@redhat.com>
+
+	* pm-action: add copyright and license notice.
+
 2006-05-01  Peter Jones  <pjones@redhat.com>
 
 	* Makefile: add "make test-archive"
