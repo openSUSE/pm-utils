@@ -1,6 +1,6 @@
 VERSION:=0.18.0
 
-CFLAGS= $(RPM_OPT_FLAGS) -Wall -D_GNU_SOURCE -g
+CFLAGS= $(RPM_OPT_FLAGS) -Wall -Werror
 LDFLAGS = 
 
 prefix=$(DESTDIR)/usr
@@ -20,13 +20,21 @@ else
 	CVSTAG ?= pm-utils-$(subst .,-,$(VERSION))
 endif
 
-all:
+all: pm-pmu
 
-install:
+pm-pmu: pm-pmu.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+install: all
+	install -m 755 -d $(sbindir)
+	install -m 755 pm-pmu $(sbindir)
 	install -m 755 -d $(bindir)
 	install -m 755 on_ac_power $(bindir)
 	install -m 755 -d $(mandir)/man1
-	install -m 644 on_ac_power.1 $(mandir)/man1
+	install -m 644 pm-pmu.1 on_ac_power.1 $(mandir)/man1
 
 	ln -s poweroff $(bindir)/pm-shutdown
 	ln -s reboot $(bindir)/pm-restart

@@ -1,6 +1,12 @@
 2006-05-02  Peter Jones  <pjones@redhat.com>
 
 	* pm-action: add copyright and license notice.
+	* Makefile: Add pm-pmu.c and pm-pmu.1 .
+	* Makefile: Change CFLAGS; -g and friends should come from
+	RPM_OPT_FLAGS when desired.
+	* pm-pmu.c: suspend helper for b0rked macs.
+	* pm-pmu.1: man page
+	* pm/functions (pm_main): try pm-pmu before echoing stuff
 
 2006-05-01  Peter Jones  <pjones@redhat.com>
 

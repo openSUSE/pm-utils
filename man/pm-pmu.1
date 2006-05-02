@@ -1,0 +1,40 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH PM-PMU 1 "May 2006" "" ""
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n> insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+pm-pmu \- suspend the computer on machines using a Macintosh-style PMU
+.SH SYNOPSIS
+.B pm-pmu --suspend
+.SH DESCRIPTION
+The command succeeds (status 0) if the machine uses a Macintosh-style
+PMU, and suspended successfully.  The command fails (status other than
+0) otherwise.
+It is designed to be easy to use in shell scripts.
+.SH OPTIONS
+.TP
+.BI "--suspend"
+Suspend the computer.
+.br
+.TP
+.BI "--help"
+Show help message.
+.br
+.SH "EXIT STATUS"
+.br
+.nf
+\fB0\fR (true)    System was suspended using PMU
+\fB1\fR (false)   System could not be suspended using PMU

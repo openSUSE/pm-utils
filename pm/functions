@@ -96,7 +96,7 @@ pm_main()
 
 	case "$1" in
 		suspend)
-			echo -n "mem" > /sys/power/state
+			pm-pmu --suspend || echo -n "mem" > /sys/power/state
 			run_hooks resume reverse
 			;;
 		hibernate)
