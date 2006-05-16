@@ -49,6 +49,7 @@ take_suspend_lock()
 remove_suspend_lock()
 {
 	rm -f /var/run/pm-suspend
+	chvt 1
 	chvt $VT
 	openvt -- sh -c "usleep $1 ; rm -f /.suspended >/dev/null 2>&1 0<&1" >/dev/null 2>&1 0<&1 &
 }
