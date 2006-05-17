@@ -52,6 +52,7 @@ install: all
 	install -m 755 -d $(sysconfdir)/pm
 	install -m 755 -d $(sysconfdir)/pm/hooks
 	install -m 755 -d $(sysconfdir)/pm/config.d
+	install -m 755 -d $(sysconfdir)/pm/power.d
 
 	install -m 644 pm.sysconfig $(sysconfdir)/pm/config
 	for file in pm/functions* ; do \
@@ -59,6 +60,9 @@ install: all
 	done
 	for file in pm/hooks/* ; do \
 		install -m 755 $$file $(sysconfdir)/pm/hooks ; \
+	done
+	for file in pm/power.d/* ; do \
+		install -m 755 $$file $(sysconfdir)/pm/power.d ; \
 	done
 
 tag-archive:

@@ -1,3 +1,16 @@
+2006-05-17  Richard Hughes  <richard@hughsie.com>
+
+	* .cvsignore:
+	Add this file to keep CVS happy.
+
+	* pm/power.d/laptop-tools:
+	* Makefile.am:
+	Add this folder and file to make the low power actions easy to add.
+
+	* pm-powersave:
+	Do not just do hardcoded actions, instead run the scripts in
+	/etc/pm/power.d/ with true and false arguments.
+
 2006-05-02  Peter Jones  <pjones@redhat.com>
 
 	* pm-pmu.c: Add a hack for bad system headers.

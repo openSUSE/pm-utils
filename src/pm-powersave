@@ -1,55 +1,42 @@
-#!/bin/sh
-
-# Simple low-power-mode script
+#!/bin/bash
+#
+# Simple powersave script
+#
+# Copyright 2006 Red Hat, Inc.
+#
 # Based on work from:
 #    Bill Nottingham <notting@redhat.com>
 #    Peter Jones <pjones@redhat.com>
 #    David Zeuthen <davidz@redhat.com>
 #    Richard Hughes <richard@hughsie.com>
 #
-# Values are taken from the laptop-tools package
-#    Bart Samwel <bart@samwel.tk>
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of version 2 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+runpowerhooks()
+{
+	files="/etc/pm/power.d/*"
+	for file in $files ; do
+		[ -x $file ] && $file $1
+	done
+}
 
 if [ "$1" == "true" ] ; then
-    echo "SetLowPower ON"
-    DISK_IDLE_SECS=2
-    DIRTY_WRITEBACK=30
-    DIRTY_EXPIRE=30
-    DIRTY_RATIO=60
-    DIRTY_BACKGROUND_RATIO=1
+    runpowerhooks true
 elif [ "$1" == "false" ] ; then
-    echo "SetLowPower OFF"
-    DISK_IDLE_SECS=0
-    DIRTY_WRITEBACK=500
-    DIRTY_EXPIRE=3000
-    DIRTY_RATIO=40
-    DIRTY_BACKGROUND_RATIO=10
+    runpowerhooks false
 else
-    echo "Argument needs to be true or false"
+    echo "Argument needs to be true or false" >&2
     exit 1
 fi
-
-if [ ! -w "/proc/sys/vm/" ] ; then
-    # Use the raw kernel sysfs interface
-    echo "You do not have write access to /proc/sys/vm/"
-    exit 1
-fi
-
-# Seconds laptop mode has to to wait after the disk
-# goes idle before doing a sync.
-echo $DISK_IDLE_SECS > /proc/sys/vm/laptop_mode
-
-# Set dirty page values
-echo $DIRTY_WRITEBACK > /proc/sys/vm/dirty_writeback_centisecs
-echo $DIRTY_EXPIRE > /proc/sys/vm/dirty_expire_centisecs
-
-# Dirty synchronous ratio.  At this percentage of dirty
-# pages the process which calls write() does its own writeback.
-echo $DIRTY_RATIO > /proc/sys/vm/dirty_ratio
-
-# Allowed dirty background ratio, in percent.
-# Once DIRTY_RATIO has been exceeded, the kernel will wake pdflush
-# which will then reduce the amount of dirty memory to 
-# dirty_background_ratio.  Set this nice and low, so once some
-# writeout has commenced, we do a lot of it.
-echo $DIRTY_BACKGROUND_RATIO > /proc/sys/vm/dirty_background_ratio
