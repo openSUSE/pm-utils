@@ -1,4 +1,4 @@
-SUBDIRS =  hooks power.d config.d
+SUBDIRS =  hooks power.d
 
 extradir = $(sysconfdir)/pm
 
@@ -8,6 +8,9 @@ extra_SCRIPTS =			\
 
 EXTRA_DIST =			\
 	$(extra_SCRIPTS)
+
+install-exec-am:
+	-mkdir $(sysconfdir)/pm/config.d
 
 clean-local :
 	rm -f *~

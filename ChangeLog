@@ -1,5 +1,15 @@
 2006-06-05  Richard Hughes  <richard@hughsie.com>
 
+	* configure.in:
+	* pm/Makefile.am:
+	Create /etc/pm/config.d on package install as this is an empty
+	directory for custom configs.
+
+	* src/Makefile.am:
+	Build the src, and install the scripts. TODO: symlink the pm-* scripts.
+
+2006-06-05  Richard Hughes  <richard@hughsie.com>
+
 	* INSTALL:
 	Add this GNU required file.
 

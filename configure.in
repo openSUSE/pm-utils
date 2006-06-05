@@ -34,7 +34,6 @@ Makefile
 man/Makefile
 src/Makefile
 pm/Makefile
-pm/config.d/Makefile
 pm/hooks/Makefile
 pm/power.d/Makefile
 ])
