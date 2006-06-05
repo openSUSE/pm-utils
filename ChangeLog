@@ -1,5 +1,10 @@
 2006-06-05  Richard Hughes  <richard@hughsie.com>
 
+	* man/Makefile.am:
+	Connect up the sgml->.1 conversion to the autotools build system.
+
+2006-06-05  Richard Hughes  <richard@hughsie.com>
+
 	* MAINTAINERS:
 	Add pjones as maintainer.
 
