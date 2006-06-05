@@ -1,5 +1,16 @@
 2006-06-05  Richard Hughes  <richard@hughsie.com>
 
+	* MAINTAINERS:
+	Add pjones as maintainer.
+
+	* autogen.sh:
+	* pm/Makefile.am:
+	* pm/hooks/Makefile.am:
+	* pm/power.d/Makefile.am:
+	Start to add autotools build system.
+
+2006-06-05  Richard Hughes  <richard@hughsie.com>
+
 	* man/on_ac_power.sgml:
 	* man/pm-pmu.sgml:
 	Don't use hardcoded .1 files, instead generate them using sgml files.
