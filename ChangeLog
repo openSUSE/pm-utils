@@ -1,5 +1,11 @@
 2006-06-05  Richard Hughes  <richard@hughsie.com>
 
+	* man/on_ac_power.sgml:
+	* man/pm-pmu.sgml:
+	Don't use hardcoded .1 files, instead generate them using sgml files.
+
+2006-06-05  Richard Hughes  <richard@hughsie.com>
+
 	* NEWS: Add this file for release news. Required for autofoo.
 
 2006-05-17  Richard Hughes  <richard@hughsie.com>

@@ -1,0 +1,85 @@
+<!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+  <!ENTITY date        "<date>05 June, 2006</date>">
+  <!ENTITY package     "on_ac_power">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <address>
+      <email>richard@hughsie.com</email>;
+    </address>
+    <author>
+      <firstname>Richard</firstname>
+      <surname>Hughes</surname>
+    </author>
+    <copyright>
+      <year>2006</year>
+      <holder>Richard Hughes</holder>
+    </copyright>
+    &date;
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>&package;</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+    <refname>&package;</refname>
+    <refpurpose>test whether the computer is running on line power</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&package;</command>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+    <para>This manual page documents briefly the
+      <command>&package;</command> command.</para>
+    <para><command>&package;</command> is a command line program to test whether the computer is running on line power</para>
+  </refsect1>
+  <refsect1>
+    <title>EXIT CODES</title>
+    <para>
+      The command succeeds (status 0) if the system is using line power
+      and fails (status other than 0) otherwise.
+      It is designed to be easy to use in shell scripts.
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term>
+          <option>0 (true)</option>
+        </term>
+        <listitem>
+          <para>System is on line power.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>1 (false)</option>
+        </term>
+        <listitem>
+          <para>System is not on line power.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>255 (false)</option>
+        </term>
+        <listitem>
+          <para>Power status could not be determined.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+    <para>pm-suspend (1).</para>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para>This manual page was written by Richard Hughes <email>richard@hughsie.com</email>.
+    </para>
+  </refsect1>
+</refentry>
