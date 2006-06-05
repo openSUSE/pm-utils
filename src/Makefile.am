@@ -10,6 +10,10 @@ extra_SCRIPTS =			\
 	pm-action		\
 	on_ac_power
 
+install-exec-am:
+	-ln -s $(sbindir)/pm-action $(sbindir)/pm-suspend
+	-ln -s $(sbindir)/pm-action $(sbindir)/pm-hibernate
+
 EXTRA_DIST =			\
 	$(extra_SCRIPTS)
 
