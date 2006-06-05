@@ -1,4 +1,4 @@
-SUBDIRS =  hooks power.d
+SUBDIRS =  hooks power.d config.d
 
 extradir = $(sysconfdir)/pm
 
