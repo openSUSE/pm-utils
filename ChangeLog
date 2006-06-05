@@ -1,3 +1,7 @@
+2006-06-05  Richard Hughes  <richard@hughsie.com>
+
+	* NEWS: Add this file for release news. Required for autofoo.
+
 2006-05-17  Richard Hughes  <richard@hughsie.com>
 
 	* .cvsignore:
