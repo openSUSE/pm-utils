@@ -25,6 +25,11 @@
 
 # The rule here? Simplicity.
 
+if [ -n "$EUID" -a "$EUID" != "0" ]; then
+	echo This utility may only be run by the root user. 1>&2
+	exit 1
+fi
+
 export LC_COLLATE=C
 
 . /etc/pm/functions
