@@ -1,0 +1,44 @@
+#!/bin/bash
+
+. /etc/pm/functions
+
+hibernate_cpufreq()
+{
+	[ -d /sys/devices/system/cpu/ ] || return 0
+	pushd /sys/devices/system/cpu/ >/dev/null 2>&1
+	for x in $(ls -1) ; do
+		[ -d $x/cpufreq ] || continue
+		[ -f $x/cpufreq/scaling_governor ] || continue
+
+		savestate ${x}_governor $(cat $x/cpufreq/scaling_governor)
+		sh -c "echo userspace > $x/cpufreq/scaling_governor" >/dev/null 2>&1
+	done
+	popd >/dev/null 2>&1
+}
+
+thaw_cpufreq()
+{
+	x=0
+	while :; do
+		gov=$(restorestate $(echo cpu${x}_governor))
+		[ -z "$gov" ] && break
+
+		sh -c "echo \"$gov\" > /sys/devices/system/cpu/cpu$x/cpufreq/scaling_governor" >/dev/null 2>&1
+		unset gov
+		x=$(($x + 1))
+	done
+	unset x
+}
+
+case "$1" in
+	hibernate)
+		hibernate_cpufreq
+		;;
+	thaw)
+		thaw_cpufreq
+		;;
+	*)
+		;;
+esac
+
+exit $?

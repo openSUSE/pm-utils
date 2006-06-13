@@ -9,6 +9,7 @@ sleep_SCRIPTS =			\
 	49bluetooth		\
 	50modules		\
 	90clock			\
+	94cpufreq		\
 	95led
 
 EXTRA_DIST=$(sleep_SCRIPTS)

@@ -1,3 +1,11 @@
+2006-06-13  Peter Jones  <pjones@redhat.com>
+
+	* pm/hooks/94cpufreq:
+	make sure cpufreq is set to userspace control during hibernate,
+	or else we get nasty deadlock issues.
+	* pm/hooks/Makefile.am:
+	add cpufreq hook
+
 2006-06-12  Peter Jones  <pjones@redhat.com>
 
 	* src/pm-action:
