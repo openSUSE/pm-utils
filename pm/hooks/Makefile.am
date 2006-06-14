@@ -1,4 +1,4 @@
-sleepdir = $(sysconfdir)/pm/sleep.d
+sleepdir = $(sysconfdir)/pm/hooks
 
 sleep_SCRIPTS =			\
 	00clear			\
