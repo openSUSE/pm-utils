@@ -67,6 +67,8 @@ int main(int argc, char *argv[])
 
     if (!strcmp(argv[1], "--help")) {
         return print_usage(stdout, 0);
+    } else if (access("/dev/pmu", W_OK)) {
+        return 1;
     } else if (!strcmp(argv[1], "--suspend")) {
         int fd, ret;
 
@@ -82,3 +84,7 @@ int main(int argc, char *argv[])
     
     return print_usage(stderr, 1);
 }
+
+/*
+ * vim:ts=8:sw=4:sts=4:et
+ */

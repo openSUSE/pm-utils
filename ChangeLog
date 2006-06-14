@@ -1,5 +1,11 @@
 2006-06-15  Peter Jones  <pjones@redhat.com>
 
+	* src/pm-pmu.c:
+	If we can't write to /dev/pmu, just return 1, so we don't see the open
+	open error on platforms without pmu.
+
+2006-06-15  Peter Jones  <pjones@redhat.com>
+
 	* pm/hooks/Makefile.am:
 	fix installation directory
 	* pm/Makefile.am:
