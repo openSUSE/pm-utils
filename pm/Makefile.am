@@ -9,8 +9,8 @@ extra_SCRIPTS =			\
 EXTRA_DIST =			\
 	$(extra_SCRIPTS)
 
-install-exec-am:
-	-mkdir $(sysconfdir)/pm/config.d
+install-exec-local:
+	-mkdir $(DESTDIR)$(sysconfdir)/pm/config.d
 
 clean-local :
 	rm -f *~
