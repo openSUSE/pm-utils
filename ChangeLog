@@ -1,3 +1,9 @@
+2006-09-28  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions: ignore emacs backup files in config dirs
+
+	* src/pm-powersave: ditto
+
 2006-06-15  Peter Jones  <pjones@redhat.com>
 
 	* src/pm-pmu.c:

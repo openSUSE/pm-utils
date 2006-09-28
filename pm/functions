@@ -17,6 +17,7 @@ GLOBAL_CONFIG_VARIABLES="HIBERNATE_RESUME_POST_VIDEO SUSPEND_MODULES"
 source_configs()
 {
 	for cfg in $(ls -1 /etc/pm/config.d/* 2>/dev/null) ; do
+		[[ "$cfg" =~ ".*~$" ]] && continue
 		STR=". $cfg"
 		for v in $GLOBAL_CONFIG_VARIABLES ; do
 			STR="$STR ; echo x_$v=\"\$(eval echo \$$v)\""
@@ -63,7 +64,7 @@ run_hooks()
 
 	files="/etc/pm/hooks/*"
 	if [ "$2" = "reverse" ]; then
-		files=$(echo $files | awk '{ for (i=NF; i>=1; i--) print $i }')
+		files=$(echo $files | awk '{ for (i=NF; i>=1; i--) if ($i !~ /~$/ { print $i } }')
 	fi
 	for file in $files ; do
 		[ -x $file ] && $file $1
