@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /etc/rc.d/init.d/functions
+export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
 # default values go here
 HIBERNATE_RESUME_POST_VIDEO=no
@@ -33,10 +33,10 @@ source_configs
 
 take_suspend_lock()
 {
-	VT=$(/usr/bin/fgconsole)
+	VT=$(fgconsole)
 	chvt 63
 	if [ -f /.suspended ]; then
-		pid=$(cat /.suspended)
+		read pid < /.suspended
 		if [ -d /proc/$pid ]; then
 			return 1
 		fi
@@ -62,13 +62,19 @@ run_hooks()
 	[ -f /var/run/pm-suspend ] && . /var/run/pm-suspend
 	rm -f /var/run/pm-suspend
 
-	files="/etc/pm/hooks/*"
+	files="/etc/pm/hooks/*[^~]"
 	if [ "$2" = "reverse" ]; then
-		files=$(echo $files | awk '{ for (i=NF; i>=1; i--) if ($i !~ /~$/ { print $i } }')
+		filea=($files)
+		filen=${#filea[*]}
+		while [ "$filen" -gt 0 ]; do
+			file="${filea[$filen]}"
+			[ -x $file ] && $file $1
+		done
+	else
+		for file in $files ; do
+			[ -x $file ] && $file $1
+		done
 	fi
-	for file in $files ; do
-		[ -x $file ] && $file $1
-	done
 }
 
 get_power_status()
@@ -115,23 +121,23 @@ pm_main()
 
 modunload()
 {
-	/sbin/lsmod 2>/dev/null | grep -q "$1"
+	lsmod 2>/dev/null | grep -q "$1"
 	if [ "$?" == "0" ]; then
 		echo "export ${1}_MODULE_LOAD=yes" >> /var/run/pm-suspend
-		/sbin/modprobe -r "$1" >/dev/null 2>&1
+		modprobe -r "$1" >/dev/null 2>&1
 	fi
 }
 
 modreload()
 {
 	if [ "$(eval echo \$${1}_MODULE_LOAD)" == "yes" ]; then
-		/sbin/modprobe "$1" >/dev/null 2>&1
+		modprobe "$1" >/dev/null 2>&1
 	fi
 }
 
 stopservice()
 {
-	/sbin/service "$1" status 2>/dev/null | grep -c -q running
+	service "$1" status 2>/dev/null | grep -c -q running
 	if [ "$?" == "0" -a -x "/etc/init.d/$1" ]; then
 		echo "export ${1}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
 		"/etc/init.d/$1" stop >/dev/null 2>&1
