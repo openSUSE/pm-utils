@@ -67,6 +67,7 @@ run_hooks()
 		filea=($files)
 		filen=${#filea[*]}
 		while [ "$filen" -gt 0 ]; do
+			let filen--
 			file="${filea[$filen]}"
 			[ -x $file ] && $file $1
 		done
