@@ -5,16 +5,22 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 # default values go here
 HIBERNATE_RESUME_POST_VIDEO=no
 SUSPEND_MODULES=""
+RESUME_MODULES=""
 LOGFILE=/var/log/pm-suspend.log
 
 [ -f /etc/pm/config ] && . /etc/pm/config
 
-# export them all here
-export HIBERNATE_RESUME_POST_VIDEO
-export SUSPEND_MODULES
-export LOGFILE
+GLOBAL_CONFIG_VARIABLES=""
+add_global() {
+	export $1
+	GLOBAL_CONFIG_VARIABLES="$GLOBAL_CONFIG_VARIABLES $1"
+}
 
-GLOBAL_CONFIG_VARIABLES="HIBERNATE_RESUME_POST_VIDEO SUSPEND_MODULES LOGFILE"
+# export them all here
+add_global HIBERNATE_RESUME_POST_VIDEO
+add_global SUSPEND_MODULES
+add_global RESUME_MODULES
+add_global LOGFILE
 
 source_configs()
 {
@@ -134,13 +140,51 @@ pm_main()
 	return 0
 }
 
+_rmmod() {
+	if rmmod $1; then
+		echo "export RESUME_MODULES=\"$1 \$RESUME_MODULES\"" \
+						>> /var/run/pm-suspend
+		return 0
+	else
+		echo "# could not unload '$1', usage count was $2"
+		return 1
+	fi
+}
+
+# this recursively unloads the given modules and all that depend on it
+# first parameter is the module to be unloaded
 modunload()
 {
-	lsmod 2>/dev/null | grep -q "$1"
-	if [ "$?" == "0" ]; then
-		echo "export ${1}_MODULE_LOAD=yes" >> /var/run/pm-suspend
-		modprobe -r "$1" >/dev/null 2>&1
-	fi
+	local MOD D C USED MODS I
+	local UNL=$1 RET=1
+	# RET is the return code.
+	# If at least one module was unloaded, return 0.
+	# if the module was not loaded, also return 0 since this is no error.
+	# if no module was unloaded successfully, return 1
+	while read MOD D C USED D; do
+		[ "$MOD" != "$UNL" ] && continue
+		if [ "$USED" == "-" ]; then
+			_rmmod $UNL $C
+			RET=$?
+		else
+			USED=${USED//,/ }
+			MODS=($USED)
+			# it seems slightly more likely to rmmod in one pass,
+			# if we try backwards.
+			for I in `seq $[${#MODS[@]}-1] -1 0`; do
+				MOD=${MODS[$I]}
+				modunload $MOD && RET=0
+			done
+			# if we unloaded at least one module, then let's
+			# try again!
+			[ $RET -eq 0 ] && modunload $UNL
+			RET=$?
+		fi
+		return $RET
+	done < /proc/modules
+	# if we came this far, there was nothing to do, 
+	# the module is no longer loaded.
+	return 0
 }
 
 modreload()
