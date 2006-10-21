@@ -5,14 +5,16 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 # default values go here
 HIBERNATE_RESUME_POST_VIDEO=no
 SUSPEND_MODULES=""
+LOGFILE=/var/log/pm-suspend.log
 
 [ -f /etc/pm/config ] && . /etc/pm/config
 
 # export them all here
 export HIBERNATE_RESUME_POST_VIDEO
 export SUSPEND_MODULES
+export LOGFILE
 
-GLOBAL_CONFIG_VARIABLES="HIBERNATE_RESUME_POST_VIDEO SUSPEND_MODULES"
+GLOBAL_CONFIG_VARIABLES="HIBERNATE_RESUME_POST_VIDEO SUSPEND_MODULES LOGFILE"
 
 source_configs()
 {
@@ -62,6 +64,8 @@ run_hooks()
 	[ -f /var/run/pm-suspend ] && . /var/run/pm-suspend
 	rm -f /var/run/pm-suspend
 
+	echo "$(date): running $1 hooks."
+
 	files="/etc/pm/hooks/*[^~]"
 	if [ "$2" = "reverse" ]; then
 		filea=($files)
@@ -69,11 +73,17 @@ run_hooks()
 		while [ "$filen" -gt 0 ]; do
 			let filen--
 			file="${filea[$filen]}"
-			[ -x $file ] && $file $1
+			if [ -x $file ]; then
+				echo "$i"
+				$file $1
+			fi
 		done
 	else
 		for file in $files ; do
-			[ -x $file ] && $file $1
+			if [ -x $file ]; then
+				echo "$i"
+				$file $1
+			fi
 		done
 	fi
 }
@@ -99,6 +109,10 @@ get_power_status()
 
 pm_main()
 {
+	if [ -n "$LOGFILE" ]; then
+		[ -f "$LOGFILE" ] && rm -f "$LOGFILE"
+		touch "$LOGFILE"
+	fi
 	take_suspend_lock || exit 1
 	run_hooks "$1"
 	sync ; sync ; sync
