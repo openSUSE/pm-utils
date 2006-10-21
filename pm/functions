@@ -141,7 +141,7 @@ pm_main()
 }
 
 _rmmod() {
-	if rmmod $1; then
+	if modprobe -r $1; then
 		echo "export RESUME_MODULES=\"$1 \$RESUME_MODULES\"" \
 						>> /var/run/pm-suspend
 		return 0
