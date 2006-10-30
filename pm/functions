@@ -6,7 +6,7 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 HIBERNATE_RESUME_POST_VIDEO=no
 SUSPEND_MODULES=""
 RESUME_MODULES=""
-LOGFILE=/var/log/pm-suspend.log
+PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 
 [ -f /etc/pm/config ] && . /etc/pm/config
 
@@ -20,7 +20,7 @@ add_global() {
 add_global HIBERNATE_RESUME_POST_VIDEO
 add_global SUSPEND_MODULES
 add_global RESUME_MODULES
-add_global LOGFILE
+add_global PM_LOGFILE
 
 source_configs()
 {
@@ -115,9 +115,9 @@ get_power_status()
 
 pm_main()
 {
-	if [ -n "$LOGFILE" ]; then
-		[ -f "$LOGFILE" ] && rm -f "$LOGFILE"
-		touch "$LOGFILE"
+	if [ -n "$PM_LOGFILE" ]; then
+		[ -f "$PM_LOGFILE" ] && rm -f "$PM_LOGFILE"
+		exec > "$PM_LOGFILE" 2>&1
 	fi
 	take_suspend_lock || exit 1
 	run_hooks "$1"
