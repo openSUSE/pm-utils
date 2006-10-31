@@ -5,7 +5,7 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 # default values go here
 HIBERNATE_RESUME_POST_VIDEO=no
 SUSPEND_MODULES=""
-RESUME_MODULES=""
+# It is important to _not_ initialize RESUME_MODULES here.
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 
 [ -f /etc/pm/config ] && . /etc/pm/config
