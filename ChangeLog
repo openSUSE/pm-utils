@@ -1,3 +1,39 @@
+2006-10-31  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
+	- don't initialize RESUME_MODULES, it'll clobber our list
+	- add support for hooks to inhibit suspending (seife,pjones)
+
+	* src/pm-action: call pm_main with both forward and reverse actions
+
+2006-10-30  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
+	- use PM_LOGFILE rather than LOGFILE, and inherit from env
+	- exec to set the logfile for the current process
+
+2006-10-21  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
+	- Merge logging infrastructure from Stefan Seyfried.
+	- Rework module load/unload (pjones,seife)
+
+	* pm/hooks/50modules: use the right module list in resume_modules.
+
+2006-10-11  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions: fix missing decrement in reverse-hooks loop.
+
+2006-10-10  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions: 
+	- don't source /etc/rc.d/init.d/functions, we don't need it
+	- set sane script-wide path
+	- use "read" instead of "cat" to read /.suspended
+	- use globbing to exclude emacs's litter
+	- use shell not awk to do the hook reversal
+	- don't specify full paths for programs in PATH
+
 2006-09-28  Peter Jones  <pjones@redhat.com>
 
 	* pm/functions: ignore emacs backup files in config dirs
