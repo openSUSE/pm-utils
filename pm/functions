@@ -7,6 +7,7 @@ HIBERNATE_RESUME_POST_VIDEO=no
 SUSPEND_MODULES=""
 # It is important to _not_ initialize RESUME_MODULES here.
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
+INHIBIT=/var/run/pm-utils.inhibit
 
 [ -f /etc/pm/config ] && . /etc/pm/config
 
@@ -21,6 +22,7 @@ add_global HIBERNATE_RESUME_POST_VIDEO
 add_global SUSPEND_MODULES
 add_global RESUME_MODULES
 add_global PM_LOGFILE
+add_global INHIBIT
 
 source_configs()
 {
@@ -113,6 +115,17 @@ get_power_status()
 	return $RETVAL
 }
 
+do_suspend()
+{
+	pm-pmu --suspend || echo -n "mem" > /sys/power/state
+}
+
+do_hibernate()
+{
+	echo -n "platform" > /sys/power/disk
+	echo -n "disk" > /sys/power/state
+}
+
 pm_main()
 {
 	if [ -n "$PM_LOGFILE" ]; then
@@ -120,20 +133,17 @@ pm_main()
 		exec > "$PM_LOGFILE" 2>&1
 	fi
 	take_suspend_lock || exit 1
-	run_hooks "$1"
-	sync ; sync ; sync
 
-	case "$1" in
-		suspend)
-			pm-pmu --suspend || echo -n "mem" > /sys/power/state
-			run_hooks resume reverse
-			;;
-		hibernate)
-			echo -n "platform" > /sys/power/disk
-			echo -n "disk" > /sys/power/state
-			run_hooks thaw reverse
-			;;
-	esac
+	rm -f "$INHIBIT"
+
+	run_hooks "$1"
+
+	if [ ! -e "$INHIBIT" -a "$(type -t "do_$1")" == "function" ]; then
+		sync ; sync ; sync
+		"do_$1"
+	fi
+
+	run_hooks "$2" reverse
 
 	remove_suspend_lock 200
 

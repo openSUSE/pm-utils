@@ -40,6 +40,11 @@ export LC_COLLATE=C
 ACTION=$(basename "$0")
 ACTION=${ACTION#pm-}
 
-pm_main "$ACTION"
+case "$ACTION" in
+	suspend) REVERSE=resume ;;
+	hibernate) REVERSE=thaw ;;
+esac
+
+pm_main "$ACTION" "$REVERSE"
 
 exit $?
