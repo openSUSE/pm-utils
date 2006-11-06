@@ -34,16 +34,24 @@ export LC_COLLATE=C
 
 . /etc/pm/functions
 
-[ -f /sys/power/disk ] || exit 1
 [ -f /sys/power/state ] || exit 1
+
 
 ACTION=$(basename "$0")
 ACTION=${ACTION#pm-}
 
 case "$ACTION" in
-	suspend) REVERSE=resume ;;
-	hibernate) REVERSE=thaw ;;
+	suspend)
+		grep -q mem /sys/power/state || exit 1
+		REVERSE=resume ;;
+	hibernate)
+		grep -q disk /sys/power/state || exit 1
+		[ -f /sys/power/disk ] || exit 1
+		REVERSE=thaw
+		;;
 esac
+
+export PM_CMDLINE="$@"
 
 pm_main "$ACTION" "$REVERSE"
 
