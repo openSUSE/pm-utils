@@ -4,6 +4,10 @@
 	- Sort the globals, and add some comments about their initialization.
 	- Fix logging of hook names (patch from Holger Macht).
 
+	* pm/hooks/00logging:
+	- If PM_LOGFILE is set, log kernel version, modules loaded, and memory
+	  usage info (patch from Holger Macht).
+
 2006-10-31  Peter Jones  <pjones@redhat.com>
 
 	* pm/functions:

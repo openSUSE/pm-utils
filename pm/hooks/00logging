@@ -1,0 +1,12 @@
+#!/bin/bash
+
+case "$1" in
+        hibernate|suspend)
+		[ -n "$PM_LOGFILE" ] || exit 0
+		echo -e "Kernel version: `/bin/uname -a`\n"
+		echo -e "`lsmod`\n"
+		echo -e "`free`\n"
+		;;
+esac
+
+exit 0
