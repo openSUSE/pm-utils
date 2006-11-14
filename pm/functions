@@ -2,12 +2,16 @@
 
 export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
-# default values go here
+# Default values go here.  It is important to _not_ initialize some
+# variables here.  They are:
+#
+# PM_CMDLINE
+# RESUME_MODULES
+#
 HIBERNATE_RESUME_POST_VIDEO=no
-SUSPEND_MODULES=""
-# It is important to _not_ initialize RESUME_MODULES here.
-PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 INHIBIT=/var/run/pm-utils.inhibit
+PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
+SUSPEND_MODULES=""
 
 [ -f /etc/pm/config ] && . /etc/pm/config
 
@@ -19,10 +23,11 @@ add_global() {
 
 # export them all here
 add_global HIBERNATE_RESUME_POST_VIDEO
-add_global SUSPEND_MODULES
-add_global RESUME_MODULES
-add_global PM_LOGFILE
 add_global INHIBIT
+add_global PM_LOGFILE
+add_global PM_CMDLINE
+add_global RESUME_MODULES
+add_global SUSPEND_MODULES
 
 source_configs()
 {
