@@ -87,14 +87,14 @@ run_hooks()
 			let filen--
 			file="${filea[$filen]}"
 			if [ -x $file ]; then
-				echo "$i"
+				echo "===== $(date): running hook: $file ====="
 				$file $1
 			fi
 		done
 	else
 		for file in $files ; do
 			if [ -x $file ]; then
-				echo "$i"
+				echo "===== $(date): running hook: $file ====="
 				$file $1
 			fi
 		done
