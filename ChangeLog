@@ -1,3 +1,8 @@
+2006-11-28  Peter Jones  <pjones@redhat.com>
+
+	* pm/hooks/94cpufreq:
+	- Enable for suspend/resume as well.
+
 2006-11-14  Peter Jones  <pjones@redhat.com>
 
 	* pm/functions:

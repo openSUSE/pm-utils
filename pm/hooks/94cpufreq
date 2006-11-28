@@ -31,10 +31,10 @@ thaw_cpufreq()
 }
 
 case "$1" in
-	hibernate)
+	suspend|hibernate)
 		hibernate_cpufreq
 		;;
-	thaw)
+	resume|thaw)
 		thaw_cpufreq
 		;;
 	*)
