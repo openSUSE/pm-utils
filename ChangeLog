@@ -1,3 +1,9 @@
+2006-11-30  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
+	- log when we're done running hooks (from Stefan)
+	- don't discard service start/stop output. (from Stefan)
+
 2006-11-29  Peter Jones  <pjones@redhat.com>
 
 	* pm/functions:

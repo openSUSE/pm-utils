@@ -98,6 +98,8 @@ run_hooks()
 			fi
 		done
 	fi
+
+	echo "$(date): done running $1 hooks."
 }
 
 get_power_status()
@@ -213,7 +215,7 @@ stopservice()
 	service "$1" status 2>/dev/null | grep -c -q running
 	if [ "$?" == "0" -a -x "/etc/init.d/$1" ]; then
 		echo "export ${1}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
-		"/etc/init.d/$1" stop >/dev/null 2>&1
+		"/etc/init.d/$1" stop 2>&1
 	fi
 }
 
@@ -221,7 +223,7 @@ restartservice()
 {
 	if [ "x$(eval echo \$${1}_SERVICE_ACTIVATE)" == "xyes" \
 			-a -x "/etc/init.d/$1" ]; then
-		"/etc/init.d/$1" start >/dev/null 2>&1
+		"/etc/init.d/$1" start 2>&1
 	fi
 }
 
