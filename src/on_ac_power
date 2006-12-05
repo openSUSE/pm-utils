@@ -5,7 +5,8 @@
 # - 0 (true)  System is on AC power
 # - 1 (false) System is not on AC power
 #
-# NOTE: Absence of batteries is taken to mean that the system is on ac power.
+# NOTE: Batteries are not good indicators unless we also check their type,
+#       as some peripherals have batteries.
 #
 # Copyright 2006 Red Hat, Inc.
 # Copyright 2006 Richard Hughes
@@ -13,6 +14,7 @@
 # Based on work from:
 #    Richard Hughes <hughsient@gmail.com>
 #    Peter Jones <pjones@redhat.com>
+#    Stefan Seyfried <seife@suse.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -29,13 +31,17 @@
 #
 
 # Check for AC/DC/etc adapters
-for device in $(hal-find-by-capability --capability ac_adapter) ; do
+ac_adapters=$(hal-find-by-capability --capability ac_adapter)
+
+# If there are no AC adapters, it is most likely a desktop.
+# Assume online, since we have no data.
+[ -z "$ac_adapters" ] && exit 0
+
+# If any of them are online, then we're done.
+for device in $ac_adapters ; do
 	present=$(hal-get-property --udi $device --key ac_adapter.present)
 	[ "$present" == "true" ] && exit 0
 done
 
-# If there are no ac_adapters, check for batteries.
-hal-find-by-capability --capability battery >/dev/null 2>&1 && exit 1
-
-# If there are no batteries assume AC.
-exit 0
+# If there are adapters, but none are online, we're not on AC.
+exit 1
