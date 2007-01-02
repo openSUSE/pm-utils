@@ -1,7 +1,8 @@
 powerdir = $(sysconfdir)/pm/power.d
 
 power_SCRIPTS =			\
-	laptop-tools
+	laptop-tools		\
+	sched-powersave
 
 EXTRA_DIST=$(power_SCRIPTS)
 

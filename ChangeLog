@@ -1,3 +1,10 @@
+2007-01-02  Peter Jones  <pjones@redhat.com>
+
+	* pm/power.d/sched-powersave:
+	* pm/power.d/Makefile.am:
+	- add a powersave script for kernel scheduler configuration (originally
+	  from Richard with some changes by me)
+
 2006-12-05  Peter Jones  <pjones@redhat.com>
 
 	* src/on_ac_power:
