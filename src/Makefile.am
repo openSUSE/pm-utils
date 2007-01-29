@@ -1,7 +1,12 @@
 sbin_PROGRAMS =			\
-	pm-pmu
+	pm-pmu			\
+	pm-reset-swap
 
-pm_pmu_SOURCES = pm-pmu.c
+pm_pmu_SOURCES = 		\
+	pm-pmu.c
+
+pm_reset_swap_SOURCES = 	\
+	pm-reset-swap.c
 
 extradir = $(sbindir)
 
