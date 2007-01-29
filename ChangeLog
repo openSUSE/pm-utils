@@ -1,3 +1,9 @@
+2007-01-29  Peter Jones  <pjones@redhat.com>
+
+	* src/pm-reset-swap.c:
+	- add this file, a utility to reset the hibernate signature on a swap
+	  device.
+
 2007-01-02  Peter Jones  <pjones@redhat.com>
 
 	* pm/power.d/sched-powersave:
