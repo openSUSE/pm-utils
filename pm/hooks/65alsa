@@ -1,0 +1,14 @@
+#!/bin/bash
+
+case "$1" in
+	hibernate|suspend)
+		/usr/sbin/alsactl store 0 >/dev/null 2>&1
+		;;
+	thaw|resume) 
+		/usr/sbin/alsactl restore 0 >/dev/null 2>&1
+		;;
+	*)
+		;;
+esac
+
+exit $?

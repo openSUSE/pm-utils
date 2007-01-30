@@ -1,5 +1,8 @@
 2007-01-30  Peter Jones  <pjones@redhat.com>
 
+	* pm/hooks/65alsa: Add a hook to save and restore alsa settings (patch
+	from Phil Knirsch).
+
 	* pm/hooks/60sysfont: Add a hook to reset the sysfont on resume,
 	originally by Phill Knirsch (rhbz #215391).
 
