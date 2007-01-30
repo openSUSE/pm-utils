@@ -1,5 +1,8 @@
 2007-01-30  Peter Jones  <pjones@redhat.com>
 
+	* pm/hooks/60sysfont: Add a hook to reset the sysfont on resume,
+	originally by Phill Knirsch (rhbz #215391).
+
 	* pm/hooks/10NetworkManager: remove the service changes for
 	mDNSresponder.  It hasn't been named that in a while, so that part
 	of the hook hasn't been doing anything at all (rhbz #215253).

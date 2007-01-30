@@ -1,0 +1,8 @@
+#!/bin/bash
+
+case "$1" in
+	resume|thaw) 
+		/sbin/setsysfont >/dev/null 2>&1 ;;
+esac
+
+exit $?
