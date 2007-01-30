@@ -1,6 +1,10 @@
 2007-01-30  Peter Jones  <pjones@redhat.com>
 
-	* pm/powr.d/laptop-tools: fix permission checking (patch from Phil
+	* pm/hooks/10NetworkManager: remove the service changes for
+	mDNSresponder.  It hasn't been named that in a while, so that part
+	of the hook hasn't been doing anything at all.
+
+	* pm/power.d/laptop-tools: fix permission checking (patch from Phil
 	Knirsch, rhbz #222819)
 
 2007-01-29  Peter Jones  <pjones@redhat.com>

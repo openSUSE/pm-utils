@@ -1,10 +1,6 @@
 #!/bin/sh
 
-. /etc/pm/functions
-
 suspend_nm() {
-    stopservice mDNSResponder
-
     # Tell NetworkManager to shut down networking
     dbus-send --system                         \
         --print-reply                          \
@@ -23,7 +19,6 @@ resume_nm() {
         org.freedesktop.NetworkManager.wake >/dev/null 2>&1 0<&1
     rc=$?
 
-    restartservice mDNSResponder
     return $rc
 }
 
