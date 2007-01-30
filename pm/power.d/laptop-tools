@@ -26,9 +26,15 @@ setlowpowermode()
 	echo $DIRTY_BACKGROUND_RATIO > /proc/sys/vm/dirty_background_ratio
 }
 
-if [ ! -w "/proc/sys/vm/" ] ; then
+if [ ! -d "/proc/sys/vm/" ] ; then
 	# Use the raw kernel sysfs interface
-	echo "You do not have write access to /proc/sys/vm/"
+	echo "The required directory /proc/sys/vm/ doesn't exist"
+	exit 1
+fi
+
+if ! [  -w "/proc/sys/vm/laptop_mode" -a -w "/proc/sys/vm/dirty_writeback_centisecs" -a -w "/proc/sys/vm/dirty_expire_centisecs" -a -w "/proc/sys/vm/dirty_ratio" -a -w "/proc/sys/vm/dirty_background_ratio"  ] ; then 
+	# Use the raw kernel sysfs interface
+	echo "You do not have write access to files in /proc/sys/vm/"
 	exit 1
 fi
 
