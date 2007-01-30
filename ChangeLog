@@ -2,7 +2,7 @@
 
 	* pm/hooks/10NetworkManager: remove the service changes for
 	mDNSresponder.  It hasn't been named that in a while, so that part
-	of the hook hasn't been doing anything at all.
+	of the hook hasn't been doing anything at all (rhbz #215253).
 
 	* pm/power.d/laptop-tools: fix permission checking (patch from Phil
 	Knirsch, rhbz #222819)
