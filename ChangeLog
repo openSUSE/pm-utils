@@ -1,5 +1,13 @@
 2007-02-20  Peter Jones  <pjones@redhat.com>
 
+	* pm/hooks/20video: split resume/thaw out to another script
+
+	* pm/hooks/99video: split resume/thaw out to another script
+
+	* pm/hooks/Makefile.am: add 99video here
+
+2007-02-20  Peter Jones  <pjones@redhat.com>
+
 	* configure.in: Change version to 0.99.0
 
 2007-02-20  Peter Jones  <pjones@redhat.com>

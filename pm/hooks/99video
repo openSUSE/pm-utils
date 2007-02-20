@@ -27,43 +27,36 @@ radeon() {
 	$radeontool "$@"
 }
 
-suspend_video()
+resume_video()
 {
-	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
-	if [ ${DISPLAY_QUIRK_S3_BIOS} == "true" -a
-			${DISPLAY_QUIRK_S3_MODE} == "true" ]; then
-		sysctl -w kernel.acpi_video_flags=3
-	elif [ ${DISPLAY_QUIRK_S3_BIOS} == "true" ]; then
-		sysctl -w kernel.acpi_video_flags=1
-	elif [ ${DISPLAY_QUIRK_S3_MODE} == "true" ]; then
-		sysctl -w kernel.acpi_video_flags=2
-	else
-		sysctl -w kernel.acpi_video_flags=0
+	if [ ${DISPLAY_QUIRK_RADEON_OFF} == "true" ]; then
+		radeon dac on
+		radeon light on
 	fi
-
 	# We might need to do one or many of these quirks
+	if [ ${DISPLAY_QUIRK_VBE_POST} == "true" ]; then
+		vbe post </dev/tty0
+		usleep 100000
+	fi
 	if [ ${DISPLAY_QUIRK_VBESTATE_RESTORE} == "true" ]; then
-		vbe vbestate save > /var/run/vbestate
+		vbe vbestate restore < /var/run/vbestate
 	fi
 	if [ ${DISPLAY_QUIRK_VBEMODE_RESTORE} == "true" ]; then
-		vbe vbemode get > /var/run/vbemode
+		vbe vbemode set `cat /var/run/vbemode`
 	fi
-	if [ ${DISPLAY_QUIRK_VGA_MODE_3} == "true" ]; then
-		vbe vbemode set 3
-	fi
-	if [ ${DISPLAY_QUIRK_DPMS_SUSPEND} == "true" ]; then
-		vbe dpms suspend
+	if [ ${DISPLAY_QUIRK_DPMS_ON} == "true" ]; then
+		vbe dpms on
 	fi
 }
 
 
 case "$1" in
-	suspend)
-		suspend_video
+	resume)
+		resume_video
 		;;
-	hibernate)
+	thaw)
 		if [ "x$HIBERNATE_RESUME_POST_VIDEO" == "xyes" ]; then
-			suspend_video
+			resume_video
 		fi
 		;;
 esac
