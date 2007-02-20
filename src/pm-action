@@ -93,11 +93,16 @@ ACTION=${ACTION#pm-}
 
 case "$ACTION" in
 	suspend)
-		grep -q mem /sys/power/state || exit 1
+		if ! grep -q mem /sys/power/state ; then
+			echo "Error: kernel cannot suspend to ram." 1>&2
+			exit 1
+		fi
 		REVERSE=resume ;;
 	hibernate)
-		grep -q disk /sys/power/state || exit 1
-		[ -f /sys/power/disk ] || exit 1
+		if ! grep -q disk /sys/power/state ; then
+			echo "Error: kernel cannot suspend to disk." 1>&2
+			exit 1
+		fi
 		REVERSE=thaw
 		;;
 esac

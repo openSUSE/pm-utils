@@ -1,5 +1,10 @@
 2007-02-20  Peter Jones  <pjones@redhat.com>
 
+	* src/pm-action: Add error messages when we're exiting because of
+	missing data in sysfs.
+
+2007-02-20  Peter Jones  <pjones@redhat.com>
+
 	* src/pm-powersave: handle emacs files like we do in pm/functions
 
 2007-02-20  Peter Jones  <pjones@redhat.com>
