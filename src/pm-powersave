@@ -26,9 +26,9 @@
 
 runpowerhooks()
 {
-	files="/etc/pm/power.d/*"
+	files="/etc/pm/power.d/*[^~]"
 	for file in $files ; do
-		[[ "$file" =~ ".*~$" ]] || [ -x $file ] && $file $1
+		[ -x $file ] && $file $1
 	done
 }
 
