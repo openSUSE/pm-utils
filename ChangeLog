@@ -1,5 +1,12 @@
 2007-02-20  Peter Jones  <pjones@redhat.com>
 
+	* man/Makefile.am: docbook2man doesn't output the man page on standard
+	output, it outputs it to ${NAME%.sgml}.1 .  So redirecting stdout to
+	${NAME%.sgml}.1 gets "Done.\n" stuck somewhere in the middle of the
+	file.  Don't do this.
+
+2007-02-20  Peter Jones  <pjones@redhat.com>
+
 	* pm/hooks/20video: split resume/thaw out to another script
 
 	* pm/hooks/99video: split resume/thaw out to another script
