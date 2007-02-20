@@ -1,5 +1,12 @@
 2007-02-20  Peter Jones  <pjones@redhat.com>
 
+	* src/pm-action: handle options for video quirks
+
+	* pm/hooks/20video: use video quirk options (based largely on a
+	patch from Richard Hughes)
+
+2007-02-20  Peter Jones  <pjones@redhat.com>
+
 	* pm/functions: fix module load/unload problems with module names
 	that have - and _ .
 
