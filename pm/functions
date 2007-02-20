@@ -173,14 +173,15 @@ modunload()
 {
 	local MOD D C USED MODS I
 	local UNL=$1 RET=1
+	UNL=$(echo $UNL | sed -e 's/[_-]/\[_-\]/g')
 	# RET is the return code.
 	# If at least one module was unloaded, return 0.
 	# if the module was not loaded, also return 0 since this is no error.
 	# if no module was unloaded successfully, return 1
 	while read MOD D C USED D; do
-		[ "$MOD" != "$UNL" ] && continue
+		[ "$MOD" =~ "$UNL" ] || continue
 		if [ "$USED" == "-" ]; then
-			_rmmod $UNL $C
+			_rmmod $MOD $C
 			RET=$?
 		else
 			USED=${USED//,/ }
@@ -193,7 +194,7 @@ modunload()
 			done
 			# if we unloaded at least one module, then let's
 			# try again!
-			[ $RET -eq 0 ] && modunload $UNL
+			[ $RET -eq 0 ] && modunload $MOD
 			RET=$?
 		fi
 		return $RET
