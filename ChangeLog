@@ -1,3 +1,7 @@
+2007-03-01  Peter Jones  <pjones@redhat.com>
+
+	* pm/hook/10NetworkManager: minor cleanups
+
 2007-02-28  Peter Jones  <pjones@redhat.com>
 
 	* pm/hooks/55battery: hook to reprobe batteries on hibernate/thaw,

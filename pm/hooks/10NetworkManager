@@ -3,12 +3,9 @@
 suspend_nm() {
     # Tell NetworkManager to shut down networking
     dbus-send --system                         \
-        --print-reply                          \
-        --reply-timeout=2000                   \
         --dest=org.freedesktop.NetworkManager  \
         /org/freedesktop/NetworkManager        \
-        org.freedesktop.NetworkManager.sleep >/dev/null 2>&1 0<&1
-    return $?
+        org.freedesktop.NetworkManager.sleep
 }
 
 resume_nm() {
@@ -16,10 +13,7 @@ resume_nm() {
     dbus-send --system                        \
         --dest=org.freedesktop.NetworkManager \
         /org/freedesktop/NetworkManager       \
-        org.freedesktop.NetworkManager.wake >/dev/null 2>&1 0<&1
-    rc=$?
-
-    return $rc
+        org.freedesktop.NetworkManager.wake
 }
 
 case "$1" in
