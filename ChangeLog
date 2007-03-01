@@ -1,6 +1,12 @@
 2007-03-01  Peter Jones  <pjones@redhat.com>
 
-	* pm/hook/10NetworkManager: minor cleanups
+	* pm/hooks/55battery:
+	- use hal-set-property not hal-device
+	- just do everything on resume/thaw, don't bother with saving state
+
+2007-03-01  Peter Jones  <pjones@redhat.com>
+
+	* pm/hooks/10NetworkManager: minor cleanups
 
 2007-02-28  Peter Jones  <pjones@redhat.com>
 
