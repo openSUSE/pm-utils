@@ -29,22 +29,22 @@ radeon() {
 
 resume_video()
 {
-	if [ ${DISPLAY_QUIRK_RADEON_OFF} == "true" ]; then
+	if [ "${DISPLAY_QUIRK_RADEON_OFF}" == "true" ]; then
 		radeon dac on
 		radeon light on
 	fi
 	# We might need to do one or many of these quirks
-	if [ ${DISPLAY_QUIRK_VBE_POST} == "true" ]; then
+	if [ "${DISPLAY_QUIRK_VBE_POST}" == "true" ]; then
 		vbe post </dev/tty0
 		usleep 100000
 	fi
-	if [ ${DISPLAY_QUIRK_VBESTATE_RESTORE} == "true" ]; then
+	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" == "true" ]; then
 		vbe vbestate restore < /var/run/vbestate
 	fi
-	if [ ${DISPLAY_QUIRK_VBEMODE_RESTORE} == "true" ]; then
+	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" == "true" ]; then
 		vbe vbemode set `cat /var/run/vbemode`
 	fi
-	if [ ${DISPLAY_QUIRK_DPMS_ON} == "true" ]; then
+	if [ "${DISPLAY_QUIRK_DPMS_ON}" == "true" ]; then
 		vbe dpms on
 	fi
 }

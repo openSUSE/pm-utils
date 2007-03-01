@@ -1,5 +1,10 @@
 2007-03-01  Peter Jones  <pjones@redhat.com>
 
+	* pm/hooks/20video pm/hooks/99video:
+	- fix shell quoting in variable tests
+
+2007-03-01  Peter Jones  <pjones@redhat.com>
+
 	* pm/functions:
 	- fix use of [ with =~
 
