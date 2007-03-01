@@ -179,7 +179,7 @@ modunload()
 	# if the module was not loaded, also return 0 since this is no error.
 	# if no module was unloaded successfully, return 1
 	while read MOD D C USED D; do
-		[ "$MOD" =~ "$UNL" ] || continue
+		[[ "$MOD" =~ "$UNL" ]] || continue
 		if [ "$USED" == "-" ]; then
 			_rmmod $MOD $C
 			RET=$?

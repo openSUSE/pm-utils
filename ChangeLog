@@ -1,5 +1,10 @@
 2007-03-01  Peter Jones  <pjones@redhat.com>
 
+	* pm/functions:
+	- fix use of [ with =~
+
+2007-03-01  Peter Jones  <pjones@redhat.com>
+
 	* pm/hooks/55battery:
 	- use hal-set-property not hal-device
 	- just do everything on resume/thaw, don't bother with saving state
