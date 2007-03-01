@@ -8,6 +8,7 @@ sleep_SCRIPTS =			\
 	20video			\
 	49bluetooth		\
 	50modules		\
+	55battery		\
 	60sysfont		\
 	65alsa			\
 	90clock			\

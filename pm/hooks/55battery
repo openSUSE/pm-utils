@@ -1,0 +1,33 @@
+#!/bin/bash
+
+. /etc/pm/functions
+
+suspend_batteries()
+{
+	BATTERIES=$(/usr/bin/hal-find-by-capability --capability battery 2>/dev/null)
+	[ -z "$BATTERIES" ] && return 0
+	savestate batteries "$BATTERIES"
+}
+
+resume_batteries()
+{
+	BATTERIES=$(restorestate batteries)
+	[ -z "$BATTERIES" ] && return 0
+	for x in $BATTERIES ; do
+		NAME=${x##*_}
+		cat <<EOF | hal-device -a $x
+udi = '$x'
+  battery.present = false (bool)
+EOF
+	dbus-send --print-reply --system --dest=org.freedesktop.Hal $x org.freedesktop.Hal.Device.Reprobe string:$x
+	done
+}
+
+case "$1" in
+	hibernate)
+		suspend_batteries
+		;;
+	thaw)
+		resume_batteries
+		;;
+esac
