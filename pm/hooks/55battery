@@ -5,10 +5,13 @@
 resume_batteries()
 {
 	for x in $(hal-find-by-capability --capability battery 2>/dev/null); do
-		hal-set-property --udi "$x" --key battery.present --bool false
+#		hal-set-property --udi "$x" --key battery.present --bool false
+#		dbus-send --print-reply --system --reply-timeout=2000 \
+#			--dest=org.freedesktop.Hal $x \
+#			org.freedesktop.Hal.Device.Reprobe string:$x
 		dbus-send --print-reply --system --reply-timeout=2000 \
 			--dest=org.freedesktop.Hal $x \
-			org.freedesktop.Hal.Device.Reprobe string:$x
+			org.freedesktop.Hal.Device.Rescan string:$x
 	done
 }
 
