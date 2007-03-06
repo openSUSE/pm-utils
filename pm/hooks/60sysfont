@@ -2,7 +2,7 @@
 
 case "$1" in
 	resume|thaw) 
-		/sbin/setsysfont </dev/tty0 ;;
+		setsysfont </dev/tty0 ;;
 esac
 
 exit $?
