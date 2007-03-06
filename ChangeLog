@@ -1,6 +1,6 @@
 2007-03-06  Peter Jones  <pjones@redhat.com>
 
-	* pm/Makefile.am:
+	* configure.in:
 	- bump version to 0.99.2
 
 2007-03-06  Peter Jones  <pjones@redhat.com>
