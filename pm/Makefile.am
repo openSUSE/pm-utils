@@ -1,10 +1,10 @@
 SUBDIRS =  hooks power.d
 
-extradir = $(sysconfdir)/pm
+extradir = $(libdir)/pm-utils
 
 extra_SCRIPTS =			\
 	functions		\
-	config
+	defaults
 
 EXTRA_DIST =			\
 	$(extra_SCRIPTS)

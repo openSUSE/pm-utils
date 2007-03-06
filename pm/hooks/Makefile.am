@@ -1,4 +1,4 @@
-sleepdir = $(sysconfdir)/pm/hooks
+sleepdir = $(libdir)/pm-utils/sleep.d
 
 sleep_SCRIPTS =			\
 	00clear			\
@@ -17,6 +17,9 @@ sleep_SCRIPTS =			\
 	99video
 
 EXTRA_DIST=$(sleep_SCRIPTS)
+
+install-exec-local:
+	-mkdir -p $(DESTDIR)$(sysconfdir)/pm/sleep.d
 
 clean-local :
 	rm -f *~

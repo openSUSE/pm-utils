@@ -13,7 +13,7 @@ INHIBIT=/var/run/pm-utils.inhibit
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
 
-[ -f /etc/pm/config ] && . /etc/pm/config
+[ -f /usr/lib/pm-utils/defaults ] && . /usr/lib/pm-utils/defaults
 
 GLOBAL_CONFIG_VARIABLES=""
 add_global() {
@@ -69,6 +69,21 @@ remove_suspend_lock()
 	openvt -- sh -c "usleep $1 ; rm -f /.suspended >/dev/null 2>&1 0<&1" >/dev/null 2>&1 0<&1 &
 }
 
+find_sleepd_files()
+{
+	flist="/etc/pm/sleep.d/*[^~] /usr/lib/pm-utils/sleep.d/*[^~]"
+	bases=$(for file in $flist ; do echo $(basename $file) ; done | sort -n)
+	for base in $bases ; do
+		if [ -e "/etc/pm/sleep.d/$base" ]; then
+			if [ -x "/etc/pm/sleep.d/$base" ]; then
+				echo /etc/pm/sleep.d/$base
+			fi
+		elif [ -x "/usr/lib/pm-utils/sleep.d/$base" ]; then
+			echo /usr/lib/pm-utils/sleep.d/$base
+		fi
+	done
+}
+
 run_hooks()
 {
 	[ -z "$1" ] && return 0
@@ -78,24 +93,20 @@ run_hooks()
 
 	echo "$(date): running $1 hooks."
 
-	files="/etc/pm/hooks/*[^~]"
+	files=$(find_sleepd_files)
 	if [ "$2" = "reverse" ]; then
 		filea=($files)
 		filen=${#filea[*]}
 		while [ "$filen" -gt 0 ]; do
 			let filen--
 			file="${filea[$filen]}"
-			if [ -x $file ]; then
-				echo "===== $(date): running hook: $file ====="
-				$file $1
-			fi
+			echo "===== $(date): running hook: $file ====="
+			$file $1
 		done
 	else
 		for file in $files ; do
-			if [ -x $file ]; then
-				echo "===== $(date): running hook: $file ====="
-				$file $1
-			fi
+			echo "===== $(date): running hook: $file ====="
+			$file $1
 		done
 	fi
 

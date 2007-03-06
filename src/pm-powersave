@@ -24,11 +24,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+find_powerd_files()
+{
+	flist="/etc/pm/power.d/*[^~] /usr/lib/pm-utils/power.d/*[^~]"
+	bases=$(for file in $flist ; do echo $(basename $file) ; done | sort -n)
+	for base in $bases ; do
+		if [ -e "/etc/pm/power.d/$base" ]; then
+			if [ -x "/etc/pm/power.d/$base" ]; then
+				echo /etc/pm/power.d/$base
+			fi
+		elif [ -x "/usr/lib/pm-utils/power.d/$base" ]; then
+			echo /usr/lib/pm-utils/power.d/$base
+		fi
+	done
+}
+
 runpowerhooks()
 {
-	files="/etc/pm/power.d/*[^~]"
+	files=$(find_powerd_files)
 	for file in $files ; do
-		[ -x $file ] && $file $1
+		$file $1
 	done
 }
 

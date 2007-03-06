@@ -1,10 +1,49 @@
 2007-03-06  Peter Jones  <pjones@redhat.com>
 
-	* pm/hooks/10NetworkManager: use "bash" not "sh"
+	* pm/Makefile.am:
+	- bump version to 0.99.2
 
-	* pm/hooks/90clock: use "bash" not "sh"
+2007-03-06  Peter Jones  <pjones@redhat.com>
 
-	* pm/hooks/95led: use "bash" not "sh"
+	* pm/Makefile.am:
+	- rename "config" to "defaults"
+	- use $(libdir)/pm-utils instead of $(sysconfdir)
+
+	* pm/config pm/defaults:
+	- rename "config" to "defaults"
+
+	* pm/functions:
+	- rename "config" to "defaults", and look for it in usr/lib/pm-utils
+	- handle the new "two directories" style sleep.d 
+
+	* pm/hooks/Makefile.am:
+	- make both sleep.d directories, but put our stuff in /usr/lib
+
+	* pm/power.d/Makefile.am:
+	- make both power.d directories, but put our stuff in /usr/lib
+
+	* src/Makefile.am:
+	- move locatons of files around to fit the new layout
+
+	* src/pm-action:
+	- changes for new layout
+
+	* src/pm-powersave:
+	- handle the new "two directories" style power.d 
+
+2007-03-06  Peter Jones  <pjones@redhat.com>
+
+	* pm/hooks/05led:
+	- use "bash" not "sh"
+
+	* pm/hooks/10NetworkManager:
+	- use "bash" not "sh"
+
+	* pm/hooks/90clock:
+	- use "bash" not "sh"
+
+	* pm/hooks/95led:
+	- use "bash" not "sh"
 
 2007-03-01  Peter Jones  <pjones@redhat.com>
 
