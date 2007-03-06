@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /etc/pm/functions
+. /usr/lib/pm-utils/functions
 
 hibernate_cpufreq()
 {

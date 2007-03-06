@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. /usr/lib/pm-utils/functions
+
 case "$1" in
 	resume|thaw) 
 		setsysfont </dev/tty0 ;;

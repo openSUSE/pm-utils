@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. /usr/lib/pm-utils/functions
+
 suspend_nm() {
     # Tell NetworkManager to shut down networking
     dbus-send --system                         \

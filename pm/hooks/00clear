@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. /usr/lib/pm-utils/functions
+
 RETVAL=0
 case "$1" in
 	hibernate|suspend)

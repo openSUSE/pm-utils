@@ -1,5 +1,13 @@
 2007-03-06  Peter Jones  <pjones@redhat.com>
 
+	* pm/hooks/00clear pm/hooks/00logging pm/hooks/10NetworkManager
+	* pm/hooks/20video pm/hooks/49bluetooth pm/hooks/50modules
+	* pm/hooks/55battery pm/hooks/60sysfont pm/hooks/65alsa
+	* pm/hooks/90clock pm/hooks/94cpufreq pm/hooks/99video:
+	- get the path for "functions" right.
+
+2007-03-06  Peter Jones  <pjones@redhat.com>
+
 	* configure.in:
 	- bump version to 0.99.1
 
