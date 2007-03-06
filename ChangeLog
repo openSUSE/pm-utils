@@ -1,5 +1,10 @@
 2007-03-06  Peter Jones  <pjones@redhat.com>
 
+	* pm/functions:
+	- add /usr/lib/pm-utils/bin to $PATH
+
+2007-03-06  Peter Jones  <pjones@redhat.com>
+
 	* pm/hooks/00clear pm/hooks/00logging pm/hooks/10NetworkManager
 	* pm/hooks/20video pm/hooks/49bluetooth pm/hooks/50modules
 	* pm/hooks/55battery pm/hooks/60sysfont pm/hooks/65alsa

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH=/sbin:/usr/sbin:/bin:/usr/bin
+export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/lib/pm-utils/bin
 
 # Default values go here.  It is important to _not_ initialize some
 # variables here.  They are:
