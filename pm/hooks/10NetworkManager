@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 suspend_nm() {
     # Tell NetworkManager to shut down networking

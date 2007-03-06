@@ -1,5 +1,13 @@
 2007-03-01  Peter Jones  <pjones@redhat.com>
 
+	* pm/hooks/10NetworkManager: use "bash" not "sh"
+
+	* pm/hooks/90clock: use "bash" not "sh"
+
+	* pm/hooks/95led: use "bash" not "sh"
+
+2007-03-01  Peter Jones  <pjones@redhat.com>
+
 	* pm/hooks/20video pm/hooks/99video:
 	- fix shell quoting in variable tests
 
