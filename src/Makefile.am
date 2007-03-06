@@ -30,7 +30,8 @@ install-exec-hook:
 
 EXTRA_DIST =			\
 	$(extra_SCRIPTS)	\
-	$(acpower_SCRIPTS)
+	$(acpower_SCRIPTS)	\
+	$(pm_utils_bin_SCRIPTS)
 
 clean-local :
 	rm -f *~
