@@ -1,4 +1,4 @@
-2007-03-01  Peter Jones  <pjones@redhat.com>
+2007-03-06  Peter Jones  <pjones@redhat.com>
 
 	* pm/hooks/10NetworkManager: use "bash" not "sh"
 
