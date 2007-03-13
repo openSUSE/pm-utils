@@ -5,7 +5,8 @@ pm_utils_bin_PROGRAMS =		\
 	pm-reset-swap
 
 pm_utils_bin_SCRIPTS =		\
-	pm-action
+	pm-action		\
+	pm-is-supported
 
 pm_pmu_SOURCES = 		\
 	pm-pmu.c
@@ -27,6 +28,7 @@ install-exec-hook:
 	-mkdir -p $(DESTDIR)$(sbindir)
 	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend
 	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-hibernate
+	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend-hybrid
 
 EXTRA_DIST =			\
 	$(extra_SCRIPTS)	\

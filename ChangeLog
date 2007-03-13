@@ -1,3 +1,17 @@
+2007-03-13  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
+	- add do_suspend_hybrid function
+
+	* src/pm-action:
+	- handle pm-suspend-hybrid (by exiting with error status)
+
+	* src/pm-is-supported:
+	- add this file
+
+	* src/Makefile.am:
+	- add pm-is-supported
+
 2007-03-06  Peter Jones  <pjones@redhat.com>
 
 	* pm/functions:
