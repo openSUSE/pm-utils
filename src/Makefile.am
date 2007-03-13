@@ -12,7 +12,6 @@ pm_utils_usr_bindir = $(bindir)
 pm_utils_usr_bin_SCRIPTS =	\
 	pm-is-supported
 
-
 pm_pmu_SOURCES = 		\
 	pm-pmu.c
 
