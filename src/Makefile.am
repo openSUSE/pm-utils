@@ -5,8 +5,13 @@ pm_utils_bin_PROGRAMS =		\
 	pm-reset-swap
 
 pm_utils_bin_SCRIPTS =		\
-	pm-action		\
+	pm-action
+
+pm_utils_usr_bindir = $(bindir)
+
+pm_utils_usr_bin_SCRIPTS =	\
 	pm-is-supported
+
 
 pm_pmu_SOURCES = 		\
 	pm-pmu.c
@@ -30,10 +35,11 @@ install-exec-hook:
 	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-hibernate
 	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend-hybrid
 
-EXTRA_DIST =			\
-	$(extra_SCRIPTS)	\
-	$(acpower_SCRIPTS)	\
-	$(pm_utils_bin_SCRIPTS)
+EXTRA_DIST =				\
+	$(extra_SCRIPTS)		\
+	$(acpower_SCRIPTS)		\
+	$(pm_utils_bin_SCRIPTS)		\
+	$(pm_utils_usr_bin_SCRIPTS)
 
 clean-local :
 	rm -f *~
