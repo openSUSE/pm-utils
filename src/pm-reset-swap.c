@@ -95,7 +95,8 @@ int check_resume_block(FILE *dev, off_t offset)
     if (fread(buf, sizeof (char), 10, dev) != 10)
         return -1;
 
-    if (!strncmp(buf, "S1SUSPEND", 9))
+    if (!strncmp(buf, "S1SUSPEND", 9) ||
+            !strncmp(buf, "ULSUSPEND", 9))
         return 1;
 
     return 0;
@@ -148,7 +149,7 @@ int main(int argc, char *argv[])
         fclose(dev);
         return 2;
     }
-    rc = 1;
+
     if (rc == 1) {
         if (clear_resume_block(dev, 0)) {
             fprintf(stderr, "Could not clear swap signature on \"%s\": %m\n",

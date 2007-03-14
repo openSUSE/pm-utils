@@ -3,6 +3,10 @@
 	* pm/defaults:
 	- add comment text (from Stefan)
 
+	* src/pm-reset-swap.c:
+	- handle ulsuspend signature (from Stefan)
+	- fix errant "rc = 1;" (from Stefan)
+
 2007-03-13  Peter Jones  <pjones@redhat.com>
 
 	* configure.in:
