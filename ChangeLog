@@ -1,4 +1,9 @@
-2007-03-06  Peter Jones  <pjones@redhat.com>
+2007-03-14  Peter Jones  <pjones@redhat.com>
+
+	* pm/defaults:
+	- add comment text (from Stefan)
+
+2007-03-13  Peter Jones  <pjones@redhat.com>
 
 	* configure.in:
 	- bump version to 0.99.2
