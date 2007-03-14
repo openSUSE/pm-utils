@@ -231,14 +231,16 @@ stopservice()
 {
 	service "$1" status 2>/dev/null | grep -c -q running
 	if [ "$?" == "0" -a -x "/etc/init.d/$1" ]; then
-		echo "export ${1}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
+		N=${1//[_.]/_}
+		echo "export ${N}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
 		"/etc/init.d/$1" stop 2>&1
 	fi
 }
 
 restartservice()
 {
-	if [ "x$(eval echo \$${1}_SERVICE_ACTIVATE)" == "xyes" \
+	N=${1//[-.]/_}
+	if [ "x$(eval echo \$${N}_SERVICE_ACTIVATE)" == "xyes" \
 			-a -x "/etc/init.d/$1" ]; then
 		"/etc/init.d/$1" start 2>&1
 	fi

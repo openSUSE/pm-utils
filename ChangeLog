@@ -8,6 +8,10 @@
 	- handle ulsuspend signature (from Stefan)
 	- fix errant "rc = 1;" (from Stefan)
 
+	* pm/functions:
+	- make stopservice and restartservice work with dashes and
+	  underscores (from Stefan)
+
 2007-03-13  Peter Jones  <pjones@redhat.com>
 
 	* configure.in:
