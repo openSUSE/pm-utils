@@ -12,6 +12,7 @@ HIBERNATE_RESUME_POST_VIDEO=no
 INHIBIT=/var/run/pm-utils.inhibit
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
+TEMPORARY_CPUFREQ_GOVERNOR="userspace"
 
 [ -f /usr/lib/pm-utils/defaults ] && . /usr/lib/pm-utils/defaults
 
@@ -28,6 +29,7 @@ add_global PM_LOGFILE
 add_global PM_CMDLINE
 add_global RESUME_MODULES
 add_global SUSPEND_MODULES
+add_global TEMPORARY_CPUFREQ_GOVERNOR
 
 source_configs()
 {

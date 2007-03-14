@@ -1,6 +1,18 @@
 2007-03-14  Peter Jones  <pjones@redhat.com>
 
 	* pm/defaults:
+	- alphabetize
+
+	* pm/functions:
+	- add TEMPORARY_CPUFREQ_GOVERNOR and a default for it.
+
+	* pm/hooks/94cpufreq:
+	- don't change any cpu's governor until we've saved them
+	  all (based on a patch from Frank Seidel via Stefan)
+
+2007-03-14  Peter Jones  <pjones@redhat.com>
+
+	* pm/defaults:
 	- add comment text (from Stefan)
 	- remove default "button" removal, it's no longer needed (from Stefan)
 
