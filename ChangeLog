@@ -2,6 +2,7 @@
 
 	* pm/defaults:
 	- add comment text (from Stefan)
+	- remove default "button" removal, it's no longer needed (from Stefan)
 
 	* src/pm-reset-swap.c:
 	- handle ulsuspend signature (from Stefan)
