@@ -1,5 +1,10 @@
 2007-03-14  Peter Jones  <pjones@redhat.com>
 
+	* pm/power.d/laptop-tools:
+	- fix path for "functions"
+
+2007-03-14  Peter Jones  <pjones@redhat.com>
+
 	* pm/functions:
 	- fix use of "service" vs /etc/init.d/$x (based on input from Tim
 	  Dijkstra, Stefan, and Caglar Onur)

@@ -2,7 +2,7 @@
 # Values are taken from the laptop-tools package
 #	Bart Samwel <bart@samwel.tk>
 
-. /etc/pm/functions
+. /usr/lib/pm-utils/functions
 
 setlowpowermode()
 {
