@@ -229,22 +229,34 @@ modreload()
 	fi
 }
 
+_service=$(type -p service)
+if [ -z "$_service" ]; then
+	service() {
+		if [ -x "/etc/init.d/$1" ]; then
+			"/etc/init.d/$@"
+		else
+			echo "$1" $": unrecognized service" 1>&2
+			return 1
+		fi
+	}
+fi
+unset _service
+
 stopservice()
 {
 	service "$1" status 2>/dev/null | grep -c -q running
-	if [ "$?" == "0" -a -x "/etc/init.d/$1" ]; then
+	if [ "$?" == "0" ]; then
 		N=${1//[_.]/_}
 		echo "export ${N}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
-		"/etc/init.d/$1" stop 2>&1
+		service "$1" stop
 	fi
 }
 
 restartservice()
 {
 	N=${1//[-.]/_}
-	if [ "x$(eval echo \$${N}_SERVICE_ACTIVATE)" == "xyes" \
-			-a -x "/etc/init.d/$1" ]; then
-		"/etc/init.d/$1" start 2>&1
+	if [ "x$(eval echo \$${N}_SERVICE_ACTIVATE)" == "xyes" ]; then
+		service "$1" start
 	fi
 }
 
