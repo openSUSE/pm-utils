@@ -246,7 +246,7 @@ stopservice()
 {
 	service "$1" status 2>/dev/null | grep -c -q running
 	if [ "$?" == "0" ]; then
-		N=${1//[_.]/_}
+		N=${1//[-.]/_}
 		echo "export ${N}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
 		service "$1" stop
 	fi
