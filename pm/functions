@@ -14,34 +14,17 @@ PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="userspace"
 
+set -a
 [ -f /usr/lib/pm-utils/defaults ] && . /usr/lib/pm-utils/defaults
-
-GLOBAL_CONFIG_VARIABLES=""
-add_global() {
-	export $1
-	GLOBAL_CONFIG_VARIABLES="$GLOBAL_CONFIG_VARIABLES $1"
-}
-
-# export them all here
-add_global HIBERNATE_RESUME_POST_VIDEO
-add_global INHIBIT
-add_global PM_LOGFILE
-add_global PM_CMDLINE
-add_global RESUME_MODULES
-add_global SUSPEND_MODULES
-add_global TEMPORARY_CPUFREQ_GOVERNOR
+set +a
 
 source_configs()
 {
 	cfgs="/etc/pm/config.d/*[^~]"
 	for cfg in $cfgs ; do
-		[ -x $cfg ] || continue
-		while read LINE ; do
-			case "$GLOBAL_CONFIG_VARIABLES " in
-				*" ${LINE%=*} "*) continue ;;
-				*) eval $LINE ;;
-			esac
-		done < $cfg
+		set -a
+		. $cfg
+		set +a
 	done
 }
 
