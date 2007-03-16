@@ -1,6 +1,12 @@
 2007-03-16  Peter Jones  <pjones@redhat.com>
 
 	* pm/functions:
+	- work around broken regexps in some versions of bash, also fewer
+	  forks ;) (patch from Stefan)
+
+2007-03-16  Peter Jones  <pjones@redhat.com>
+
+	* pm/functions:
 	- get rid of the complicated config stuff; the new layout obviates the
 	  need for it (patch from Stefan)
 
