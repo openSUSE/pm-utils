@@ -1,5 +1,11 @@
 2007-03-26  Peter Jones  <pjones@redhat.com>
 
+	* pm/functions:
+	- fix source_configs so it doesn't throw an error when the config
+	  dir is empty.  (this will be tagged with .3)
+
+2007-03-26  Peter Jones  <pjones@redhat.com>
+
 	* configure.in:
 	- bump version to 0.99.3.  Still need to have a good look at Stefan's
 	  s2both stuff before release, as well as re-examining the video hook.
