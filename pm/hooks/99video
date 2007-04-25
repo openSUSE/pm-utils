@@ -35,7 +35,7 @@ resume_video()
 	fi
 	# We might need to do one or many of these quirks
 	if [ "${DISPLAY_QUIRK_VBE_POST}" == "true" ]; then
-		vbe post </dev/tty0
+		vbe post
 		usleep 100000
 	fi
 	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" == "true" ]; then
