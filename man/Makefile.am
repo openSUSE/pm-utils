@@ -7,6 +7,9 @@ EXTRA_DIST =			\
 	pm-pmu.sgml		\
 	$(man_MANS)
 
+MAINTAINERCLEANFILES =		\
+	$(man_MANS)
+
 pm-pmu.1: pm-pmu.sgml
 	docbook2man $?
 
@@ -15,5 +18,4 @@ on_ac_power.1: on_ac_power.sgml
 
 clean-local :
 	rm -f *~
-	rm -f *.1
 	rm -f manpage.*

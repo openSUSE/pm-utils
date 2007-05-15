@@ -4,6 +4,10 @@
 	- export config variables from pm/functions as well (patch from
 	  Stefan)
 
+	* man/Makefile.am:
+	- only clean up man pages on mainainter-clean, not on normal
+	  clean (Patch from Tim Dijkstra <newsuser@famdijkstra.org>)
+
 2007-03-26  Peter Jones  <pjones@redhat.com>
 
 	* pm/functions:
