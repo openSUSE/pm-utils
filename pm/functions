@@ -8,13 +8,13 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/lib/pm-utils/bin
 # PM_CMDLINE
 # RESUME_MODULES
 #
+set -a
 HIBERNATE_RESUME_POST_VIDEO=no
 INHIBIT=/var/run/pm-utils.inhibit
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="userspace"
 
-set -a
 [ -f /usr/lib/pm-utils/defaults ] && . /usr/lib/pm-utils/defaults
 set +a
 
