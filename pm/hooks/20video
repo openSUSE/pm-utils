@@ -42,6 +42,10 @@ suspend_video()
 	fi
 
 	# We might need to do one or many of these quirks
+	if [ "${DISPLAY_QUIRK_RADEON_OFF}" == "true" ]; then
+		radeon dac off
+		radeon light off
+	fi
 	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" == "true" ]; then
 		vbe vbestate save > /var/run/vbestate
 	fi
