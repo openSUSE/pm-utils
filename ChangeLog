@@ -1,3 +1,9 @@
+2007-06-18  Peter Jones  <pjones@redhat.com>
+
+	* pm/hooks/99video src/pm-action:
+	Add support for "--quirk-reset-brightness" (fixes the Fujitsu
+	Lifebook S7110)
+
 2007-06-04  Richard Hughes  <richard@hughsie.com>
 
 	* pm/hooks/20video:

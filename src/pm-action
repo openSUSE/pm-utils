@@ -36,6 +36,7 @@ help_options() {
 	echo "  --quirk-dpms-on"
 	echo "  --quirk-dpms-suspend"
 	echo "  --quirk-radeon-off"
+	echo "  --quirk-reset-brightness"
 	echo "  --quirk-s3-bios"
 	echo "  --quirk-s3-mode"
 	echo "  --quirk-vbe-post"
@@ -62,6 +63,8 @@ do
 			export DISPLAY_QUIRK_DPMS_SUSPEND="true" ;;
 		--quirk-radeon-off)
 			export DISPLAY_QUIRK_RADEON_OFF="true" ;;
+		--quirk-reset-brightness)
+			export DISPLAY_QUIRK_RESET_BRIGHTNESS="true" ;;
 		--quirk-s3-bios)
 			export DISPLAY_QUIRK_S3_BIOS="true" ;;
 		--quirk-s3-mode)

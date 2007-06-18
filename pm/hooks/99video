@@ -9,6 +9,17 @@
 
 . /usr/lib/pm-utils/functions
 
+
+reset_brightness() {
+	for bl in /sys/class/backlight/* ; do
+		[ -d $bl ] || continue
+		[ -f $bl/brightness ] || continue
+		BR=$(cat $bl/brightness)
+		echo 0 > $bl/brightness
+		echo $BR > $bl/brightness
+	done
+}
+
 vbetool=$(type -p vbetool)
 vbe() {
 	if [ -z "$vbetool" ]; then
@@ -46,6 +57,9 @@ resume_video()
 	fi
 	if [ "${DISPLAY_QUIRK_DPMS_ON}" == "true" ]; then
 		vbe dpms on
+	fi
+	if [ "${DISPLAY_QUIRK_RESET_BRIGHTNESS}" == "true" ]; then
+		reset_brightness
 	fi
 }
 
