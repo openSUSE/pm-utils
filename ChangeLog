@@ -1,3 +1,8 @@
+2007-08-13  Peter Jones  <pjones@redhat.com>
+
+	* pm/power.d/laptop-tools:
+	- remove this entirely, it doesn't make any sense.
+
 2007-06-18  Peter Jones  <pjones@redhat.com>
 
 	* pm/hooks/99video src/pm-action:
