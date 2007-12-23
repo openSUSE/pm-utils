@@ -137,7 +137,6 @@ do_suspend_hybrid()
 pm_main()
 {
 	if [ -n "$PM_LOGFILE" ]; then
-		[ -f "$PM_LOGFILE" ] && rm -f "$PM_LOGFILE"
 		exec > "$PM_LOGFILE" 2>&1
 	fi
 	take_suspend_lock || exit 1

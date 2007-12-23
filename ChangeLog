@@ -1,6 +1,16 @@
 2007-12-23  Richard Hughes  <richard@hughsie.com>
 
 	* pm/functions:
+	There is no need to remove the logfile, because the ">" after exec in
+	the next line already truncates the logfile to zero length.
+	Also removing is wrong, because it destroys the selinux context of the
+	logfile. Bugzilla Reports:
+	https://bugzilla.redhat.com/show_bug.cgi?id=237840
+	https://bugzilla.redhat.com/show_bug.cgi?id=238068
+
+2007-12-23  Richard Hughes  <richard@hughsie.com>
+
+	* pm/functions:
 	- Check for the individual config file, not the list.
 
 2007-09-10  Peter Jones  <pjones@redhat.com>
