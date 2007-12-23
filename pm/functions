@@ -22,7 +22,7 @@ source_configs()
 {
 	cfgs="/etc/pm/config.d/*[^~]"
 	for cfg in $cfgs ; do
-		[ -f $cfgs ] || continue
+		[ -f $cfg ] || continue
 		set -a
 		. $cfg
 		set +a
