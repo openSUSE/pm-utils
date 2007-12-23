@@ -37,7 +37,7 @@
     <title>DESCRIPTION</title>
     <para>This manual page documents briefly the
       <command>&package;</command> command.</para>
-    <para><command>&package;</command> is a command line program to test whether the computer is running on line power</para>
+    <para><command>&package;</command> is a command line program to suspend a computer on machines using a Macintosh-style PMU</para>
   </refsect1>
   <refsect1>
     <title>EXIT CODES</title>

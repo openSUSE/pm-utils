@@ -1,5 +1,12 @@
 2007-12-23  Richard Hughes  <richard@hughsie.com>
 
+	* man/pm-pmu.1:
+	* man/pm-pmu.sgml:
+	Fix a typo in the pm-pmu manpage.
+	RedHat Bugzilla report: https://bugzilla.redhat.com/show_bug.cgi?id=286201
+
+2007-12-23  Richard Hughes  <richard@hughsie.com>
+
 	* pm/functions:
 	There is no need to remove the logfile, because the ">" after exec in
 	the next line already truncates the logfile to zero length.
