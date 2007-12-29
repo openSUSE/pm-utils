@@ -27,7 +27,7 @@
 # The rule here? Simplicity.
 
 help_options() {
-	echo "pm-action [options]"
+	echo "$(basename "$0") [options]"
 	echo
 	echo "Options can change how the supend or hibernate is done."
 	echo
