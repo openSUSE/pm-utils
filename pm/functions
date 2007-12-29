@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim:noexpandtab
 
 export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/lib/pm-utils/bin
 
@@ -62,12 +63,10 @@ remove_suspend_lock()
 find_sleepd_files()
 {
 	flist="/etc/pm/sleep.d/*[^~] /usr/lib/pm-utils/sleep.d/*[^~]"
-	bases=$(for file in $flist ; do echo $(basename $file) ; done | sort -n)
+	bases=$(for file in $flist ; do echo $(basename $file) ; done | sort -n | uniq)
 	for base in $bases ; do
-		if [ -e "/etc/pm/sleep.d/$base" ]; then
-			if [ -x "/etc/pm/sleep.d/$base" ]; then
-				echo /etc/pm/sleep.d/$base
-			fi
+		if [ -x "/etc/pm/sleep.d/$base" ]; then
+			echo /etc/pm/sleep.d/$base
 		elif [ -x "/usr/lib/pm-utils/sleep.d/$base" ]; then
 			echo /usr/lib/pm-utils/sleep.d/$base
 		fi

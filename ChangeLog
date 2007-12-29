@@ -3,6 +3,21 @@
 	* pm/functions:
 	* src/pm-powersave:
 	Red Hat Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=302401
+	(Issue 2 in the bug report)
+
+	Without the uniq files in the sleep.d or power.d directory may run twice.
+	Also this patch removes a uneccessary "-e" test in the if statements, the
+	"-x" test already includes a "-e" test.
+
+	Also this patch adds a modeline for vim no to expand tabs, because tabs are
+	used in the files for indentation.
+	From Till Maas <opensource@till.name>, many thanks.
+
+2007-12-29  Richard Hughes  <richard@hughsie.com>
+
+	* pm/functions:
+	* src/pm-powersave:
+	Red Hat Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=302401
 	(Issue 1 in the bug report)
 	This patch makes sure that the nullglob option is set. This makes
 	sure that the result of a filename expansion is empty, when the
