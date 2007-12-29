@@ -24,6 +24,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+# set nullglob to make glob results empty in case the pattern does not
+# match any files
+shopt -s nullglob
+
 find_powerd_files()
 {
 	flist="/etc/pm/power.d/*[^~] /usr/lib/pm-utils/power.d/*[^~]"

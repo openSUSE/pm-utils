@@ -1,5 +1,16 @@
 2007-12-29  Richard Hughes  <richard@hughsie.com>
 
+	* pm/functions:
+	* src/pm-powersave:
+	Red Hat Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=302401
+	(Issue 1 in the bug report)
+	This patch makes sure that the nullglob option is set. This makes
+	sure that the result of a filename expansion is empty, when the
+	pattern does not match.
+	From Till Maas <opensource@till.name>, many thanks.
+
+2007-12-29  Richard Hughes  <richard@hughsie.com>
+
 	* src/pm-action:
 	This patch makes pm-action show the filename in help, that was used
 	to invoke it, e.g. pm-suspend
