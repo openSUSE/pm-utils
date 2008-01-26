@@ -1,4 +1,4 @@
-SUBDIRS =  hooks power.d
+SUBDIRS =  sleep.d power.d
 
 extradir = $(libdir)/pm-utils
 
