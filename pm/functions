@@ -16,6 +16,9 @@ PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="userspace"
 
+# Use c sort order
+export LC_COLLATE=C
+
 [ -f /usr/lib/pm-utils/defaults ] && . /usr/lib/pm-utils/defaults
 set +a
 

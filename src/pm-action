@@ -51,8 +51,6 @@ if [ -n "$EUID" -a "$EUID" != "0" ]; then
 	exit 1
 fi
 
-export LC_COLLATE=C
-
 # Get the command line options
 while [ $# -gt 0 ]
 do
