@@ -10,6 +10,7 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/lib/pm-utils/bin
 # RESUME_MODULES
 #
 set -a
+HIBERNATE_MODE="platform"
 HIBERNATE_RESUME_POST_VIDEO=no
 INHIBIT=/var/run/pm-utils.inhibit
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
@@ -131,7 +132,7 @@ do_suspend()
 
 do_hibernate()
 {
-	echo -n "platform" > /sys/power/disk
+	echo -n "${HIBERNATE_MODE}" > /sys/power/disk
 	echo -n "disk" > /sys/power/state
 }
 
