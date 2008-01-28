@@ -24,35 +24,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# set nullglob to make glob results empty in case the pattern does not
-# match any files
-shopt -s nullglob
+[ -f /usr/lib/pm-utils/functions ] || return 1
+. /usr/lib/pm-utils/functions
 
-find_powerd_files()
-{
-	flist="/etc/pm/power.d/*[^~] /usr/lib/pm-utils/power.d/*[^~]"
-	bases=$(for file in $flist ; do echo $(basename $file) ; done | sort -n | uniq)
-	for base in $bases ; do
-		if [ -x "/etc/pm/power.d/$base" ]; then
-			echo /etc/pm/power.d/$base
-		elif [ -x "/usr/lib/pm-utils/power.d/$base" ]; then
-			echo /usr/lib/pm-utils/power.d/$base
-		fi
-	done
-}
-
-runpowerhooks()
-{
-	files=$(find_powerd_files)
-	for file in $files ; do
-		$file $1
-	done
-}
-
-if [ "$1" == "true" ] ; then
-    runpowerhooks true
-elif [ "$1" == "false" ] ; then
-    runpowerhooks false
+if [ "x$1" = "xtrue" -o "x$1" = "xfalse" ] ; then
+    run_hooks power "$1"
 else
     echo "Argument needs to be true or false" >&2
     exit 1
