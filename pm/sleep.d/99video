@@ -12,7 +12,6 @@
 
 reset_brightness() {
 	for bl in /sys/class/backlight/* ; do
-		[ -d $bl ] || continue
 		[ -f $bl/brightness ] || continue
 		BR=$(cat $bl/brightness)
 		echo 0 > $bl/brightness
@@ -20,45 +19,39 @@ reset_brightness() {
 	done
 }
 
-vbetool=$(type -p vbetool)
-vbe() {
-	if [ -z "$vbetool" ]; then
-		echo "vbetool not found" 1>&2
-		return 1
-	fi
-	$vbetool "$@"
-}
+if type vbetool |grep -q "not found"; then
+	vbe() { echo "vbetool not installed!" 1>&2; return 1; }
+else
+	vbe() { vbetool "$@"; }
+fi
 
-radeontool=$(type -p radeontool)
-radeon() {
-	if [ -z "$radeontool" ]; then
-		echo "radeontool not found" 1>&2
-		return 1
-	fi
-	$radeontool "$@"
-}
+if type radeontool |grep -q "not found"; then
+	radeon() { echo "radeontool not found" 1>&2; return 1; }
+else
+	radeon() { radeontool "$@"; }
+fi
 
 resume_video()
 {
-	if [ "${DISPLAY_QUIRK_RADEON_OFF}" == "true" ]; then
+	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
 		radeon dac on
 		radeon light on
 	fi
 	# We might need to do one or many of these quirks
-	if [ "${DISPLAY_QUIRK_VBE_POST}" == "true" ]; then
+	if [ "${DISPLAY_QUIRK_VBE_POST}" = "true" ]; then
 		vbe post
 		usleep 100000
 	fi
-	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" == "true" ]; then
+	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
 		vbe vbestate restore < /var/run/vbestate
 	fi
-	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" == "true" ]; then
-		vbe vbemode set `cat /var/run/vbemode`
+	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
+		vbe vbemode set $(cat /var/run/vbemode)
 	fi
-	if [ "${DISPLAY_QUIRK_DPMS_ON}" == "true" ]; then
+	if [ "${DISPLAY_QUIRK_DPMS_ON}" = "true" ]; then
 		vbe dpms on
 	fi
-	if [ "${DISPLAY_QUIRK_RESET_BRIGHTNESS}" == "true" ]; then
+	if [ "${DISPLAY_QUIRK_RESET_BRIGHTNESS}" = "true" ]; then
 		reset_brightness
 	fi
 }
@@ -69,7 +62,7 @@ case "$1" in
 		resume_video
 		;;
 	thaw)
-		if [ "x$HIBERNATE_RESUME_POST_VIDEO" == "xyes" ]; then
+		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
 			resume_video
 		fi
 		;;
