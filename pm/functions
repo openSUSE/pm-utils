@@ -29,11 +29,10 @@ shopt -s nullglob
 
 source_configs()
 {
-	cfgs="/etc/pm/config.d/*[^~]"
-	for cfg in $cfgs ; do
-		[ -f $cfg ] || continue
+	for cfg in /etc/pm/config.d/*[!~] ; do
+		[ -f "$cfg" ] || continue
 		set -a
-		. $cfg
+		. "${cfg}"
 		set +a
 	done
 }
