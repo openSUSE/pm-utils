@@ -75,24 +75,18 @@ release_lock()
 {
 	VT=$(fgconsole)
 	chvt 63
-	if [ -f /.suspended ]; then
-		read pid < /.suspended
-		if [ -d /proc/$pid ]; then
-			return 1
-		fi
-	fi
-        echo "$$" > /.suspended
-	rm -f /var/run/pm-suspend
-	touch /var/run/pm-suspend
+	try_lock "$LOCKDIR" || return 1
+	[ -d /var/run/pm-suspend ] && rm -rf /var/run/pm-suspend
+	mkdir /var/run/pm-suspend
 	return 0
 }
 
 remove_suspend_lock()
 {
-	rm -f /var/run/pm-suspend
+	rm -rf /var/run/pm-suspend
 	chvt 1
 	chvt $VT
-	openvt -- sh -c "usleep $1 ; rm -f /.suspended >/dev/null 2>&1 0<&1" >/dev/null 2>&1 0<&1 &
+	release_lock "${LOCKDIR}"
 }
 
 find_hooks() {
