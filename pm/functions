@@ -16,6 +16,7 @@ INHIBIT=/var/run/pm-utils.inhibit
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="userspace"
+LOCKDIR="/tmp/.suspended"
 
 # Use c sort order
 export LC_COLLATE=C
@@ -40,6 +41,40 @@ source_configs()
 source_configs
 
 take_suspend_lock()
+# try to take the lock.  Fail if we cannot get it.
+try_lock()
+{
+	# $1 = directory to use as lock directory
+	# we use directory creation because the kernel enforces atomicity, 
+	# and mkdir will fail if the directory already exists.
+	mkdir "$1" >/dev/null 2>&1 || return 1
+	return 0
+}
+
+# spin waiting for the lock with optional timeout.  
+# return once we have it, or the timeout has expired
+spin_lock()
+{
+	# $1 = directory to use as the lock directory
+	# $2 = optional timeout
+		elapsed=$(($elapsed + 1))
+	local elapsed=0
+	while ! try_lock $1; do
+		sleep 1;
+		[ "x$2" != "x" ] && [ $(( $elapsed == $2 )) -ne 0 ] && return 1
+	done
+}
+
+# release the lock
+release_lock()
+{
+	# $1 = directory used as the lock directory
+	# make sure it is ours first.
+	rm -rf "$1"
+	return $?
+}
+
+
 {
 	VT=$(fgconsole)
 	chvt 63
