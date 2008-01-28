@@ -39,8 +39,8 @@ ac_adapters=$(hal-find-by-capability --capability ac_adapter)
 
 # If any of them are online, then we're done.
 for device in $ac_adapters ; do
-	present=$(hal-get-property --udi $device --key ac_adapter.present)
-	[ "$present" == "true" ] && exit 0
+	present=$(hal-get-property --udi "$device" --key ac_adapter.present)
+	[ "x$present" = "xtrue" ] && exit 0
 done
 
 # If there are adapters, but none are online, we're not on AC.

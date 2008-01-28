@@ -13,10 +13,7 @@ suspend_modules()
 
 resume_modules()
 {
-	[ -z "$RESUME_MODULES" ] && return 0
-	for x in $RESUME_MODULES ; do
-		modprobe $x
-	done
+	modreload
 }
 
 case "$1" in
