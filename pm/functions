@@ -15,7 +15,7 @@ HIBERNATE_RESUME_POST_VIDEO=no
 INHIBIT=/var/run/pm-utils.inhibit
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
-TEMPORARY_CPUFREQ_GOVERNOR="userspace"
+TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCKDIR="/tmp/.suspended"
 
 # Use c sort order
