@@ -9,7 +9,6 @@ sleep_SCRIPTS =			\
 	49bluetooth		\
 	50modules		\
 	55battery		\
-	60sysfont		\
 	65alsa			\
 	90clock			\
 	94cpufreq		\
