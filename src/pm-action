@@ -27,7 +27,7 @@
 # The rule here? Simplicity.
 
 help_options() {
-	echo "$(basename "$0") [options]"
+	echo "${0##*/} [options]"
 	echo
 	echo "Options can change how the supend or hibernate is done."
 	echo
@@ -89,9 +89,7 @@ done
 [ -f /sys/power/state ] || exit 1
 
 
-ACTION=$(basename "$0")
-ACTION=${ACTION#pm-}
-ACTION=${ACTION/-/_}
+ACTION=${0##*pm-}
 
 case "$ACTION" in
 	suspend)

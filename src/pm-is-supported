@@ -23,7 +23,7 @@ help_options() {
 
 export LC_COLLATE=C
 
-ARG=${1#--}
+ARG="${1#--}"
 
 [ -f /sys/power/state ] || exit 1
 
