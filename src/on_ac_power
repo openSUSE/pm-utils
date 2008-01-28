@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Test if the computer is running on line power
 # Exit status:

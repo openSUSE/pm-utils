@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 default_resume_kernel()
 {
@@ -10,7 +10,7 @@ default_resume_kernel()
     esac
 
     [ -x /sbin/grubby -a -x /sbin/grub ] || return 1
-    [ -e /boot/vmlinuz-$(uname -r) ] || return 1
+    [ -e "/boot/vmlinuz-$(uname -r)" ] || return 1
 
     out=$(/sbin/grubby --info /boot/vmlinuz-$(uname -r) |grep index)
     [ -n "${out}" ] || return 1

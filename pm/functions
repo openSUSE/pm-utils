@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # vim:noexpandtab
 
 export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/lib/pm-utils/bin

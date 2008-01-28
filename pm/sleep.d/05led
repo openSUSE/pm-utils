@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 [ -f /proc/acpi/ibm/led ] || exit 0
 

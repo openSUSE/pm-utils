@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/bin/sh
 . /usr/lib/pm-utils/functions
 
 suspend_clock() {

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-[ -f /proc/acpi/ibm/led ] || exit 0
+[ -f /proc/acpi/ibm/led ] || exit 1
 
 case "$1" in
 	thaw|resume)
