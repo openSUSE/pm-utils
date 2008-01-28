@@ -40,7 +40,7 @@ resume_video()
 	# We might need to do one or many of these quirks
 	if [ "${DISPLAY_QUIRK_VBE_POST}" = "true" ]; then
 		vbe post
-		usleep 100000
+		sleep 0.1
 	fi
 	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
 		vbe vbestate restore < /var/run/vbestate
