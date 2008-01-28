@@ -24,9 +24,6 @@ export LC_COLLATE=C
 [ -f /usr/lib/pm-utils/defaults ] && . /usr/lib/pm-utils/defaults
 set +a
 
-# set nullglob to make glob results empty in case the pattern does not
-# match any files
-shopt -s nullglob
 
 source_configs()
 {
