@@ -201,7 +201,7 @@ _rmmod() {
 modunload()
 {
 	local MOD D C USED MODS I
-	local UNL="$(echo $1 |tr -- - _)" RET=1 
+	local UNL="$(echo $1 |tr - _)" RET=1 
 
 	while read MOD D C USED D; do
 		[ "$MOD" = "$UNL" ] || continue
