@@ -2,4 +2,6 @@
 .libs
 *.o
 pm-suspend
+src/pm-pmu
+src/pm-reset-swap
 
