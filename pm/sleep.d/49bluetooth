@@ -4,12 +4,9 @@
 
 suspend_bluetooth()
 {
-	if [ -f /proc/acpi/ibm/bluetooth ]; then
-		savestate ibm_bluetooth $(awk '{ print $2 ; exit; }' /proc/acpi/ibm/bluetooth)
-		echo disable > /proc/acpi/ibm/bluetooth
-	else
-		savestate ibm_bluetooth missing
-	fi
+	[ -f /proc/acpi/ibm/bluetooth ] || return 1
+	savestate ibm_bluetooth "$(awk '{ print $2 ; exit; }' /proc/acpi/ibm/bluetooth)"
+	echo disable > /proc/acpi/ibm/bluetooth
 }
 
 resume_bluetooth()
