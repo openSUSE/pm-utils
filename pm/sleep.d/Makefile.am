@@ -13,7 +13,8 @@ sleep_SCRIPTS =			\
 	90clock			\
 	94cpufreq		\
 	95led			\
-	99video
+	99video			\
+	zzz
 
 EXTRA_DIST=$(sleep_SCRIPTS)
 

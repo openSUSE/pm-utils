@@ -98,46 +98,49 @@ remove_suspend_lock()
 	openvt -- sh -c "usleep $1 ; rm -f /.suspended >/dev/null 2>&1 0<&1" >/dev/null 2>&1 0<&1 &
 }
 
-find_sleepd_files()
-{
-	flist="/etc/pm/sleep.d/*[^~] /usr/lib/pm-utils/sleep.d/*[^~]"
-	bases=$(for file in $flist ; do echo $(basename $file) ; done | sort -n | uniq)
-	for base in $bases ; do
-		if [ -x "/etc/pm/sleep.d/$base" ]; then
-			echo /etc/pm/sleep.d/$base
-		elif [ -x "/usr/lib/pm-utils/sleep.d/$base" ]; then
-			echo /usr/lib/pm-utils/sleep.d/$base
+find_hooks() {
+	# $1 = type of hook to find.  
+	# Currently only power and sleep are meaningful.
+	local syshooks="/etc/pm/$1.d"
+	local phooks="/usr/lib/pm-utils/$1.d"
+	local base
+
+	for base in $(for f in $syshooks/*[!~] $phooks/*[!~];
+		do [ -f "$f" ] && echo ${f##*/} ; done | sort | uniq) ;
+	do
+		if [ -x "$syshooks/$base" ]; then
+			echo $syshooks/$base
+		elif [ -x "$phooks/$base" ]; then
+			echo $phooks/$base
 		fi
 	done
 }
 
-run_hooks()
-{
-	[ -z "$1" ] && return 0
-
-	[ -f /var/run/pm-suspend ] && . /var/run/pm-suspend
-	rm -f /var/run/pm-suspend
-
+run_hooks() {
+	# $1 = hooks to run
+	# $2 = parameters to pass to hooks
+	# $3 = if $3 = "reverse", then also run the hooks that ran sucessfully
+	#      backwards with parameters in $4
+        # $4 = parameters to pass to scripts when running backwards	
 	echo "$(date): running $1 hooks."
-
-	files=$(find_sleepd_files)
-	if [ "$2" = "reverse" ]; then
-		filea=($files)
-		filen=${#filea[*]}
-		while [ "$filen" -gt 0 ]; do
-			let filen--
-			file="${filea[$filen]}"
-			echo "===== $(date): running hook: $file ====="
-			$file $1
+	local hooks="$1"
+	local params="$2"
+	shift; shift
+	local revhooks
+	local file
+	for file in $(find_hooks "${hooks}"); do
+		echo "===== $(date): running hook: $file $params ====="
+		"$file" $params && revhooks="${file}${revhooks:+" ${revhooks}"}"
+	done
+	echo "$(date): done running $hooks:$params hooks."
+	if [ "x$1" = "xreverse" ]; then
+		echo "$(date): running $hooks hooks backwards."
+		for file in $revhooks; do
+			echo "===== $(date): running hook :$file $2 ====="
+			"${file}" $2
 		done
-	else
-		for file in $files ; do
-			echo "===== $(date): running hook: $file ====="
-			$file $1
-		done
+		echo "$(date): done running $hooks:$2 backwards"
 	fi
-
-	echo "$(date): done running $1 hooks."
 }
 
 get_power_status()
@@ -182,18 +185,12 @@ pm_main()
 	fi
 	take_suspend_lock || exit 1
 
+	# make sure that our locks are unlocked no matter how the script exits
+	trap remove_suspend_lock 0
+
 	rm -f "$INHIBIT"
 
-	run_hooks "$1"
-
-	if [ ! -e "$INHIBIT" -a "$(type -t "do_$1")" == "function" ]; then
-		sync ; sync ; sync
-		"do_$1"
-	fi
-
-	run_hooks "$2" reverse
-
-	remove_suspend_lock 200
+	run_hooks sleep "$1" reverse "$2"
 
 	return 0
 }

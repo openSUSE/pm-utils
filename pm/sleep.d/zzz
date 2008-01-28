@@ -1,0 +1,10 @@
+#!/bin/sh
+. /usr/lib/pm-utils/functions
+[ -e "$INHIBIT" ] && return 1
+sync;sync;sync;
+case $1 in
+	suspend|hibernate|suspend_hybrid) do_$1 ;;
+	resume|thaw) exit 0 ;;
+	*) exit 1 ;;
+esac
+exit $?
