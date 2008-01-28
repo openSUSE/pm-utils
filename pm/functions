@@ -219,8 +219,7 @@ modreload()
 	fi
 }
 
-_service=$(type -p service)
-if [ -z "$_service" ]; then
+if type service |grep -q "not found"; then
 	service() {
 		if [ -x "/etc/init.d/$1" ]; then
 			"/etc/init.d/$@"
@@ -230,32 +229,26 @@ if [ -z "$_service" ]; then
 		fi
 	}
 fi
-unset _service
 
 stopservice()
 {
-	service "$1" status 2>/dev/null | grep -c -q running
-	if [ "$?" == "0" ]; then
-		N=${1//[-.]/_}
-		echo "export ${N}_SERVICE_ACTIVATE=yes" >> /var/run/pm-suspend
+	if service "$1" status 2>/dev/null | grep -c -q running; then
+		touch "/var/run/pm-suspend/service:$1"
 		service "$1" stop
 	fi
 }
 
 restartservice()
 {
-	N=${1//[-.]/_}
-	if [ "x$(eval echo \$${N}_SERVICE_ACTIVATE)" == "xyes" ]; then
-		service "$1" start
-	fi
+	[ -f "/var/run/pm-suspend/service:$1" ] && service "$1" start
 }
 
 savestate()
 {
-	echo "export ${1}_STATE=$2" >> /var/run/pm-suspend
+	echo "$2" > "/var/run/pm-suspend/state:$1"
 }
 
 restorestate()
 {
-	eval echo \$${1}_STATE
+	cat "/var/run/pm-suspend/state:${1}"
 }
