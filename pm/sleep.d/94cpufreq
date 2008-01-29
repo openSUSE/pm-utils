@@ -2,9 +2,11 @@
 
 . /usr/lib/pm-utils/functions
 
+
+[ -d /sys/devices/system/cpu/ ] || exit 1
+
 hibernate_cpufreq()
 {
-	[ -d /sys/devices/system/cpu/ ] || return 1
 	( cd /sys/devices/system/cpu/
 	for x in cpu[0-9]* ; do
 		[ -f "$x/cpufreq/scaling_governor" ] || continue
