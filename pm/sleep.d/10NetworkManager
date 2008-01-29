@@ -2,6 +2,8 @@
 
 . /usr/lib/pm-utils/functions
 
+command_exists dbus-send || exit 1
+
 suspend_nm() {
     # Tell NetworkManager to shut down networking
     dbus-send --system                         \
