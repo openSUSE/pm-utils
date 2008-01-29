@@ -2,9 +2,10 @@
 
 . /usr/lib/pm-utils/functions
 
+[ -f /proc/acpi/ibm/bluetooth ] || exit 1
+
 suspend_bluetooth()
 {
-	[ -f /proc/acpi/ibm/bluetooth ] || return 1
 	savestate ibm_bluetooth "$(awk '{ print $2 ; exit; }' /proc/acpi/ibm/bluetooth)"
 	echo disable > /proc/acpi/ibm/bluetooth
 }
