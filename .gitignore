@@ -31,4 +31,5 @@ intl
 macros
 INSTALL
 *.tar.*
-
+*~
+*.swp
