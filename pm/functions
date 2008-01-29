@@ -92,6 +92,15 @@ remove_suspend_lock()
 	release_lock "${LOCK}"
 }
 
+
+command_exists()
+{
+	# $1 = command to test for.  It can be an executable in the path,
+	# a shell function, or a shell builtin.
+	type "$1" | grep -q -v "not found"
+	return $?
+}
+
 find_hooks() {
 	# $1 = type of hook to find.  
 	# Currently only power and sleep are meaningful.
