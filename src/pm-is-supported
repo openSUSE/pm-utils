@@ -36,8 +36,9 @@ case "$ARG" in
 		grep -q disk /sys/power/state || exit 1
 		;;
 	suspend-hybrid)
-		# grep -q mem /sys/power/state || exit 1
-		# grep -q disk /sys/power/state || exit 1
+		grep -q mem /sys/power/state || exit 1
+		[ -d /sys/power/tuxonice ] && exit 0
+		#grep -q disk /sys/power/state || exit 1
 		exit 1
 		;;
 	help)
