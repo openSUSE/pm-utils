@@ -9,13 +9,13 @@
 
 . /usr/lib/pm-utils/functions
 
-if type vbetool |grep -q "not found" ; then
+if ! command_exists vbetool; then
 	vbe() { echo "vbetool not found" 1>&2; return 1; }
 else
 	vbe() { vbetool "$@"; }
 fi
 
-if type radeontool |grep -q "not found" ; then
+if ! command_exists radeontool; then
 	radeon() { echo "radeontool not found" 1>&2; return 1; }
 else
 	radeon() { radeontool "$@"; }

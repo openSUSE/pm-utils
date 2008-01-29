@@ -255,7 +255,7 @@ modreload()
 	done
 }
 
-if type service |grep -q "not found"; then
+if ! command_exists service; then
 	service() {
 		if [ -x "/etc/init.d/$1" ]; then
 			"/etc/init.d/$@"
