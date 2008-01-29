@@ -93,17 +93,25 @@ ACTION=${0##*pm-}
 
 case "$ACTION" in
 	suspend)
-		if ! grep -q mem /sys/power/state ; then
+		if ! pm-is-supported --"$ACTION" ; then
 			echo "Error: kernel cannot suspend to ram." 1>&2
 			exit 1
 		fi
-		REVERSE=resume ;;
+		REVERSE=resume
+		;;
 	hibernate)
-		if ! grep -q disk /sys/power/state ; then
+		if ! pm-is-supported --"$ACTION" ; then
 			echo "Error: kernel cannot suspend to disk." 1>&2
 			exit 1
 		fi
 		REVERSE=thaw
+		;;
+	suspend-hybrid)
+		if ! pm-is-supported --"$ACTION" ; then
+			echo "Error: hybrid suspend is not supported." 1>&2
+			exit
+		fi
+		REVERSE=resume
 		;;
 	*)
 		exit 1
@@ -112,6 +120,6 @@ esac
 
 export PM_CMDLINE="$@"
 
-pm_main "$ACTION" "$REVERSE"
+pm_main "$(echo $ACTION | tr - _)" "$REVERSE"
 
 exit $?
