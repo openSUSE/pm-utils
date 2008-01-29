@@ -16,7 +16,10 @@ INHIBIT=/var/run/pm-utils.inhibit
 PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
-LOCKDIR="/tmp/.suspended"
+LOCK="/var/run/pm-utils/lock"
+STATEDIR="/var/run/pm-utils/state"
+SERVICEDIR="/var/run/pm-utils/service"
+MODULEDIR="/Var/run/pm-utils/modules"
 
 # Use c sort order
 export LC_COLLATE=C
@@ -37,14 +40,16 @@ source_configs()
 
 source_configs
 
-take_suspend_lock()
 # try to take the lock.  Fail if we cannot get it.
 try_lock()
 {
-	# $1 = directory to use as lock directory
-	# we use directory creation because the kernel enforces atomicity, 
-	# and mkdir will fail if the directory already exists.
-	mkdir "$1" >/dev/null 2>&1 || return 1
+	# $1 = file to use as lockfile
+	# $2 (optional) content to write to the lockfile,
+	#               extra newline will be appended
+	# make sure the directory where the lockfile should be exists
+	mkdir -p ${1%/*}
+	# we use noclobber to make sure there are no race conditions
+	(set -o noclobber; echo "${2}" > "${1}") 2> /dev/null || return 1
 	return 0
 }
 
@@ -52,7 +57,7 @@ try_lock()
 # return once we have it, or the timeout has expired
 spin_lock()
 {
-	# $1 = directory to use as the lock directory
+	# $1 = lockfile
 	# $2 = optional timeout
 		elapsed=$(($elapsed + 1))
 	local elapsed=0
@@ -65,28 +70,28 @@ spin_lock()
 # release the lock
 release_lock()
 {
-	# $1 = directory used as the lock directory
+	# $1 = lockfile
 	# make sure it is ours first.
 	rm -rf "$1"
 	return $?
 }
 
 
+take_suspend_lock()
 {
 	VT=$(fgconsole)
 	chvt 63
-	try_lock "$LOCKDIR" || return 1
-	[ -d /var/run/pm-suspend ] && rm -rf /var/run/pm-suspend
-	mkdir /var/run/pm-suspend
+	try_lock "$LOCK" || return 1
+	mkdir -p "${SERVICEDIR}" "${STATEDIR}" "${MODULEDIR}"
 	return 0
 }
 
 remove_suspend_lock()
 {
-	rm -rf /var/run/pm-suspend
+	rm -rf "${SERVICEDIR}" "${STATEDIR}" "${MODULEDIR}"
 	chvt 1
 	chvt $VT
-	release_lock "${LOCKDIR}"
+	release_lock "${LOCK}"
 }
 
 find_hooks() {
@@ -188,7 +193,7 @@ pm_main()
 
 _rmmod() {
 	if modprobe -r $1; then
-		touch "/var/run/pm-suspend/module:$1"
+		touch "${MODULEDIR}/module:$1"
 		return 0
 	else
 		echo "# could not unload '$1', usage count was $2"
@@ -234,7 +239,7 @@ modunload()
 # reload all the modules in no particular order.
 modreload()
 {
-	for x in /var/run/pm-suspend/module:* ; do
+	for x in ${MODULEDIR}/module:* ; do
 		[ -f "${x}" ] && modprobe "${x##*:}" >/dev/null 2>&1
 	done
 }
@@ -253,22 +258,22 @@ fi
 stopservice()
 {
 	if service "$1" status 2>/dev/null | grep -c -q running; then
-		touch "/var/run/pm-suspend/service:$1"
+		touch "${SERVICEDIR}/service:$1"
 		service "$1" stop
 	fi
 }
 
 restartservice()
 {
-	[ -f "/var/run/pm-suspend/service:$1" ] && service "$1" start
+	[ -f "${SERVICEDIR}/service:$1" ] && service "$1" start
 }
 
 savestate()
 {
-	echo "$2" > "/var/run/pm-suspend/state:$1"
+	echo "$2" > "${STATEDIR}/state:$1"
 }
 
 restorestate()
 {
-	cat "/var/run/pm-suspend/state:${1}"
+	cat "${STATEDIR}/state:${1}"
 }
