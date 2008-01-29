@@ -1,11 +1,13 @@
 #!/bin/sh
 . /usr/lib/pm-utils/functions
 
-NTPD_LOCK="/var/run/pm-utils/pm-ntpd.lock"
-
+NTPD_LOCK=/tmp/.pm-ntpd.lock
+release_ntpd_lock() {
+	rmdir "${NTPD_LOCK}"
+}
 suspend_clock() {
 	if try_lock "${NTPD_LOCK}"; then
-		trap 'release_lock ${NTPD_LOCK}"' 0
+		trap release_ntpd_lock 0
 		stopservice ntpd
 	fi
 	/sbin/hwclock --systohc >/dev/null 2>&1 0<&1
@@ -17,7 +19,7 @@ resume_clock() {
 	rc=$?
 	# Bring back ntpd _after_ NetworkManager and such come back...
 	( 	spin_lock "${NTPD_LOCK}";
-		trap 'release_lock "${NTPD_LOCK}"' 0
+		trap release_ntpd_lock 0
 		sleep 20; 
 		restartservice ntpd; ) &
 	return $rc
