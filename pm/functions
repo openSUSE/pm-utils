@@ -174,11 +174,15 @@ do_suspend_hybrid()
 	return 1
 }
 
+init_logfile() {
+	if [ -n "$1" ]; then
+		exec > "$1" 2>&1
+	fi
+}
+
 pm_main()
 {
-	if [ -n "$PM_LOGFILE" ]; then
-		exec > "$PM_LOGFILE" 2>&1
-	fi
+	init_logfile "$PM_LOGFILE" 
 	take_suspend_lock || exit 1
 
 	# make sure that our locks are unlocked no matter how the script exits
