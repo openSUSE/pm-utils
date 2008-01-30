@@ -1,0 +1,68 @@
+How to write a pm-utils hook:
+
+PARAMETERS
+
+A pm-utils hook is simply an executable file that accepts a single parameter.
+For hooks in sleep.d, the potential values of that parameter are:
+suspend -- The hook MUST perform whatever action is appropriate when the
+	system is preparing for S3 sleep (or its equivalent).
+resume -- The hook MUST perform whatever action is appropriate when the 
+	system is coming out of suspend.
+hibernate -- The hook MUST perform whatever action is appropriate when 
+	the system is preparing for suspend-to-disk.
+thaw -- The hook MUST perform whatever action is appropriate when the system
+	is coming out of suspend-to-disk.
+
+For hooks in power.d, the potential values of that parameter are:
+true -- the hook MUST perform whatever action is appropriate when the system 
+	transitions TO battery power.
+false -- The hook MUST perform whatever action is appropriate when the system
+	transitions FROM battery power.
+
+NAMING SCHEME
+
+All hooks are run in lexical sort order according to the C locale.
+
+SLEEP.D SPECIFIC NOTES
+
+For any given sleep/wakeup cycle, the hooks in sleep.d are run twice:
+Once in C lexical sort order before the system goes to sleep, and
+Once in reverse C lexical sort order when the system wakes up.
+
+If a hook does not need to be run when waking up, it SHOULD return a non-zero
+exit code -- this will signal the hook-running infrastructure to skip that
+hook when waking up.
+
+Similarly, if your hook only needs to run on system with certian specific
+configurations (such as the (0|9)5led hooks, which are IBM specific),
+or relies on certian specific commands that are not guaranteed to be present
+(such as the 10NetworkManager hook, which relies on D-Bus and Network Manager
+both being present), you SHOULD test for those conditions first and you SHOULD
+return a non-zero exit code if your hook is not applicable to the system it 
+is running on.
+
+CONVIENENCE FUNCTIONS
+
+If your hook is a shell script that supports POSIX/SuS compatible syntax, you
+MAY source /usr/lib/pm-utils/functions, which will perform the following 
+actions:
+
+1: All settings present in the files located in /etc/pm/config.d/ will be
+   available as environment variables.
+2: The following convienence functions will be made available:
+	1: try_lock
+	2: spin_lock
+	3: release_lock
+	4: get_power_status
+	5: modunload
+	6: modreload
+	7: stopservice
+	8: restartservice
+	9: savestate
+	10: restorestate
+    To get an overview of what each of those functions does and the parameters
+    they accept, read the fine source.  Note that other functions may be 
+    present -- those functions are internal to the pm-utils package and MUST NOT
+    be used by external hooks.  In the future, those functions will not be
+    available to third-party hooks.
+
