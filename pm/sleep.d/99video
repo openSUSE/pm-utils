@@ -19,7 +19,7 @@ reset_brightness() {
 	done
 }
 
-if command_esists vbetool; then
+if command_exists vbetool; then
 	vbe() { echo "vbetool not installed!" 1>&2; return 1; }
 else
 	vbe() { vbetool "$@"; }
