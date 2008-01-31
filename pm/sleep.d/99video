@@ -9,7 +9,6 @@
 
 . /usr/lib/pm-utils/functions
 
-
 reset_brightness() {
 	for bl in /sys/class/backlight/* ; do
 		[ -f $bl/brightness ] || continue
@@ -20,15 +19,15 @@ reset_brightness() {
 }
 
 if command_exists vbetool; then
-	vbe() { echo "vbetool not installed!" 1>&2; return 1; }
-else
 	vbe() { vbetool "$@"; }
+else 
+	vbe() { echo "vbetool not installed!" 1>&2; return 1; }
 fi
 
 if command_exists radeontool; then
-	radeon() { echo "radeontool not found" 1>&2; return 1; }
-else
 	radeon() { radeontool "$@"; }
+else 
+	radeon() { echo "radeontool not found" 1>&2; return 1; }
 fi
 
 resume_video()
@@ -62,7 +61,7 @@ case "$1" in
 		resume_video
 		;;
 	thaw)
-		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
+		if [ "${HIBERNATE_RESUME_POST_VIDEO}" = "yes" ]; then
 			resume_video
 		fi
 		;;

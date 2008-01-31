@@ -8,23 +8,23 @@
 hibernate_cpufreq()
 {
 	( cd /sys/devices/system/cpu/
-	for x in cpu[0-9]* ; do
-		[ -f "$x/cpufreq/scaling_governor" ] || continue
+	for x in cpu[0-9]*/cpufreq/scaling_governor ; do
+		[ -f "$x" ] || continue
 		grep -q "$TEMPORARY_CPUFREQ_GOVERNOR" \
-			"$x/cpufreq/scaling_available_governors" || continue
-		savestate "${x}_governor" $(cat "$x/cpufreq/scaling_governor")
-		echo "$TEMPORARY_CPUFREQ_GOVERNOR" > \
-			"$x/cpufreq/scaling_governor"
+			"${x%/*}/scaling_available_governors" || continue
+		savestate "${x%%/*}_governor" $(cat "$x")
+		echo "$TEMPORARY_CPUFREQ_GOVERNOR" > "$x"
 	done )
 }
 
 thaw_cpufreq()
 {
 	( cd /sys/devices/system/cpu/
-	for x in cpu[0-9]* ; do
-		local gov=$(restorestate "${x}_governor")
-		[ -z "$gov" ] || continue
-		echo "$gov" > "$x/cpufreq/scaling_governor"
+	for x in cpu[0-9]*/cpufreq/scaling_governor ; do
+		[ -f "$x" ] || continue
+		local gov=$(restorestate "${x%%/*}_governor")
+		[ -z "$gov" ] && continue
+		echo "$gov" > "$x"
 	done )
 }
 
