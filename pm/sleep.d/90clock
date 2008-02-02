@@ -1,5 +1,5 @@
 #!/bin/sh
-. /usr/lib/pm-utils/functions
+. "${PM_FUNCTIONS}"
 
 NTPD_LOCK="/var/run/pm-utils/pm-ntpd.lock"
 

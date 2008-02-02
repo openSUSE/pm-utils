@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /usr/lib/pm-utils/functions
+. "${PM_FUNCTIONS}"
 
 RETVAL=0
 case "$1" in

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /usr/lib/pm-utils/functions
+. "${PM_FUNCTIONS}"
 
 resume_batteries()
 {

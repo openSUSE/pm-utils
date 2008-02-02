@@ -7,7 +7,7 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-. /usr/lib/pm-utils/functions
+. "${PM_FUNCTIONS}"
 
 if ! command_exists vbetool; then
 	vbe() { echo "vbetool not found" 1>&2; return 1; }
