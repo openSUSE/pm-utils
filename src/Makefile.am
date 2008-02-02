@@ -30,6 +30,8 @@ acpowerdir = $(bindir)
 acpower_SCRIPTS =		\
 	on_ac_power
 
+CLEANFILES = $(pm_utils_bin_SCRIPTS) $(extra_SCRIPTS)
+
 do_subst = sed -e 's,[@]PM-UTILS-LIBDIR[@],$(pm_utils_libdir),g' \
 	   -e 's,[@]PM-UTILS-SYSCONFDIR[@],$(pm_sysconfdir),g'
 

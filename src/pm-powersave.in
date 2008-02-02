@@ -25,7 +25,7 @@
 #
 
 POWERSAVE_LOGFILE="/dev/null"
-PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
+export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
 . "${PM_FUNCTIONS}"
 
 if [ "x$1" = "xtrue" -o "x$1" = "xfalse" ] ; then
