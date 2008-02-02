@@ -1,4 +1,6 @@
-pm_utils_bindir = $(libdir)/pm-utils/bin
+pm_utils_libdir = $(libdir)/pm-utils
+pm_utils_bindir = $(pm_utils_libdir)/bin
+pm_sysconfdir = $(sysconfdir)/pm
 
 pm_utils_bin_PROGRAMS =		\
 	pm-pmu			\
@@ -28,7 +30,16 @@ acpowerdir = $(bindir)
 acpower_SCRIPTS =		\
 	on_ac_power
 
-install-exec-hook:
+do_subst = sed -e 's,[@]PM-UTILS-LIBDIR[@],$(pm_utils_libdir),g' \
+	   -e 's,[@]PM-UTILS-SYSCONFDIR[@],$(pm_sysconfdir),g'
+
+SUFFIXES = .in
+
+.in:
+	$(do_subst) $< >$@
+	chmod +x $@
+
+install-data-hook:
 	-mkdir -p $(DESTDIR)$(sbindir)
 	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend
 	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-hibernate
