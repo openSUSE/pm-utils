@@ -1,7 +1,7 @@
 #!/bin/sh
 # vim:noexpandtab
 
-export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/lib/pm-utils/bin
+export PATH=/sbin:/usr/sbin:/bin:/usr/bin:@PM-UTILS-LIBDIR@/bin
 
 # Default values go here.  It is important to _not_ initialize some
 # variables here.  They are:
@@ -22,13 +22,13 @@ STORAGEDIR="/var/run/pm-utils/storage"
 # Use c sort order
 export LC_COLLATE=C
 
-[ -f /usr/lib/pm-utils/defaults ] && . /usr/lib/pm-utils/defaults
+[ -f @PM-UTILS-LIBDIR@/defaults ] && . @PM-UTILS-LIBDIR@/defaults
 set +a
 
 
 source_configs()
 {
-	for cfg in /etc/pm/config.d/*[!~] ; do
+	for cfg in @PM-UTILS-SYSCONFDIR@/config.d/*[!~] ; do
 		[ -f "$cfg" ] || continue
 		set -a
 		. "${cfg}"
@@ -104,8 +104,8 @@ command_exists()
 find_hooks() {
 	# $1 = type of hook to find.  
 	# Currently only power and sleep are meaningful.
-	local syshooks="/etc/pm/$1.d"
-	local phooks="/usr/lib/pm-utils/$1.d"
+	local syshooks="@PM-UTILS-SYSCONFDIR@/$1.d"
+	local phooks="@PM-UTILS-LIBDIR@/$1.d"
 	local base
 
 	for base in $(for f in $syshooks/*[!~] $phooks/*[!~];
