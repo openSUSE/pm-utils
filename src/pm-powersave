@@ -25,8 +25,8 @@
 #
 
 POWERSAVE_LOGFILE="/dev/null"
-[ -f /usr/lib/pm-utils/functions ] || return 1
-. /usr/lib/pm-utils/functions
+PM_FUNCTIONS="/usr/lib/pm-utils/functions"
+. "${PM_FUNCTIONS}"
 
 if [ "x$1" = "xtrue" -o "x$1" = "xfalse" ] ; then
     init_logfile "${POWERSAVE_LOGFILE}"
