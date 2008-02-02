@@ -84,7 +84,8 @@ do
 	shift
 done
 
-. /usr/lib/pm-utils/functions
+export PM_FUNCTIONS="/usr/lib/pm-utils/functions"
+. "${PM_FUNCTIONS}"
 
 [ -f /sys/power/state ] || exit 1
 
