@@ -107,8 +107,8 @@ command_exists()
 find_hooks() {
 	# $1 = type of hook to find.  
 	# Currently only power and sleep are meaningful.
-	local syshooks=""${PM_UTILS_ETCDIR}"/$1.d"
-	local phooks=""${PM_UTILS_LIBDIR}"/$1.d"
+	local syshooks="${PM_UTILS_ETCDIR}/$1.d"
+	local phooks="${PM_UTILS_LIBDIR}/$1.d"
 	local base
 
 	for base in $(for f in $syshooks/*[!~] $phooks/*[!~];
