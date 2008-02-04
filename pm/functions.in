@@ -1,7 +1,6 @@
 #!/bin/sh
 # vim:noexpandtab
 
-export PATH=/sbin:/usr/sbin:/bin:/usr/bin:@PM-UTILS-LIBDIR@/bin
 
 # Default values go here.  It is important to _not_ initialize some
 # variables here.  They are:
@@ -10,10 +9,14 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin:@PM-UTILS-LIBDIR@/bin
 # RESUME_MODULES
 #
 set -a
+PM_UTILS_LIBDIR="@PM-UTILS-LIBDIR@"
+PM_UTILS_ETCDIR="@PM-UTILS-SYSCONFDIR@"
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
 HIBERNATE_MODE="platform"
 HIBERNATE_RESUME_POST_VIDEO=no
 INHIBIT=/var/run/pm-utils.inhibit
-PM_LOGFILE=${PM_LOGFILE:=/var/log/pm-suspend.log}
+PM_LOGFILE="${PM_LOGFILE:=/var/log/pm-suspend.log}"
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCK="/var/run/pm-utils/lock"
@@ -22,13 +25,13 @@ STORAGEDIR="/var/run/pm-utils/storage"
 # Use c sort order
 export LC_COLLATE=C
 
-[ -f @PM-UTILS-LIBDIR@/defaults ] && . @PM-UTILS-LIBDIR@/defaults
+[ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 set +a
 
 
 source_configs()
 {
-	for cfg in @PM-UTILS-SYSCONFDIR@/config.d/*[!~] ; do
+	for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
 		[ -f "$cfg" ] || continue
 		set -a
 		. "${cfg}"
@@ -104,8 +107,8 @@ command_exists()
 find_hooks() {
 	# $1 = type of hook to find.  
 	# Currently only power and sleep are meaningful.
-	local syshooks="@PM-UTILS-SYSCONFDIR@/$1.d"
-	local phooks="@PM-UTILS-LIBDIR@/$1.d"
+	local syshooks=""${PM_UTILS_ETCDIR}"/$1.d"
+	local phooks=""${PM_UTILS_LIBDIR}"/$1.d"
 	local base
 
 	for base in $(for f in $syshooks/*[!~] $phooks/*[!~];
