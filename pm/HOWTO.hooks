@@ -26,20 +26,8 @@ All hooks are run in lexical sort order according to the C locale.
 SLEEP.D SPECIFIC NOTES
 
 For any given sleep/wakeup cycle, the hooks in sleep.d are run twice:
-Once in C lexical sort order before the system goes to sleep, and
-Once in reverse C lexical sort order when the system wakes up.
-
-If a hook does not need to be run when waking up, it SHOULD return a non-zero
-exit code -- this will signal the hook-running infrastructure to skip that
-hook when waking up.
-
-Similarly, if your hook only needs to run on system with certain specific
-configurations (such as the (0|9)5led hooks, which are IBM specific),
-or relies on certain specific commands that are not guaranteed to be present
-(such as the 10NetworkManager hook, which relies on D-Bus and Network Manager
-both being present), you SHOULD test for those conditions first and you SHOULD
-return a non-zero exit code if your hook is not applicable to the system it 
-is running on.
+* Once in C lexical sort order before the system goes to sleep, and
+* Once in reverse C lexical sort order when the system wakes up.
 
 CONVENIENCE FUNCTIONS
 

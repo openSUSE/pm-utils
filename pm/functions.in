@@ -104,49 +104,38 @@ command_exists()
 	return $?
 }
 
-find_hooks() {
+run_hooks() {
 	# $1 = type of hook to find.  
+	# $2 = paramaters to pass to hooks.
+	# $3 = if present and equal to "reverse", run hooks backwards.
 	# Currently only power and sleep are meaningful.
 	local syshooks="${PM_UTILS_ETCDIR}/$1.d"
 	local phooks="${PM_UTILS_LIBDIR}/$1.d"
+	local sort="sort"
 	local base
-
-	for base in $(for f in $syshooks/*[!~] $phooks/*[!~];
-		do [ -f "$f" ] && echo ${f##*/} ; done | sort | uniq) ;
+	local hook
+	local oifs="${IFS}"
+	# the next two lines are not a typo or a formatting error!
+	local nifs="
+"
+	IFS="${nifs}" # tolerate spaces in filenames.
+	[ "$3" = "reverse" ] && sort="sort -r"
+	for base in $(IFS="${oifs}"; for f in $syshooks/*[!~] $phooks/*[!~];
+		do [ -f "$f" ] && echo ${f##*/} ; done | ${sort} | uniq) ;
 	do
-		if [ -x "$syshooks/$base" ]; then
-			echo $syshooks/$base
-		elif [ -x "$phooks/$base" ]; then
-			echo $phooks/$base
+		if [ -f "$syshooks/$base" ]; then
+			hook="$syshooks/$base"
+		elif [ -f "$phooks/$base" ]; then
+			hook="$phooks/$base"
 		fi
+		[ -x "${hook}" ] && {
+			IFS="${oifs}"
+			echo "$(date): running ${hook} $2"
+			"${hook}" $2
+			IFS="${nifs}"
+		}
 	done
-}
-
-run_hooks() {
-	# $1 = hooks to run
-	# $2 = parameters to pass to hooks
-	# $3 = if $3 = "reverse", then also run the hooks that ran sucessfully
-	#      backwards with parameters in $4
-        # $4 = parameters to pass to scripts when running backwards	
-	echo "$(date): running $1 hooks."
-	local hooks="$1"
-	local params="$2"
-	shift; shift
-	local revhooks
-	local file
-	for file in $(find_hooks "${hooks}"); do
-		echo "===== $(date): running hook: $file $params ====="
-		"$file" $params && revhooks="${file}${revhooks:+" ${revhooks}"}"
-	done
-	echo "$(date): done running $hooks:$params hooks."
-	if [ "x$1" = "xreverse" ]; then
-		echo "$(date): running $hooks hooks backwards."
-		for file in $revhooks; do
-			echo "===== $(date): running hook :$file $2 ====="
-			"${file}" $2
-		done
-		echo "$(date): done running $hooks:$2 backwards"
-	fi
+	IFS="${oifs}"
 }
 
 get_power_status()
@@ -200,7 +189,11 @@ pm_main()
 
 	rm -f "$INHIBIT"
 
-	run_hooks sleep "$1" reverse "$2"
+	run_hooks sleep "$1" 
+	command_exists "do_$1" && [ ! -e "${INHIBIT}" ] && { \
+		sync; "do_$1"
+	}
+	run_hooks sleep "$2" reverse
 
 	return 0
 }
