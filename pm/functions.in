@@ -21,6 +21,8 @@ SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCK="/var/run/pm-utils/lock"
 STORAGEDIR="/var/run/pm-utils/storage"
+SLEEP_MODULE="kernel"
+SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 
 # Use c sort order
 export LC_COLLATE=C
@@ -168,21 +170,12 @@ get_power_status()
 	return $RETVAL
 }
 
-do_suspend()
-{
-	pm-pmu --suspend || echo -n "mem" > /sys/power/state
+[ -f "${SLEEP_FUNCTIONS}" ] || { 
+	echo "Requested sleep module $SLEEP_MODULE not available."
+	exit 1
 }
 
-do_hibernate()
-{
-	echo -n "${HIBERNATE_MODE}" > /sys/power/disk
-	echo -n "disk" > /sys/power/state
-}
-
-do_suspend_hybrid()
-{
-	return 1
-}
+. "${SLEEP_FUNCTIONS}"
 
 init_logfile() {
 	if [ -n "$1" ]; then
@@ -192,6 +185,10 @@ init_logfile() {
 
 pm_main()
 {
+	"check_$1" || {
+		echo "System does not support $1 sleep."
+		return 1
+	}
 	init_logfile "$PM_LOGFILE" 
 	take_suspend_lock || exit 1
 

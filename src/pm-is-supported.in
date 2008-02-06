@@ -16,38 +16,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+. "@PM-UTILS-LIBDIR@/functions"
+
 help_options() {
 	echo "pm-is-supported [--suspend | --hibernate | --suspend-hybrid ]"
 	echo
 }
 
-export LC_COLLATE=C
-
 ARG="${1#--}"
 
-[ -f /sys/power/state ] || exit 1
-
 case "$ARG" in
-	suspend)
-		grep -q mem /sys/power/state || exit 1
-		;;
-	hibernate)
-		[ -f /sys/power/disk ] || exit 1
-		grep -q disk /sys/power/state || exit 1
-		;;
-	suspend-hybrid)
-		grep -q mem /sys/power/state || exit 1
-		[ -d /sys/power/tuxonice ] && exit 0
-		#grep -q disk /sys/power/state || exit 1
-		exit 1
-		;;
-	help)
-		help_options
-		;;
-	*)
-		help_options 1>&2
-		exit 1
-		;;
+	suspend|hibernate|suspend-hybrid)
+		"check_$ARG"; exit $? ;;
+	help) 	help_options ;;
+	*) 	help_options 1>&2
+		exit 1 ;;
 esac
 
 exit 0

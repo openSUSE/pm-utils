@@ -87,40 +87,18 @@ done
 export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
 . "${PM_FUNCTIONS}"
 
-[ -f /sys/power/state ] || exit 1
-
-
-ACTION=${0##*pm-}
+ACTION="$(echo ${0##*pm-} |tr - _)"
 
 case "$ACTION" in
-	suspend)
-		if ! pm-is-supported --"$ACTION" ; then
-			echo "Error: kernel cannot suspend to ram." 1>&2
-			exit 1
-		fi
-		REVERSE=resume
-		;;
-	hibernate)
-		if ! pm-is-supported --"$ACTION" ; then
-			echo "Error: kernel cannot suspend to disk." 1>&2
-			exit 1
-		fi
-		REVERSE=thaw
-		;;
-	suspend-hybrid)
-		if ! pm-is-supported --"$ACTION" ; then
-			echo "Error: hybrid suspend is not supported." 1>&2
-			exit
-		fi
-		REVERSE=resume
-		;;
-	*)
-		exit 1
-		;;
+	suspend) 	REVERSE=resume ;;
+	hibernate) 	REVERSE=thaw ;;
+	suspend_hybrid) REVERSE=resume ;;
+	*)		echo "Don't know how to ${ACTION}."
+			exit 1 ;;
 esac
 
 export PM_CMDLINE="$@"
 
-pm_main "$(echo $ACTION | tr - _)" "$REVERSE"
+pm_main "${ACTION}" "{$REVERSE}"
 
 exit $?
