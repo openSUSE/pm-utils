@@ -26,7 +26,7 @@ help_options() {
 ARG="$(echo ${1#--}|tr - _)"
 
 case "$ARG" in
-	suspend|hibernate|suspend-hybrid)
+	suspend|hibernate|suspend_hybrid)
 		"check_$ARG"; exit $? ;;
 	help) 	help_options ;;
 	*) 	help_options 1>&2
