@@ -23,7 +23,7 @@ help_options() {
 	echo
 }
 
-ARG="${1#--}"
+ARG="$(echo ${1#--}|tr - _)"
 
 case "$ARG" in
 	suspend|hibernate|suspend-hybrid)
