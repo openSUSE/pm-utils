@@ -1,7 +1,8 @@
 .deps
 .libs
 *.o
-pm-suspend
+pm-action
 pm-pmu
+pm-powersave
 pm-reset-swap
-
+pm-suspend
