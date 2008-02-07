@@ -121,6 +121,10 @@ esac
 
 export PM_CMDLINE="$@"
 
-pm_main "$(echo $ACTION | tr - _)" "$REVERSE"
+take_suspend_lock || exit 1
+trap remove_suspend_lock 0
+init_logfile "${PM_LOGFILE}"
+rm -f "${INHIBIT}"
+run_hooks sleep "$(echo $ACTION | tr - _)" reverse "$REVERSE"
 
 exit $?
