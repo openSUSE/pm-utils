@@ -190,21 +190,6 @@ init_logfile() {
 	fi
 }
 
-pm_main()
-{
-	init_logfile "$PM_LOGFILE" 
-	take_suspend_lock || exit 1
-
-	# make sure that our locks are unlocked no matter how the script exits
-	trap remove_suspend_lock 0
-
-	rm -f "$INHIBIT"
-
-	run_hooks sleep "$1" reverse "$2"
-
-	return 0
-}
-
 _rmmod() {
 	if modprobe -r $1; then
 		touch "${STORAGEDIR}/module:$1"
