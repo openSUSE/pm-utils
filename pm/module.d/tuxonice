@@ -1,0 +1,32 @@
+export TUXONICE_LOC
+
+# more locations might be nice
+for loc in "/sys/power/tuxonice" "/sys/power/suspend2"; do
+	[ -d "${loc}" ] && { TUXONICE_LOC="${loc}"; break; }
+done 
+
+check_suspend() {
+	grep -q mem /sys/power/state; return $?
+}
+
+do_suspend() {
+	echo "mem" >/sys/power/state
+}
+
+check_hibernate() {
+	[ -f "${TUXONICE_LOC}/do_hibernate" ]; return $?
+}
+
+do_hibernate() {
+	echo 5 > "${TUXONICE_LOC}/powerdown_method"
+	echo anything > "${TUXONICE_LOC}/do_hibernate"
+}
+
+check_suspend_hybrid() {
+	grep -q mem /sys/power/state || return 1
+	[ -f "${TUXONICE_LOC}/do_hibernate" ]; return $?
+}
+do_suspend_hybrid() {
+	echo 3 >"${TUXONICE_LOC}/powerdown_method"
+	echo anything >"${TUXONICE_LOC}/do_hibernate"
+}

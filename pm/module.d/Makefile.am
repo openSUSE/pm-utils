@@ -1,7 +1,8 @@
 moduledir = $(libdir)/pm-utils/module.d
 
 module_SCRIPTS =	\
-	kernel
+	kernel		\
+	tuxonice
 
 EXTRA_DIST=$(module_SCRIPTS)
 
