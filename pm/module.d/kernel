@@ -1,5 +1,5 @@
 check_suspend() {
-	grep -q mem /sys/power/state; return $?
+	grep -q mem /sys/power/state
 }
 
 do_suspend()
@@ -9,7 +9,6 @@ do_suspend()
 
 check_hibernate() {
 	[ -f /sys/power/disk ] && grep -q disk /sys/power/state
-	return $?
 }
 
 do_hibernate()

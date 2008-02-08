@@ -1,10 +1,8 @@
 moduledir = $(libdir)/pm-utils/module.d
 
-module_SCRIPTS =	\
+dist_module_SCRIPTS =	\
 	kernel		\
 	tuxonice
-
-EXTRA_DIST=$(module_SCRIPTS)
 
 clean-local :
 	rm -f *~
