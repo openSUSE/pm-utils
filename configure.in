@@ -31,6 +31,7 @@ dnl - Makefiles, etc.
 dnl ---------------------------------------------------------------------------
 AC_OUTPUT([
 Makefile
+pm-utils.pc
 man/Makefile
 src/Makefile
 pm/Makefile
