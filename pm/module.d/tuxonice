@@ -1,5 +1,7 @@
 export TUXONICE_LOC
-
+#TODO tuxonice supports all sorts of knobs to twiddle.
+# Since this is just a skeleton, it does not provide 
+# a mechanism for twiddling those knobs.  
 # more locations might be nice
 for loc in "/sys/power/tuxonice" "/sys/power/suspend2"; do
 	[ -d "${loc}" ] && { TUXONICE_LOC="${loc}"; break; }
