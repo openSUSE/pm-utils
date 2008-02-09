@@ -23,6 +23,7 @@ ltmain.sh
 missing
 mkinstalldirs
 install-sh
+pm-utils.pc
 stamp-h
 stamp-h1
 stamp-h.in
