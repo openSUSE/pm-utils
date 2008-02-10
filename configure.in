@@ -37,6 +37,7 @@ src/Makefile
 pm/Makefile
 pm/sleep.d/Makefile
 pm/power.d/Makefile
+pm/module.d/Makefile
 ])
 
 dnl ==========================================================================

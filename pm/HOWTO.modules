@@ -1,0 +1,54 @@
+How to write a sleep module:
+
+OVERVIEW:
+Sleep modules are POSIX-compatible shell scripts designed to be sourced by
+the pm-utils machinery in order to check that the machine supports a sleep
+method and to actually enter that method.  
+Currently, three sleep methods are supported:
+
+SUSPEND:
+	Suspend (also known as suspend-to-ram) is the sleep mode equivalent
+to ACPI S3 -- state is saved in system memory, and all other hardware is either
+powered off or in power-saving mode.  If your sleep module supports suspend,
+it MUST define 2 functions:
+
+* check_suspend, which checks to see that the system provides a suspend-to-ram
+  mechanism, returns 0 if it does, and 1 if it does not.
+
+* do_suspend, which performs just the task of putting the system in suspend.
+
+HIBERNATE:
+	Hibernate (also know as suspend-to-disk) is the sleep mode equivalent
+to ACPI S4 -- the system state is saved to permanent media (like a hard drive),
+and the system is iether in a very low-power use mode or completly powered off.
+If your sleep module supports hibernate, it MUST define 2 functions:
+
+* check_hibernate, which checks to see if the system provides a suspend-to-disk
+  mechanism, and returns 0 if it does, and 1 if it does not.
+
+* do_hibernate, which performs just the task of putting the system in hibernate.
+
+Hibernate can optionally provide a third function:
+* hibernate_might_work, which should return 0 if the minimum prerequisites
+  for a sucessful hibernate/thaw cycle are met (ensuring that there is an
+  active swap device, etc), and 1 otherwise.  If your system provides this
+  method, your do_hibernate function SHOULD check it and:
+  * emit an error message, and
+  * return without hibernating the system.
+
+SUSPEND_HYBRID:
+	suspend_hybrid is a blend of suspend and hibernate.  It performs all
+the tasks needed to put the system into hibernate mode (including writing the
+memory image to disk), and then puts the system into suspend mode.  If
+implemented porperly, this should provide the convienence of the resume speed
+of suspend with the assurance that your state is saved to the hard drive if
+you run out of power.  If your sleep module supports suspend_hybrid, it MUST
+define 2 functions:
+
+* check_suspend_hybrid, which checks to see that the system provides hybrid
+  suspend functionality, and returns 0 if it dies and 1 if it does not.
+
+* do_suspend_hybrid, which just performs the task of putting the system into
+  suspend_hybrid sleep.
+
+do_suspend_hybrid SHOULD utilize hibernate_might_work if it is present.

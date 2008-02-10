@@ -1,4 +1,7 @@
-SUBDIRS =  sleep.d power.d
+SUBDIRS =		\
+	sleep.d 	\
+	power.d		\
+	module.d
 
 extradir = $(libdir)/pm-utils
 pm_sysconfdir = $(sysconfdir)/pm
