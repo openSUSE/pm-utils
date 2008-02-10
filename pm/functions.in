@@ -118,7 +118,7 @@ find_hooks() {
 	local phooks="${PM_UTILS_LIBDIR}/$1.d"
 	local base
 
-	for base in $(for f in $syshooks/*[!~] $phooks/*[!~];
+	for base in $(for f in "$syshooks/"*[!~] "$phooks/"*[!~];
 		do [ -O "$f" ] && echo ${f##*/} ; done | sort | uniq) ;
 	do
 		if [ -x "$syshooks/$base" ]; then
@@ -214,7 +214,7 @@ pm_main()
 }
 
 _rmmod() {
-	if modprobe -r $1; then
+	if modprobe -r "$1"; then
 		touch "${STORAGEDIR}/module:$1"
 		return 0
 	else
@@ -239,7 +239,7 @@ modunload()
 		else
 			# modules depend on this one.  try to remove them first.
 			MODS="${USED%%*,}"
-			while [ "${MODS}" ]; do
+			while [ -n "${MODS}" ]; do
 				# try to unload the last one first
 				MOD="${MODS##*,}"
 				modunload $MOD && RET=0
@@ -261,7 +261,7 @@ modunload()
 # reload all the modules in no particular order.
 modreload()
 {
-	for x in ${STORAGEDIR}/module:* ; do
+	for x in "${STORAGEDIR}"/module:* ; do
 		[ -O "${x}" ] && modprobe "${x##*:}" >/dev/null 2>&1
 	done
 }
@@ -269,7 +269,9 @@ modreload()
 if ! command_exists service; then
 	service() {
 		if [ -x "/etc/init.d/$1" ]; then
-			"/etc/init.d/$@"
+			svc="$1"
+			shift
+			"/etc/init.d/$svc" "$@"
 		else
 			echo "$1" $": unrecognized service" 1>&2
 			return 1
