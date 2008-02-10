@@ -13,16 +13,17 @@
 set -a
 PM_UTILS_LIBDIR="@PM-UTILS-LIBDIR@"
 PM_UTILS_ETCDIR="@PM-UTILS-SYSCONFDIR@"
+PM_UTILS_RUNDIR="/var/run/pm-utils"
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
 HIBERNATE_MODE="platform"
 HIBERNATE_RESUME_POST_VIDEO=no
-INHIBIT=/var/run/pm-utils.inhibit
+INHIBIT="${PM_UTILS_RUNDIR}/inhibit"
 PM_LOGFILE="${PM_LOGFILE:=/var/log/pm-suspend.log}"
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
-LOCK="/var/run/pm-utils/lock"
-STORAGEDIR="/var/run/pm-utils/storage"
+LOCKDIR="${PM_UTILS_RUNDIR}/locks"
+STORAGEDIR="${PM_UTILS_RUNDIR}/storage"
 SLEEP_MODULE="kernel"
 SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 
@@ -52,9 +53,10 @@ try_lock()
 	# $2 (optional) content to write to the lockfile,
 	#               extra newline will be appended
 	# make sure the directory where the lockfile should be exists
-	mkdir -p ${1%/*}
+	mkdir -p "${LOCKDIR}"
+	local lock="${LOCKDIR}/${1##*/}"
 	# we use noclobber to make sure there are no race conditions
-	(set -o noclobber; echo "${2}" > "${1}") 2> /dev/null || return 1
+	(set -o noclobber; echo "${2}" > "${lock}") 2> /dev/null || return 1
 	return 0
 }
 
@@ -76,8 +78,9 @@ spin_lock()
 release_lock()
 {
 	# $1 = lockfile
-	# make sure it is ours first.
-	rm -rf "$1"
+	# make sure it is ours first.i
+	local lock="${LOCKDIR}/${1##*/}"
+	rm -f "${lock}"
 	return $?
 }
 
@@ -86,7 +89,7 @@ take_suspend_lock()
 {
 	VT=$(fgconsole)
 	chvt 63
-	try_lock "$LOCK" || return 1
+	try_lock "pm-utils.lock" || return 1
 	mkdir -p "${STORAGEDIR}"
 	return 0
 }
@@ -96,7 +99,7 @@ remove_suspend_lock()
 	rm -rf "${STORAGEDIR}"
 	chvt 1
 	chvt $VT
-	release_lock "${LOCK}"
+	release_lock "pm-utils.lock"
 }
 
 
