@@ -1,7 +1,7 @@
 #!/bin/sh
 . "${PM_FUNCTIONS}"
 
-NTPD_LOCK="/var/run/pm-utils/pm-ntpd.lock"
+NTPD_LOCK="pm-ntpd.lock"
 
 suspend_clock() {
 	if try_lock "${NTPD_LOCK}"; then
@@ -9,7 +9,6 @@ suspend_clock() {
 		stopservice ntpd
 	fi
 	/sbin/hwclock --systohc >/dev/null 2>&1 0<&1
-	return $?
 }
 
 resume_clock() {
