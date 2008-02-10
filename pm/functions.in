@@ -180,9 +180,17 @@ get_power_status()
 . "${SLEEP_FUNCTIONS}"
 
 init_logfile() {
-	if [ -n "$1" ]; then
-		exec > "$1" 2>&1
+	if [ -h "$1" ]; then
+		echo "$1 is a symbolic link, refusing to overwrite."
+		return 1
+	elif [ -O "$1" ]; then
+		echo "We do not own $1, refusing to overwrite."
+		return 1
+	elif [ -z "$1" ]; then
+		echo "Please pass a filename to init_logfile."
+		return 1
 	fi
+	exec > "$1" 2>&1
 }
 
 pm_main()
