@@ -27,7 +27,7 @@ do_hibernate() {
 }
 
 check_suspend_hybrid() {
-	grep -q mem /sys/power/state || return 1
+	grep -q mem /sys/power/state && \
 	[ -f "${TUXONICE_LOC}/do_hibernate" ]
 }
 do_suspend_hybrid() {
