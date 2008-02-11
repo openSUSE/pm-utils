@@ -2,7 +2,8 @@ moduledir = $(libdir)/pm-utils/module.d
 
 dist_module_SCRIPTS =	\
 	kernel		\
-	tuxonice
+	tuxonice	\
+	uswsusp
 
 clean-local :
 	rm -f *~

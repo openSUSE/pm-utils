@@ -1,0 +1,28 @@
+check_suspend() {
+	grep -q mem /sys/power/state && command_exists s2ram
+}
+
+do_suspend()
+{
+        s2ram -f
+}
+
+check_hibernate() {
+	[ -f /sys/power/disk ] && \
+	grep -q disk /sys/power/state && \
+	command_exists s2disk	
+}
+
+do_hibernate()
+{
+	s2disk
+}
+
+check_suspend_hybrid() {
+	grep -q mem /sys/power/state && command_exists s2both
+}
+
+do_suspend_hybrid()
+{
+        s2both -f
+}
