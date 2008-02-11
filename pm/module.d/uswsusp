@@ -1,10 +1,10 @@
 check_suspend() {
-	grep -q mem /sys/power/state && command_exists s2ram
+	grep -q mem /sys/power/state
 }
 
 do_suspend()
 {
-        s2ram -f
+        echo "mem" >/sys/power/state
 }
 
 check_hibernate() {
