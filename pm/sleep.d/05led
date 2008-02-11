@@ -4,10 +4,10 @@
 
 case "$1" in
 	hibernate|suspend)
-		{ echo "7 blink" >/proc/acpi/ibm/led ; } 2>/dev/null
+		echo "7 blink" >/proc/acpi/ibm/led
 		;;
 	thaw|resume) 
-		{ echo "7 off" >/proc/acpi/ibm/led ; } 2>/dev/null
+		echo "7 off" >/proc/acpi/ibm/led
 		;;
 	*)
 		;;

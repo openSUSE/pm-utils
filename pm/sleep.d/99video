@@ -11,10 +11,10 @@
 
 reset_brightness() {
 	for bl in /sys/class/backlight/* ; do
-		[ -f $bl/brightness ] || continue
-		BR=$(cat $bl/brightness)
-		echo 0 > $bl/brightness
-		echo $BR > $bl/brightness
+		[ -f "$bl/brightness" ] || continue
+		BR="$(cat $bl/brightness)"
+		echo 0 > "$bl/brightness"
+		echo "$BR" > "$bl/brightness"
 	done
 }
 
@@ -45,7 +45,7 @@ resume_video()
 		vbe vbestate restore < /var/run/vbestate
 	fi
 	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
-		vbe vbemode set $(cat /var/run/vbemode)
+		vbe vbemode set "$(cat /var/run/vbemode)"
 	fi
 	if [ "${DISPLAY_QUIRK_DPMS_ON}" = "true" ]; then
 		vbe dpms on
