@@ -30,6 +30,19 @@ else
 	radeon() { echo "radeontool not found" 1>&2; return 1; }
 fi
 
+save_fbcon(){
+	local con
+	for con in /sys/class/graphics/*/state; do
+		echo 1 >"${con}"
+	done
+}
+
+resume_fbcon(){
+	local con
+	for con in /sys/class/graphics/*/state; do
+		echo 0 >"${con}"
+	done
+
 resume_video()
 {
 	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
@@ -47,6 +60,8 @@ resume_video()
 	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
 		vbe vbemode set "$(cat /var/run/vbemode)"
 	fi
+	# based on data from s2ram
+	resume_fbcon
 	if [ "${DISPLAY_QUIRK_DPMS_ON}" = "true" ]; then
 		vbe dpms on
 	fi
@@ -57,6 +72,7 @@ resume_video()
 
 
 case "$1" in
+	suspend|hibernate|suspend_hybrid) save_fbcon ;;
 	resume)
 		resume_video
 		;;
