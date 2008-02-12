@@ -10,6 +10,7 @@ do_suspend()
 check_hibernate() {
 	[ -f /sys/power/disk ] && \
 	grep -q disk /sys/power/state && \
+	[ -c /dev/snapshot ] &&
 	command_exists s2disk	
 }
 
@@ -26,5 +27,7 @@ check_suspend_hybrid() {
 
 do_suspend_hybrid()
 {
+	# a brief perusal of the source indicates that -f bypasses
+	# quirks application and the whitelist.
         s2both -f
 }
