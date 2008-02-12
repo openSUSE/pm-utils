@@ -25,12 +25,13 @@ TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCKDIR="${PM_UTILS_RUNDIR}/locks"
 STORAGEDIR="${PM_UTILS_RUNDIR}/storage"
 SLEEP_MODULE="kernel"
-SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 
 # Use c sort order
 export LC_COLLATE=C
 
 [ -O "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
+
+SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 set +a
 
 
