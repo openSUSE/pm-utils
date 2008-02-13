@@ -1,0 +1,6 @@
+Currently, the uswsusp module does not use s2ram and forces s2both to skip 
+the video quirk handling it implements internally.  This is because we already
+handle video quirks in 20video and 99video.  
+
+If you would prefer to use the s2ram/s2both video quirk handling, edit 
+uswsusp appropriately and delete pm/sleep.d/20video and pm/sleep.d/99video.
