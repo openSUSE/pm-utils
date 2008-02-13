@@ -72,7 +72,7 @@ resume_video()
 
 
 case "$1" in
-	suspend|hibernate|suspend_hybrid) save_fbcon ;;
+	suspend) save_fbcon ;;
 	resume)
 		resume_video
 		;;
