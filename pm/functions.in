@@ -29,16 +29,14 @@ SLEEP_MODULE="kernel"
 # Use c sort order
 export LC_COLLATE=C
 
-[ -O "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
+[ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 
-SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 set +a
-
 
 source_configs()
 {
 	for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
-		[ -O "$cfg" ] || continue
+		[ -f "$cfg" ] || continue
 		set -a
 		. "${cfg}"
 		set +a
@@ -46,6 +44,14 @@ source_configs()
 }
 
 source_configs
+
+SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
+[ -f "${SLEEP_FUNCTIONS}" ] || { 
+	echo "Requested sleep module $SLEEP_MODULE not available."
+	exit 1
+}
+
+. "${SLEEP_FUNCTIONS}"
 
 # try to take the lock.  Fail if we cannot get it.
 try_lock()
@@ -164,13 +170,6 @@ get_power_status()
 	esac
 	return $RETVAL
 }
-
-[ -O "${SLEEP_FUNCTIONS}" ] || { 
-	echo "Requested sleep module $SLEEP_MODULE not available."
-	exit 1
-}
-
-. "${SLEEP_FUNCTIONS}"
 
 init_logfile()
 {
