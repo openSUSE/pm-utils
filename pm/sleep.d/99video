@@ -35,6 +35,7 @@ save_fbcon()
 {
 	local con
 	for con in /sys/class/graphics/*/state; do
+		[ -f $con ] || continue
 		echo 1 >"${con}"
 	done
 }
@@ -43,6 +44,7 @@ resume_fbcon()
 {
 	local con
 	for con in /sys/class/graphics/*/state; do
+		[ -f $con ] || continue
 		echo 0 >"${con}"
 	done
 }
