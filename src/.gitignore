@@ -2,6 +2,7 @@
 .libs
 *.o
 pm-action
+pm-is-supported
 pm-pmu
 pm-powersave
 pm-reset-swap

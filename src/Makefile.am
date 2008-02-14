@@ -1,38 +1,30 @@
-pm_utils_libdir = $(libdir)/pm-utils
-pm_utils_bindir = $(pm_utils_libdir)/bin
+pm_libdir = $(libdir)/pm-utils
+pm_bindir = $(pm_libdir)/bin
 pm_sysconfdir = $(sysconfdir)/pm
 
-pm_utils_bin_PROGRAMS =		\
+pm_bin_PROGRAMS =		\
 	pm-pmu			\
 	pm-reset-swap
 
-pm_utils_bin_SCRIPTS =		\
-	pm-action
+pm_pmu_SOURCES = pm-pmu.c
 
-pm_utils_usr_bindir = $(bindir)
+pm_reset_swap_SOURCES = pm-reset-swap.c
 
-pm_utils_usr_bin_SCRIPTS =	\
-	pm-is-supported
+pm_bin_SCRIPTS = pm-action
 
-pm_pmu_SOURCES = 		\
-	pm-pmu.c
+bin_SCRIPTS = pm-is-supported
 
-pm_reset_swap_SOURCES = 	\
-	pm-reset-swap.c
+dist_bin_SCRIPTS = on_ac_power
 
-extradir = $(sbindir)
+sbin_SCRIPTS = pm-powersave
 
-extra_SCRIPTS =			\
-	pm-powersave
+script_in_files = pm-action.in pm-is-supported.in pm-powersave.in
 
-acpowerdir = $(bindir)
+CLEANFILES =  $(script_in_files:.in=)
 
-acpower_SCRIPTS =		\
-	on_ac_power
+EXTRA_DIST = $(script_in_files)
 
-CLEANFILES = $(pm_utils_bin_SCRIPTS) $(extra_SCRIPTS)
-
-do_subst = sed -e 's,[@]PM-UTILS-LIBDIR[@],$(pm_utils_libdir),g' \
+do_subst = sed -e 's,[@]PM-UTILS-LIBDIR[@],$(pm_libdir),g' \
 	   -e 's,[@]PM-UTILS-SYSCONFDIR[@],$(pm_sysconfdir),g'
 
 SUFFIXES = .in
@@ -43,15 +35,9 @@ SUFFIXES = .in
 
 install-data-hook:
 	-mkdir -p $(DESTDIR)$(sbindir)
-	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend
-	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-hibernate
-	-ln -s $(pm_utils_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend-hybrid
-
-EXTRA_DIST =				\
-	$(extra_SCRIPTS)		\
-	$(acpower_SCRIPTS)		\
-	$(pm_utils_bin_SCRIPTS)		\
-	$(pm_utils_usr_bin_SCRIPTS)
+	-ln -s $(pm_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend
+	-ln -s $(pm_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-hibernate
+	-ln -s $(pm_bindir)/pm-action $(DESTDIR)$(sbindir)/pm-suspend-hybrid
 
 clean-local :
 	rm -f *~
