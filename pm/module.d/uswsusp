@@ -5,7 +5,7 @@ check_suspend()
 
 do_suspend()
 {
-        echo "mem" >/sys/power/state
+	echo "mem" >/sys/power/state
 }
 
 check_hibernate()
@@ -32,5 +32,5 @@ do_suspend_hybrid()
 {
 	# a brief perusal of the source indicates that -f bypasses
 	# quirks application and the whitelist.
-        s2both -f
+	s2both -f
 }

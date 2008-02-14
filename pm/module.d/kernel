@@ -5,7 +5,7 @@ check_suspend()
 
 do_suspend()
 {
-        pm-pmu --suspend || echo -n "mem" > /sys/power/state
+	pm-pmu --suspend || echo -n "mem" > /sys/power/state
 }
 
 check_hibernate()
@@ -15,8 +15,8 @@ check_hibernate()
 
 do_hibernate()
 {
-        echo -n "${HIBERNATE_MODE}" > /sys/power/disk
-        echo -n "disk" > /sys/power/state
+	echo -n "${HIBERNATE_MODE}" > /sys/power/disk
+	echo -n "disk" > /sys/power/state
 }
 
 check_suspend_hybrid()
@@ -26,5 +26,5 @@ check_suspend_hybrid()
 
 do_suspend_hybrid()
 {
-        return 1
+	return 1
 }
