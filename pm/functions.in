@@ -177,7 +177,7 @@ init_logfile()
 	if [ -h "$1" ]; then
 		echo "$1 is a symbolic link, refusing to overwrite."
 		return 1
-	elif [ -O "$1" ]; then
+	elif [ ! -O "$1" ]; then
 		echo "We do not own $1, refusing to overwrite."
 		return 1
 	elif [ -z "$1" ]; then
