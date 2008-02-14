@@ -1,0 +1,18 @@
+#!/bin/bash
+opwd="$PWD"
+tgt="/tmp/pm-utils-$$"
+mkdir -p "$tgt"
+trap 'rm -rf "$tgt"' 0
+cd "$tgt" && \
+cp -t "$tgt" -a "${opwd}"/* && \
+autoreconf --install && \
+./configure "--prefix=$tgt/target" && \
+make && \
+make install &&  {
+	echo "Build sucessfull.  Dropping to a shell to test."
+	echo "Files were installed in $tgt/target"
+} || echo "Build failed.  Dropping to a shell so you can see what happened."
+echo "Exiting from this shell will erase $tgt"
+cd "$tgt/" && \
+bash -i && \
+cd "$opwd"

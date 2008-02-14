@@ -7,6 +7,7 @@ default_resume_kernel()
 	    ;;
 	*) # this is only valid for x86 and x86_64
 	    return 1
+	    ;;
     esac
 
     [ -x /sbin/grubby -a -x /sbin/grub ] || return 1

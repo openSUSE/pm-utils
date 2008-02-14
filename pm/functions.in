@@ -8,31 +8,37 @@
 # PM_CMDLINE
 # RESUME_MODULES
 #
+# for great debugging!
+[ "${PM_DEBUG}" = "true" ] && set -x
 set -a
 PM_UTILS_LIBDIR="@PM-UTILS-LIBDIR@"
 PM_UTILS_ETCDIR="@PM-UTILS-SYSCONFDIR@"
+PM_UTILS_RUNDIR="/var/run/pm-utils"
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
 HIBERNATE_MODE="platform"
 HIBERNATE_RESUME_POST_VIDEO=no
-INHIBIT=/var/run/pm-utils.inhibit
+INHIBIT="${PM_UTILS_RUNDIR}/inhibit"
 PM_LOGFILE="${PM_LOGFILE:=/var/log/pm-suspend.log}"
 SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
-LOCK="/var/run/pm-utils/lock"
-STORAGEDIR="/var/run/pm-utils/storage"
+LOCKDIR="${PM_UTILS_RUNDIR}/locks"
+STORAGEDIR="${PM_UTILS_RUNDIR}/storage"
+SLEEP_MODULE="kernel"
 
 # Use c sort order
 export LC_COLLATE=C
 
-[ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
+[ -O "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
+
+SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 set +a
 
 
 source_configs()
 {
 	for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
-		[ -f "$cfg" ] || continue
+		[ -O "$cfg" ] || continue
 		set -a
 		. "${cfg}"
 		set +a
@@ -48,9 +54,10 @@ try_lock()
 	# $2 (optional) content to write to the lockfile,
 	#               extra newline will be appended
 	# make sure the directory where the lockfile should be exists
-	mkdir -p ${1%/*}
+	mkdir -p "${LOCKDIR}"
+	local lock="${LOCKDIR}/${1##*/}"
 	# we use noclobber to make sure there are no race conditions
-	(set -o noclobber; echo "${2}" > "${1}") 2> /dev/null || return 1
+	(set -o noclobber; echo "${2}" > "${lock}") 2> /dev/null || return 1
 	return 0
 }
 
@@ -72,8 +79,9 @@ spin_lock()
 release_lock()
 {
 	# $1 = lockfile
-	# make sure it is ours first.
-	rm -rf "$1"
+	# make sure it is ours first.i
+	local lock="${LOCKDIR}/${1##*/}"
+	rm -f "${lock}"
 	return $?
 }
 
@@ -82,7 +90,7 @@ take_suspend_lock()
 {
 	VT=$(fgconsole)
 	chvt 63
-	try_lock "$LOCK" || return 1
+	try_lock "pm-utils.lock" || return 1
 	mkdir -p "${STORAGEDIR}"
 	return 0
 }
@@ -92,7 +100,7 @@ remove_suspend_lock()
 	rm -rf "${STORAGEDIR}"
 	chvt 1
 	chvt $VT
-	release_lock "${LOCK}"
+	release_lock "pm-utils.lock"
 }
 
 
@@ -104,49 +112,37 @@ command_exists()
 	return $?
 }
 
-find_hooks() {
+run_hooks() {
 	# $1 = type of hook to find.  
+	# $2 = paramaters to pass to hooks.
+	# $3 = if present and equal to "reverse", run hooks backwards.
 	# Currently only power and sleep are meaningful.
 	local syshooks="${PM_UTILS_ETCDIR}/$1.d"
 	local phooks="${PM_UTILS_LIBDIR}/$1.d"
+	local sort="sort"
 	local base
-
-	for base in $(for f in $syshooks/*[!~] $phooks/*[!~];
-		do [ -f "$f" ] && echo ${f##*/} ; done | sort | uniq) ;
+	local hook
+	local oifs="${IFS}"
+	# the next two lines are not a typo or a formatting error!
+	local nifs="
+"
+	IFS="${nifs}" # tolerate spaces in filenames.
+	[ "$3" = "reverse" ] && sort="sort -r"
+	for base in $(for f in "$syshooks/"*[!~] "$phooks/"*[!~];
+		do [ -O "$f" ] && echo ${f##*/} ; done | sort | uniq) ;
 	do
-		if [ -x "$syshooks/$base" ]; then
-			echo $syshooks/$base
-		elif [ -x "$phooks/$base" ]; then
-			echo $phooks/$base
+		if [ -f "$syshooks/$base" ]; then
+			hook="$syshooks/$base"
+		elif [ -f "$phooks/$base" ]; then
+			hook="$phooks/$base"
 		fi
+		[ -x "${hook}" ] && (
+			IFS="${oifs}"
+			echo "$(date): running ${hook} $2"
+			"${hook}" $2
+		)
 	done
-}
-
-run_hooks() {
-	# $1 = hooks to run
-	# $2 = parameters to pass to hooks
-	# $3 = if $3 = "reverse", then also run the hooks that ran sucessfully
-	#      backwards with parameters in $4
-        # $4 = parameters to pass to scripts when running backwards	
-	echo "$(date): running $1 hooks."
-	local hooks="$1"
-	local params="$2"
-	shift; shift
-	local revhooks
-	local file
-	for file in $(find_hooks "${hooks}"); do
-		echo "===== $(date): running hook: $file $params ====="
-		"$file" $params && revhooks="${file}${revhooks:+" ${revhooks}"}"
-	done
-	echo "$(date): done running $hooks:$params hooks."
-	if [ "x$1" = "xreverse" ]; then
-		echo "$(date): running $hooks hooks backwards."
-		for file in $revhooks; do
-			echo "===== $(date): running hook :$file $2 ====="
-			"${file}" $2
-		done
-		echo "$(date): done running $hooks:$2 backwards"
-	fi
+	IFS="${oifs}"
 }
 
 get_power_status()
@@ -168,30 +164,29 @@ get_power_status()
 	return $RETVAL
 }
 
-do_suspend()
-{
-	pm-pmu --suspend || echo -n "mem" > /sys/power/state
+[ -O "${SLEEP_FUNCTIONS}" ] || { 
+	echo "Requested sleep module $SLEEP_MODULE not available."
+	exit 1
 }
 
-do_hibernate()
-{
-	echo -n "${HIBERNATE_MODE}" > /sys/power/disk
-	echo -n "disk" > /sys/power/state
-}
-
-do_suspend_hybrid()
-{
-	return 1
-}
+. "${SLEEP_FUNCTIONS}"
 
 init_logfile() {
-	if [ -n "$1" ]; then
-		exec > "$1" 2>&1
+	if [ -h "$1" ]; then
+		echo "$1 is a symbolic link, refusing to overwrite."
+		return 1
+	elif [ -O "$1" ]; then
+		echo "We do not own $1, refusing to overwrite."
+		return 1
+	elif [ -z "$1" ]; then
+		echo "Please pass a filename to init_logfile."
+		return 1
 	fi
+	exec > "$1" 2>&1
 }
 
 _rmmod() {
-	if modprobe -r $1; then
+	if modprobe -r "$1"; then
 		touch "${STORAGEDIR}/module:$1"
 		return 0
 	else
@@ -216,7 +211,7 @@ modunload()
 		else
 			# modules depend on this one.  try to remove them first.
 			MODS="${USED%%*,}"
-			while [ "${MODS}" ]; do
+			while [ -n "${MODS}" ]; do
 				# try to unload the last one first
 				MOD="${MODS##*,}"
 				modunload $MOD && RET=0
@@ -238,15 +233,17 @@ modunload()
 # reload all the modules in no particular order.
 modreload()
 {
-	for x in ${STORAGEDIR}/module:* ; do
-		[ -f "${x}" ] && modprobe "${x##*:}" >/dev/null 2>&1
+	for x in "${STORAGEDIR}"/module:* ; do
+		[ -O "${x}" ] && modprobe "${x##*:}" >/dev/null 2>&1
 	done
 }
 
 if ! command_exists service; then
 	service() {
 		if [ -x "/etc/init.d/$1" ]; then
-			"/etc/init.d/$@"
+			svc="$1"
+			shift
+			"/etc/init.d/$svc" "$@"
 		else
 			echo "$1" $": unrecognized service" 1>&2
 			return 1
@@ -264,7 +261,7 @@ stopservice()
 
 restartservice()
 {
-	[ -f "${STORAGEDIR}/service:$1" ] && service "$1" start
+	[ -O "${STORAGEDIR}/service:$1" ] && service "$1" start
 }
 
 savestate()
@@ -274,5 +271,5 @@ savestate()
 
 restorestate()
 {
-	cat "${STORAGEDIR}/state:${1}"
+	[ -O "${STORAGEDIR}/state:${1}" ] && cat "${STORAGEDIR}/state:${1}"
 }
