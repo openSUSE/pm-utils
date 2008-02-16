@@ -2,7 +2,7 @@
 
 . "${PM_FUNCTIONS}"
 
-command_exists alsactl || exit 1
+command_exists alsactl || exit $NA
 
 case "$1" in
 	hibernate|suspend)
@@ -11,8 +11,6 @@ case "$1" in
 	thaw|resume) 
 		alsactl restore 0 >/dev/null 2>&1
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
-
-exit $?
