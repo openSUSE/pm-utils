@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -f /proc/acpi/ibm/led ] || exit 1
+[ -f /proc/acpi/ibm/led ] || exit $NA
 
 case "$1" in
 	thaw|resume)
@@ -10,4 +10,4 @@ case "$1" in
 		;;
 esac
 
-exit $?
+exit $NA
