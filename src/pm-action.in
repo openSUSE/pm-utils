@@ -100,5 +100,3 @@ esac
 export PM_CMDLINE="$@"
 
 pm_main "${ACTION}" "${REVERSE}"
-
-exit $?
