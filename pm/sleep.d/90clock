@@ -29,8 +29,6 @@ case "$1" in
 	thaw|resume)
 		resume_clock
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
-
-exit $?
