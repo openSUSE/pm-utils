@@ -27,10 +27,8 @@ ARG="$(echo ${1#--}|tr - _)"
 
 case "$ARG" in
 	suspend|hibernate|suspend_hybrid)
-		"check_$ARG"; exit $? ;;
+		"check_$ARG" ;;
 	help) 	help_options ;;
 	*) 	help_options 1>&2
 		exit 1 ;;
 esac
-
-exit 0
