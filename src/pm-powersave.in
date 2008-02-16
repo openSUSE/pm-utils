@@ -29,9 +29,9 @@ export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
 . "${PM_FUNCTIONS}"
 
 if [ "$1" = "true" -o "$1" = "false" ] ; then
-    init_logfile "${POWERSAVE_LOGFILE}"
-    run_hooks power "$1"
+	init_logfile "${POWERSAVE_LOGFILE}"
+	run_hooks power "$1"
 else
-    echo "Argument needs to be true or false" >&2
-    exit 1
+	echo "Argument needs to be true or false" >&2
+	exit 1
 fi

@@ -4,20 +4,22 @@
 
 command_exists dbus-send || exit 1
 
-suspend_nm() {
-    # Tell NetworkManager to shut down networking
-    dbus-send --system                         \
-        --dest=org.freedesktop.NetworkManager  \
-        /org/freedesktop/NetworkManager        \
-        org.freedesktop.NetworkManager.sleep
+suspend_nm()
+{
+	# Tell NetworkManager to shut down networking
+	dbus-send --system                         \
+		--dest=org.freedesktop.NetworkManager  \
+		/org/freedesktop/NetworkManager        \
+		org.freedesktop.NetworkManager.sleep
 }
 
-resume_nm() {
-    # Wake up NetworkManager and make it do a new connection
-    dbus-send --system                        \
-        --dest=org.freedesktop.NetworkManager \
-        /org/freedesktop/NetworkManager       \
-        org.freedesktop.NetworkManager.wake
+resume_nm()
+{
+	# Wake up NetworkManager and make it do a new connection
+	dbus-send --system                        \
+		--dest=org.freedesktop.NetworkManager \
+		/org/freedesktop/NetworkManager       \
+		org.freedesktop.NetworkManager.wake
 }
 
 case "$1" in
