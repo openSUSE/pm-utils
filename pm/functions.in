@@ -112,7 +112,8 @@ command_exists()
 	return $?
 }
 
-run_hooks() {
+run_hooks()
+{
 	# $1 = type of hook to find.  
 	# $2 = paramaters to pass to hooks.
 	# $3 = if present and equal to "reverse", run hooks backwards.
@@ -171,7 +172,8 @@ get_power_status()
 
 . "${SLEEP_FUNCTIONS}"
 
-init_logfile() {
+init_logfile()
+{
 	if [ -h "$1" ]; then
 		echo "$1 is a symbolic link, refusing to overwrite."
 		return 1
@@ -206,7 +208,8 @@ pm_main()
 	return 0
 }
 
-_rmmod() {
+_rmmod()
+{
 	if modprobe -r "$1"; then
 		touch "${STORAGEDIR}/module:$1"
 		return 0
@@ -260,7 +263,8 @@ modreload()
 }
 
 if ! command_exists service; then
-	service() {
+	service()
+	{
 		if [ -x "/etc/init.d/$1" ]; then
 			svc="$1"
 			shift

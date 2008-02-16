@@ -1,4 +1,5 @@
-check_suspend() {
+check_suspend()
+{
 	grep -q mem /sys/power/state
 }
 
@@ -7,7 +8,8 @@ do_suspend()
         echo "mem" >/sys/power/state
 }
 
-check_hibernate() {
+check_hibernate()
+{
 	[ -f /sys/power/disk ] && \
 	grep -q disk /sys/power/state && \
 	[ -c /dev/snapshot ] &&
@@ -19,7 +21,8 @@ do_hibernate()
 	s2disk
 }
 
-check_suspend_hybrid() {
+check_suspend_hybrid()
+{
 	grep -q mem /sys/power/state && \
 	command_exists s2both && \
 	check_hibernate

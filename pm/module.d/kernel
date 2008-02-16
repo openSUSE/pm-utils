@@ -1,4 +1,5 @@
-check_suspend() {
+check_suspend()
+{
 	grep -q mem /sys/power/state
 }
 
@@ -7,7 +8,8 @@ do_suspend()
         pm-pmu --suspend || echo -n "mem" > /sys/power/state
 }
 
-check_hibernate() {
+check_hibernate()
+{
 	[ -f /sys/power/disk ] && grep -q disk /sys/power/state
 }
 
@@ -17,7 +19,8 @@ do_hibernate()
         echo -n "disk" > /sys/power/state
 }
 
-check_suspend_hybrid() {
+check_suspend_hybrid()
+{
 	return 1
 }
 

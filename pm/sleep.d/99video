@@ -9,7 +9,8 @@
 
 . "${PM_FUNCTIONS}"
 
-reset_brightness() {
+reset_brightness()
+{
 	for bl in /sys/class/backlight/* ; do
 		[ -f "$bl/brightness" ] || continue
 		BR="$(cat $bl/brightness)"
@@ -30,18 +31,21 @@ else
 	radeon() { echo "radeontool not found" 1>&2; return 1; }
 fi
 
-save_fbcon(){
+save_fbcon()
+{
 	local con
 	for con in /sys/class/graphics/*/state; do
 		echo 1 >"${con}"
 	done
 }
 
-resume_fbcon(){
+resume_fbcon()
+{
 	local con
 	for con in /sys/class/graphics/*/state; do
 		echo 0 >"${con}"
 	done
+}
 
 resume_video()
 {
@@ -72,7 +76,9 @@ resume_video()
 
 
 case "$1" in
-	suspend) save_fbcon ;;
+	suspend)
+		save_fbcon
+		;;
 	resume)
 		resume_video
 		;;
