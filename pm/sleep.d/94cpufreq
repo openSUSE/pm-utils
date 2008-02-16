@@ -2,8 +2,7 @@
 
 . "${PM_FUNCTIONS}"
 
-
-[ -d /sys/devices/system/cpu/ ] || exit 1
+[ -d /sys/devices/system/cpu/ ] || exit $NA
 
 hibernate_cpufreq()
 {
@@ -35,8 +34,6 @@ case "$1" in
 	resume|thaw)
 		thaw_cpufreq
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
-
-exit $?
