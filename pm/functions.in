@@ -30,16 +30,14 @@ NA=254
 # Use c sort order
 export LC_COLLATE=C
 
-[ -O "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
+[ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 
-SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 set +a
-
 
 source_configs()
 {
 	for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
-		[ -O "$cfg" ] || continue
+		[ -f "$cfg" ] || continue
 		set -a
 		. "${cfg}"
 		set +a
@@ -47,6 +45,14 @@ source_configs()
 }
 
 source_configs
+
+SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
+[ -f "${SLEEP_FUNCTIONS}" ] || { 
+	echo "Requested sleep module $SLEEP_MODULE not available."
+	exit 1
+}
+
+. "${SLEEP_FUNCTIONS}"
 
 # try to take the lock.  Fail if we cannot get it.
 try_lock()
@@ -174,18 +180,12 @@ get_power_status()
 	return $RETVAL
 }
 
-[ -O "${SLEEP_FUNCTIONS}" ] || { 
-	echo "Requested sleep module $SLEEP_MODULE not available."
-	exit 1
-}
-
-. "${SLEEP_FUNCTIONS}"
-
-init_logfile() {
+init_logfile()
+{
 	if [ -h "$1" ]; then
 		echo "$1 is a symbolic link, refusing to overwrite."
 		return 1
-	elif [ -O "$1" ]; then
+	elif [ ! -O "$1" ]; then
 		echo "We do not own $1, refusing to overwrite."
 		return 1
 	elif [ -z "$1" ]; then
@@ -216,7 +216,8 @@ pm_main()
 	return 0
 }
 
-_rmmod() {
+_rmmod()
+{
 	if modprobe -r "$1"; then
 		touch "${STORAGEDIR}/module:$1"
 		return 0
@@ -270,7 +271,8 @@ modreload()
 }
 
 if ! command_exists service; then
-	service() {
+	service()
+	{
 		if [ -x "/etc/init.d/$1" ]; then
 			svc="$1"
 			shift

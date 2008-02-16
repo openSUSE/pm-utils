@@ -3,7 +3,8 @@
 
 NTPD_LOCK="pm-ntpd.lock"
 
-suspend_clock() {
+suspend_clock()
+{
 	if try_lock "${NTPD_LOCK}"; then
 		trap 'release_lock "${NTPD_LOCK}"' 0
 		stopservice ntpd
@@ -11,7 +12,8 @@ suspend_clock() {
 	/sbin/hwclock --systohc >/dev/null 2>&1 0<&1
 }
 
-resume_clock() {
+resume_clock()
+{
 	/sbin/hwclock --hctosys >/dev/null 2>&1 0<&1
 	rc=$?
 	# Bring back ntpd _after_ NetworkManager and such come back...
