@@ -2,23 +2,23 @@
 
 default_resume_kernel()
 {
-    case $(uname -m) in
-	i?86|x86_64|athlon)
-	    ;;
-	*) # this is only valid for x86 and x86_64
-	    return 1
-	    ;;
-    esac
-
-    [ -x /sbin/grubby -a -x /sbin/grub ] || return 1
-    [ -e "/boot/vmlinuz-$(uname -r)" ] || return 1
-
-    out=$(/sbin/grubby --info /boot/vmlinuz-$(uname -r) |grep index)
-    [ -n "${out}" ] || return 1
-    current=${out#index=}
-    echo "savedefault --default=${current} --once" | /sbin/grub --batch --no-floppy --device-map=/boot/grub/device.map --no-curses >/dev/null
-
-    return 0
+	case $(uname -m) in
+		i?86|x86_64|athlon)
+			;;
+		*) # this is only valid for x86 and x86_64
+			return 1
+			;;
+	esac
+	
+	[ -x /sbin/grubby -a -x /sbin/grub ] || return 1
+	[ -e "/boot/vmlinuz-$(uname -r)" ] || return 1
+	
+	out=$(/sbin/grubby --info /boot/vmlinuz-$(uname -r) |grep index)
+	[ -n "${out}" ] || return 1
+	current=${out#index=}
+	echo "savedefault --default=${current} --once" | /sbin/grub --batch --no-floppy --device-map=/boot/grub/device.map --no-curses >/dev/null
+	
+	return 0
 }
 
 RETVAL=0

@@ -3,22 +3,23 @@ SUBDIRS =		\
 	power.d		\
 	module.d
 
-extradir = $(libdir)/pm-utils
+pm_libdir = $(libdir)/pm-utils
 pm_sysconfdir = $(sysconfdir)/pm
 
-extra_SCRIPTS =			\
-	functions		\
-	defaults
+pm_lib_SCRIPTS = functions
 
-CLEANFILES = functions
+dist_pm_lib_DATA = defaults
 
-EXTRA_DIST =			\
-	$(extra_SCRIPTS)
+script_in_files = functions.in
+
+CLEANFILES =  $(script_in_files:.in=)
+
+EXTRA_DIST =  $(script_in_files)
 
 install-exec-local:
 	-mkdir $(DESTDIR)$(sysconfdir)/pm/config.d
 
-do_subst = sed -e 's,[@]PM-UTILS-LIBDIR[@],$(extradir),g' \
+do_subst = sed -e 's,[@]PM-UTILS-LIBDIR[@],$(pm_libdir),g' \
 	   -e 's,[@]PM-UTILS-SYSCONFDIR[@],$(pm_sysconfdir),g'
 
 SUFFIXES = .in

@@ -18,7 +18,8 @@
 
 . "@PM-UTILS-LIBDIR@/functions"
 
-help_options() {
+help_options()
+{
 	echo "pm-is-supported [--suspend | --hibernate | --suspend-hybrid ]"
 	echo
 }
