@@ -143,8 +143,8 @@ run_hooks() {
 "
 	IFS="${nifs}" # tolerate spaces in filenames.
 	[ "$3" = "reverse" ] && sort="sort -r"
-	for base in $(for f in "$syshooks/"*[!~] "$phooks/"*[!~];
-		do [ -O "$f" ] && echo ${f##*/} ; done | sort | uniq) ;
+	for base in $(IFS="${oifs}"; for f in "$syshooks/"*[!~] "$phooks/"*[!~];
+		do [ -O "$f" ] && echo ${f##*/} ; done | $sort | uniq) ;
 	do
 		if [ -f "$syshooks/$base" ]; then
 			hook="$syshooks/$base"
