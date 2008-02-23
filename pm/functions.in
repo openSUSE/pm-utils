@@ -25,6 +25,7 @@ TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCKDIR="${PM_UTILS_RUNDIR}/locks"
 STORAGEDIR="${PM_UTILS_RUNDIR}/storage"
 SLEEP_MODULE="kernel"
+NA=254
 
 # Use c sort order
 export LC_COLLATE=C
@@ -118,8 +119,15 @@ command_exists()
 	return $?
 }
 
-run_hooks()
-{
+hook_exit_status(){
+	case $1 in
+		0) echo "success." ;;
+		$NA) echo "not applicable." ;;
+		*) echo "Returned exit code $1." ;;
+	esac
+}
+
+run_hooks() {
 	# $1 = type of hook to find.  
 	# $2 = paramaters to pass to hooks.
 	# $3 = if present and equal to "reverse", run hooks backwards.
@@ -147,6 +155,7 @@ run_hooks()
 			IFS="${oifs}"
 			echo "$(date): running ${hook} $2"
 			"${hook}" $2
+			hook_exit_status $?
 		)
 	done
 	IFS="${oifs}"

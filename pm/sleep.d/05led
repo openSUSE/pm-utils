@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -f /proc/acpi/ibm/led ] || exit 1
+[ -f /proc/acpi/ibm/led ] || exit $NA
 
 case "$1" in
 	hibernate|suspend)
@@ -9,8 +9,6 @@ case "$1" in
 	thaw|resume) 
 		echo "7 off" >/proc/acpi/ibm/led
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
-
-exit $?

@@ -25,7 +25,7 @@ suspend_video()
 {
 	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
 	if [ "${DISPLAY_QUIRK_S3_BIOS}" = "true" -a \
-			"${DISPLAY_QUIRK_S3_MODE}" = "true" ]; then
+		"${DISPLAY_QUIRK_S3_MODE}" = "true" ]; then
 		sysctl -w kernel.acpi_video_flags=3
 	elif [ "${DISPLAY_QUIRK_S3_BIOS}" = "true" ]; then
 		sysctl -w kernel.acpi_video_flags=1
@@ -65,5 +65,3 @@ case "$1" in
 		fi
 		;;
 esac
-
-exit $?
