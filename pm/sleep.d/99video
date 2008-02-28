@@ -70,10 +70,10 @@ suspend_video()
 		radeon light off
 	fi
 	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
-		vbe vbestate save > /var/run/vbestate
+		vbe vbestate save |savestate vbestate
 	fi
 	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
-		vbe vbemode get > /var/run/vbemode
+		vbe vbemode get |savestate vbemode
 	fi
 	if [ "${DISPLAY_QUIRK_VGA_MODE_3}" = "true" ]; then
 		vbe vbemode set 3
@@ -94,10 +94,10 @@ resume_video()
 		sleep 0.1
 	fi
 	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
-		vbe vbestate restore < /var/run/vbestate
+		restorestate vbestate |vbe vbestate restore
 	fi
 	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
-		vbe vbemode set "$(cat /var/run/vbemode)"
+		vbe vbemode set "$(restorestate vbemode)"
 	fi
 	# based on data from s2ram
 	resume_fbcon
