@@ -9,6 +9,8 @@
 
 . "${PM_FUNCTIONS}"
 
+[ "$DISPLAY_QUIRK_NONE" = "true" ] && exit $NA
+
 reset_brightness()
 {
 	for bl in /sys/class/backlight/* ; do
