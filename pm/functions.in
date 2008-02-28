@@ -299,10 +299,20 @@ restartservice()
 
 savestate()
 {
-	echo "$2" > "${STORAGEDIR}/state:$1"
+	if [ -n "$2" ]; then
+		echo "$2" > "${STORAGEDIR}/state:$1"
+	else
+		cat > "${STORAGEDIR}/state:$1"
+	fi
 }
+
+state_exists()
+{
+	[ -O "${STORAGEDIR}/state:$1" ]
+}
+
 
 restorestate()
 {
-	[ -O "${STORAGEDIR}/state:${1}" ] && cat "${STORAGEDIR}/state:${1}"
+	state_exists "$1" && cat "${STORAGEDIR}/state:$1"
 }
