@@ -48,7 +48,38 @@ resume_fbcon()
 		echo 0 >"${con}"
 	done
 }
+suspend_video()
+{
+	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
+	if [ "${DISPLAY_QUIRK_S3_BIOS}" = "true" -a \
+		"${DISPLAY_QUIRK_S3_MODE}" = "true" ]; then
+		sysctl -w kernel.acpi_video_flags=3
+	elif [ "${DISPLAY_QUIRK_S3_BIOS}" = "true" ]; then
+		sysctl -w kernel.acpi_video_flags=1
+	elif [ "${DISPLAY_QUIRK_S3_MODE}" = "true" ]; then
+		sysctl -w kernel.acpi_video_flags=2
+	else
+		sysctl -w kernel.acpi_video_flags=0
+	fi
 
+	# We might need to do one or many of these quirks
+	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
+		radeon dac off
+		radeon light off
+	fi
+	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
+		vbe vbestate save > /var/run/vbestate
+	fi
+	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
+		vbe vbemode get > /var/run/vbemode
+	fi
+	if [ "${DISPLAY_QUIRK_VGA_MODE_3}" = "true" ]; then
+		vbe vbemode set 3
+	fi
+	if [ "${DISPLAY_QUIRK_DPMS_SUSPEND}" = "true" ]; then
+		vbe dpms suspend
+	fi
+}
 resume_video()
 {
 	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
@@ -80,6 +111,12 @@ resume_video()
 case "$1" in
 	suspend)
 		save_fbcon
+		suspend_video
+		;;
+	hibernate)
+		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
+			suspend_video
+		fi
 		;;
 	resume)
 		resume_video
