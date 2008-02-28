@@ -44,6 +44,7 @@ help_options()
 	echo "  --quirk-vbemode-restore"
 	echo "  --quirk-vbestate-restore"
 	echo "  --quirk-vga-mode3"
+	echo "  --quirk-none"
 	echo
 }
 
@@ -76,6 +77,8 @@ do
 			export DISPLAY_QUIRK_VBESTATE_RESTORE="true" ;;
 		--quirk-vga-mode3)
 			export DISPLAY_QUIRK_VGA_MODE_3="true" ;;
+		--quirk-none)
+			export DISPLAY_QUIRK_NONE="true" ;;
 		--help)
 			help_options
 			exit 0 ;;
