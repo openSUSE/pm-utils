@@ -106,8 +106,8 @@ resume_video()
 
 case "$1" in
 	suspend)
-		save_fbcon
 		suspend_video
+		save_fbcon
 		;;
 	hibernate)
 		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
