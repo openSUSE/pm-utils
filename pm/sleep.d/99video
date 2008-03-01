@@ -94,22 +94,34 @@ resume_video()
 	quirk "${QUIRK_RESET_BRIGHTNESS}" && 	reset_brightness
 }
 
+help() {
+	echo "Video quirk handler options:"
+	echo
+	echo "  --quirk-dpms-on"
+	echo "  --quirk-dpms-suspend"
+	echo "  --quirk-radeon-off"
+	echo "  --quirk-reset-brightness"
+	echo "  --quirk-s3-bios"
+	echo "  --quirk-s3-mode"
+	echo "  --quirk-vbe-post"
+	echo "  --quirk-vbemode-restore"
+	echo "  --quirk-vbestate-restore"
+	echo "  --quirk-vga-mode3"
+	echo "  --quirk-none"
+}
 
 case "$1" in
-	suspend)
-		suspend_video
-		;;
-	hibernate)
+	suspend) suspend_video ;;
+	hibernate) 
 		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
 			suspend_video
 		fi
 		;;
-	resume)
-		resume_video
-		;;
+	resume) resume_video ;;
 	thaw)
 		if [ "${HIBERNATE_RESUME_POST_VIDEO}" = "yes" ]; then
 			resume_video
 		fi
 		;;
+	help) help ;;
 esac
