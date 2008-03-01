@@ -59,15 +59,15 @@ suspend_video()
 	sysctl -w kernel.acpi_video_flags=$acpi_flag
 
 	# We might need to do one or many of these quirks
-	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
-		radeon dac off
-		radeon light off
-	fi
 	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
 		vbe vbestate save |savestate vbestate
 	fi
 	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
 		vbe vbemode get |savestate vbemode
+	fi
+	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
+		radeon dac off
+		radeon light off
 	fi
 	if [ "${DISPLAY_QUIRK_VGA_MODE_3}" = "true" ]; then
 		vbe vbemode set 3
@@ -75,14 +75,11 @@ suspend_video()
 	if [ "${DISPLAY_QUIRK_DPMS_SUSPEND}" = "true" ]; then
 		vbe dpms suspend
 	fi
+	save_fbcon
 }
 resume_video()
 {
-	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
-		radeon dac on
-		radeon light on
-	fi
-	# We might need to do one or many of these quirks
+		# We might need to do one or many of these quirks
 	if [ "${DISPLAY_QUIRK_VBE_POST}" = "true" ]; then
 		vbe post
 		sleep 0.1
@@ -95,6 +92,10 @@ resume_video()
 	fi
 	# based on data from s2ram
 	resume_fbcon
+	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
+		radeon dac on
+		radeon light on
+	fi
 	if [ "${DISPLAY_QUIRK_DPMS_ON}" = "true" ]; then
 		vbe dpms on
 	fi
@@ -107,7 +108,6 @@ resume_video()
 case "$1" in
 	suspend)
 		suspend_video
-		save_fbcon
 		;;
 	hibernate)
 		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
