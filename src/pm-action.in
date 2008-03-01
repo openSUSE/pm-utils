@@ -29,6 +29,8 @@
 export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
 . "${PM_FUNCTIONS}"
 
+# save the command line parameters for the hooks.
+export PM_CMDLINE="$*"
 help()
 {
 	echo "${0##*/} [options]"
@@ -49,25 +51,10 @@ if [ -n "$EUID" -a "$EUID" != "0" ]; then
 	exit 1
 fi
 
-# Get the command line options
+# Save the command line options for the hooks
 while [ $# -gt 0 ]
 do
-	[ "${1##--}" = "$1" ] && break #if this matches, it is not an option!
 	[ "$1" = "--help" ] && help
-	case "${1##--quirk-}" in # just quirks, please
-		dpms-on) 	  export QUIRK_DPMS_ON="true" ;;
-		dpms-suspend) 	  export QUIRK_DPMS_SUSPEND="true" ;;
-		radeon-off) 	  export QUIRK_RADEON_OFF="true" ;;
-		reset-brightness) export QUIRK_RESET_BRIGHTNESS="true" ;;
-		s3-bios) 	  export QUIRK_S3_BIOS="true" ;;
-		s3-mode) 	  export QUIRK_S3_MODE="true" ;;
-		vbe-post) 	  export QUIRK_VBE_POST="true" ;;
-		vbemode-restore)  export QUIRK_VBEMODE_RESTORE="true" ;;
-		vbestate-restore) export QUIRK_VBESTATE_RESTORE="true" ;;
-		vga-mode3) 	  export QUIRK_VGA_MODE_3="true" ;;
-		none) 		  export QUIRK_NONE="true" ;;
-		*) continue ;;
-	esac
 	shift
 done
 
@@ -80,7 +67,5 @@ case "$ACTION" in
 	*)		echo "Don't know how to ${ACTION}."
 			exit 1 ;;
 esac
-
-export PM_CMDLINE="$@"
 
 pm_main "${ACTION}" "${REVERSE}"
