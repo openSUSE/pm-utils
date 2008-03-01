@@ -49,10 +49,24 @@ resume_fbcon()
 	done
 }
 
-quirk()
-{
-	[ "$1" = "true" ] && [ -z $QUIRK_NONE ] 
-}
+# Some tiny helper functions for quirk handling
+quirk() { [ "$1" = "true" ] && [ -z $QUIRK_NONE ]; }
+
+# save/restore vbe state
+vbe_savestate() { vbe vbestate save |savestate vbestate; }
+vbe_restorestate() { restorestate vbestate |vbe vbestate restore; }
+
+# save/restore the vbe mode
+vbe_savemode() { vbe vbemode get |savestate vbemode; }
+vbe_restoremode() { vbe vbemode get |savestate vbemode; }
+
+# post the video card
+vbe_post() { vbe post; sleep 0.1; }
+
+# turn critical bits of radeon cards off/on
+radeon_off() { radeon dac off; radeon light off; }
+radeon_on() { radeon dac on; radeon light on; }
+
 suspend_video()
 {
 	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
@@ -60,43 +74,24 @@ suspend_video()
 	[ "${QUIRK_S3_BIOS}" = "true" ] && acpi_flag=$(($acpi_flag + 1))
 	[ "${QUIRK_S3_MODE}" = "true" ] && acpi_flag=$(($acpi_flag + 2))
 	sysctl -w kernel.acpi_video_flags=$acpi_flag
-
-	# We might need to do one or many of these quirks
-	quirk "${QUIRK_VBESTATE_RESTORE}" && \
-		vbe vbestate save |savestate vbestate
-	quirk "${QUIRK_VBEMODE_RESTORE}" && \
-		vbe vbemode get |savestate vbemode
-	quirk "${QUIRK_RADEON_OFF}" && {
-		radeon dac off
-		radeon light off
-	}
-	quirk "${QUIRK_VGA_MODE_3}" && \
-		vbe vbemode set 3
-	quirk "${QUIRK_DPMS_SUSPEND}" && \
-		vbe dpms suspend
-	save_fbcon
+	
+	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_savestate
+	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_savemode
+	quirk "${QUIRK_RADEON_OFF}" && 		radeon_off
+	quirk "${QUIRK_VGA_MODE_3}" && 		vbe vbemode set 3
+	quirk "${QUIRK_DPMS_SUSPEND}" && 	vbe dpms suspend
+	save_fbcon # there should be a quirk, but HAL does not pass it.
 }
 resume_video()
 {
 	# We might need to do one or many of these quirks
-	quirk "${QUIRK_VBE_POST}" && { 
-		vbe post
-		sleep 0.1
-	}
-	quirk "${QUIRK_VBESTATE_RESTORE}" && \
-		restorestate vbestate |vbe vbestate restore
-	quirk "${QUIRK_VBEMODE_RESTORE}" && \
-		vbe vbemode set "$(restorestate vbemode)"
-	# based on data from s2ram
-	resume_fbcon
-	quirk "${QUIRK_RADEON_OFF}" && {
-		radeon dac on
-		radeon light on
-	}
-	quirk "${QUIRK_DPMS_ON}" && \
-		vbe dpms on
-	quirk "${QUIRK_RESET_BRIGHTNESS}" && \
-		reset_brightness
+	quirk "${QUIRK_VBE_POST}" && 		vbe_post
+	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_restorestate
+	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_restoremode
+	resume_fbcon 	# also should be handled by a quirk.
+	quirk "${QUIRK_RADEON_OFF}" && 		radeon_on
+	quirk "${QUIRK_DPMS_ON}" && 		vbe dpms on
+	quirk "${QUIRK_RESET_BRIGHTNESS}" && 	reset_brightness
 }
 
 
