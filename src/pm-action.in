@@ -26,25 +26,21 @@
 
 # The rule here? Simplicity.
 
+export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
+. "${PM_FUNCTIONS}"
+
 help()
 {
 	echo "${0##*/} [options]"
 	echo
 	echo "Options can change how the supend or hibernate is done."
+	echo "pm-utils by itself does not handle any options except --help."
 	echo
-	echo "Possible actions are:"
+	echo "Instead, any options you supply are passed on to the helper"
+	echo "progams that handle the details of power management."
 	echo
-	echo "  --quirk-dpms-on"
-	echo "  --quirk-dpms-suspend"
-	echo "  --quirk-radeon-off"
-	echo "  --quirk-reset-brightness"
-	echo "  --quirk-s3-bios"
-	echo "  --quirk-s3-mode"
-	echo "  --quirk-vbe-post"
-	echo "  --quirk-vbemode-restore"
-	echo "  --quirk-vbestate-restore"
-	echo "  --quirk-vga-mode3"
-	echo "  --quirk-none"
+	echo "Those options are:"
+	run_hooks sleep help
 	exit 0
 }
 
@@ -74,9 +70,6 @@ do
 	esac
 	shift
 done
-
-export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
-. "${PM_FUNCTIONS}"
 
 ACTION="$(echo ${0##*pm-} |tr - _)"
 
