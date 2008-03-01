@@ -9,8 +9,6 @@
 
 . "${PM_FUNCTIONS}"
 
-[ "$DISPLAY_QUIRK_NONE" = "true" ] && exit $NA
-
 reset_brightness()
 {
 	for bl in /sys/class/backlight/* ; do
@@ -64,49 +62,41 @@ suspend_video()
 	sysctl -w kernel.acpi_video_flags=$acpi_flag
 
 	# We might need to do one or many of these quirks
-	if quirk "${DISPLAY_QUIRK_VBESTATE_RESTORE}"; then
+	quirk "${DISPLAY_QUIRK_VBESTATE_RESTORE}" && \
 		vbe vbestate save |savestate vbestate
-	fi
-	if quirk "${DISPLAY_QUIRK_VBEMODE_RESTORE}"; then
+	quirk "${DISPLAY_QUIRK_VBEMODE_RESTORE}" && \
 		vbe vbemode get |savestate vbemode
-	fi
-	if quirk "${DISPLAY_QUIRK_RADEON_OFF}"; then
+	quirk "${DISPLAY_QUIRK_RADEON_OFF}" && {
 		radeon dac off
 		radeon light off
-	fi
-	if quirk "${DISPLAY_QUIRK_VGA_MODE_3}"; then
+	}
+	quirk "${DISPLAY_QUIRK_VGA_MODE_3}" && \
 		vbe vbemode set 3
-	fi
-	if quirk "${DISPLAY_QUIRK_DPMS_SUSPEND}"; then
+	quirk "${DISPLAY_QUIRK_DPMS_SUSPEND}" && \
 		vbe dpms suspend
-	fi
 	save_fbcon
 }
 resume_video()
 {
-		# We might need to do one or many of these quirks
-	if quirk "${DISPLAY_QUIRK_VBE_POST}"; then
+	# We might need to do one or many of these quirks
+	quirk "${DISPLAY_QUIRK_VBE_POST}" && { 
 		vbe post
 		sleep 0.1
-	fi
-	if quirk "${DISPLAY_QUIRK_VBESTATE_RESTORE}"; then
+	}
+	quirk "${DISPLAY_QUIRK_VBESTATE_RESTORE}" && \
 		restorestate vbestate |vbe vbestate restore
-	fi
-	if quirk "${DISPLAY_QUIRK_VBEMODE_RESTORE}"; then
+	quirk "${DISPLAY_QUIRK_VBEMODE_RESTORE}" && \
 		vbe vbemode set "$(restorestate vbemode)"
-	fi
 	# based on data from s2ram
 	resume_fbcon
-	if quirk "${DISPLAY_QUIRK_RADEON_OFF}"; then
+	quirk "${DISPLAY_QUIRK_RADEON_OFF}" && {
 		radeon dac on
 		radeon light on
-	fi
-	if quirk "${DISPLAY_QUIRK_DPMS_ON}"; then
+	}
+	quirk "${DISPLAY_QUIRK_DPMS_ON}" && \
 		vbe dpms on
-	fi
-	if quirk "${DISPLAY_QUIRK_RESET_BRIGHTNESS}"; then
+	quirk "${DISPLAY_QUIRK_RESET_BRIGHTNESS}" && \
 		reset_brightness
-	fi
 }
 
 
