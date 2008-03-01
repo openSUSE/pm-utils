@@ -50,6 +50,11 @@ resume_fbcon()
 		echo 0 >"${con}"
 	done
 }
+
+quirk()
+{
+	[ "$1" = "true" ] && [ -z $DISPLAY_QUIRK_NONE ] 
+}
 suspend_video()
 {
 	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
@@ -59,20 +64,20 @@ suspend_video()
 	sysctl -w kernel.acpi_video_flags=$acpi_flag
 
 	# We might need to do one or many of these quirks
-	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_VBESTATE_RESTORE}"; then
 		vbe vbestate save |savestate vbestate
 	fi
-	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_VBEMODE_RESTORE}"; then
 		vbe vbemode get |savestate vbemode
 	fi
-	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_RADEON_OFF}"; then
 		radeon dac off
 		radeon light off
 	fi
-	if [ "${DISPLAY_QUIRK_VGA_MODE_3}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_VGA_MODE_3}"; then
 		vbe vbemode set 3
 	fi
-	if [ "${DISPLAY_QUIRK_DPMS_SUSPEND}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_DPMS_SUSPEND}"; then
 		vbe dpms suspend
 	fi
 	save_fbcon
@@ -80,26 +85,26 @@ suspend_video()
 resume_video()
 {
 		# We might need to do one or many of these quirks
-	if [ "${DISPLAY_QUIRK_VBE_POST}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_VBE_POST}"; then
 		vbe post
 		sleep 0.1
 	fi
-	if [ "${DISPLAY_QUIRK_VBESTATE_RESTORE}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_VBESTATE_RESTORE}"; then
 		restorestate vbestate |vbe vbestate restore
 	fi
-	if [ "${DISPLAY_QUIRK_VBEMODE_RESTORE}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_VBEMODE_RESTORE}"; then
 		vbe vbemode set "$(restorestate vbemode)"
 	fi
 	# based on data from s2ram
 	resume_fbcon
-	if [ "${DISPLAY_QUIRK_RADEON_OFF}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_RADEON_OFF}"; then
 		radeon dac on
 		radeon light on
 	fi
-	if [ "${DISPLAY_QUIRK_DPMS_ON}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_DPMS_ON}"; then
 		vbe dpms on
 	fi
-	if [ "${DISPLAY_QUIRK_RESET_BRIGHTNESS}" = "true" ]; then
+	if quirk "${DISPLAY_QUIRK_RESET_BRIGHTNESS}"; then
 		reset_brightness
 	fi
 }
