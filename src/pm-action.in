@@ -35,13 +35,7 @@ help()
 {
 	echo "${0##*/} [options]"
 	echo
-	echo "Options can change how the supend or hibernate is done."
-	echo "pm-utils by itself does not handle any options except --help."
-	echo
-	echo "Instead, any options you supply are passed on to the helper"
-	echo "progams that handle the details of power management."
-	echo
-	echo "Those options are:"
+	echo "Options can change how suspend or hibernate is done."
 	run_hooks sleep help
 	exit 0
 }

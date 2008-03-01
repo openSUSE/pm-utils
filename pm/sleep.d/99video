@@ -115,6 +115,7 @@ resume_video()
 }
 
 help() {
+	echo  # first echo makes it look nicer.
 	echo "Video quirk handler options:"
 	echo
 	echo "  --quirk-dpms-on"
