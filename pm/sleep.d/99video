@@ -132,8 +132,8 @@ help() {
 }
 
 case "$1" in
-	suspend) suspend_video ;;
-	hibernate) 
+	suspend*) suspend_video ;;
+	hibernate)
 		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
 			suspend_video
 		fi

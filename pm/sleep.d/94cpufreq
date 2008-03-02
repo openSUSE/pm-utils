@@ -28,7 +28,7 @@ thaw_cpufreq()
 }
 
 case "$1" in
-	suspend|hibernate)
+	suspend|hibernate*)
 		hibernate_cpufreq
 		;;
 	resume|thaw)
