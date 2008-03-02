@@ -4,7 +4,7 @@
 
 suspend_modules()
 {
-	[ -z "$SUSPEND_MODULES" ] && return 0
+	[ -z "$SUSPEND_MODULES" ] && return $NA
 	for x in $SUSPEND_MODULES ; do
 		modunload $x
 	done
@@ -23,8 +23,6 @@ case "$1" in
 	thaw|resume)
 		resume_modules
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
-
-exit $?

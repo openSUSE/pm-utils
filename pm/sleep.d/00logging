@@ -10,5 +10,3 @@ case "$1" in
 		free
 		;;
 esac
-
-exit 0

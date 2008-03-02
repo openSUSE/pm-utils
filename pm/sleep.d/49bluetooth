@@ -2,7 +2,7 @@
 
 . "${PM_FUNCTIONS}"
 
-[ -f /proc/acpi/ibm/bluetooth ] || exit 1
+[ -f /proc/acpi/ibm/bluetooth ] || exit $NA
 
 suspend_bluetooth()
 {
@@ -29,8 +29,6 @@ case "$1" in
 	thaw|resume)
 		resume_bluetooth
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
-
-exit $?

@@ -63,14 +63,6 @@
           <para>System is not on line power.</para>
         </listitem>
       </varlistentry>
-      <varlistentry>
-        <term>
-          <option>255 (false)</option>
-        </term>
-        <listitem>
-          <para>Power status could not be determined.</para>
-        </listitem>
-      </varlistentry>
     </variablelist>
   </refsect1>
   <refsect1>

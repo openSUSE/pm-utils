@@ -108,5 +108,3 @@ rm -f "${INHIBIT}"
 run_hooks sleep "$ACTION"
 "do_$ACTION"
 reverse "$REVERSE"
-
-exit $?

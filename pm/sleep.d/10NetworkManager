@@ -2,7 +2,7 @@
 
 . "${PM_FUNCTIONS}"
 
-command_exists dbus-send || exit 1
+command_exists dbus-send || exit $NA
 
 suspend_nm()
 {
@@ -29,8 +29,6 @@ case "$1" in
 	thaw|resume)
 		resume_nm
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
-
-exit $?
