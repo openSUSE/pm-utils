@@ -25,7 +25,7 @@ resume_clock()
 }
 
 case "$1" in
-	hibernate|suspend)
+	hibernate|suspend*)
 		suspend_clock
 		;;
 	thaw|resume)
