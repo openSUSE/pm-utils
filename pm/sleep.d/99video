@@ -96,7 +96,7 @@ resume_video()
 
 
 case "$1" in
-	suspend)
+	suspend*)
 		suspend_video
 		;;
 	hibernate)

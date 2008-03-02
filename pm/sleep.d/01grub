@@ -23,7 +23,7 @@ default_resume_kernel()
 }
 
 case "$1" in
-	hibernate)
+	hibernate|suspend_hybrid)
 		default_resume_kernel
 		;;
 	*) exit $NA

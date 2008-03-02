@@ -195,27 +195,6 @@ init_logfile()
 	exec > "$1" 2>&1
 }
 
-pm_main()
-{
-	"check_$1" || {
-		echo "System does not support $1 sleep."
-		return 1
-	}
-	take_suspend_lock || exit 1
-	# make sure that our locks are unlocked no matter how the script exits
-	trap remove_suspend_lock 0
-	init_logfile "$PM_LOGFILE" 
-	rm -f "$INHIBIT"
-
-	run_hooks sleep "$1" 
-	command_exists "do_$1" && [ ! -e "${INHIBIT}" ] && { \
-		sync; "do_$1"
-	}
-	run_hooks sleep "$2" reverse
-
-	return 0
-}
-
 _rmmod()
 {
 	if modprobe -r "$1"; then

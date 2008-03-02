@@ -3,7 +3,7 @@
 [ -f /proc/acpi/ibm/led ] || exit $NA
 
 case "$1" in
-	hibernate|suspend)
+	hibernate|suspend*)
 		echo "7 blink" >/proc/acpi/ibm/led
 		;;
 	thaw|resume) 
