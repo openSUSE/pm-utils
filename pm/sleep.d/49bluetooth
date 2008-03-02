@@ -23,7 +23,7 @@ resume_bluetooth()
 }
 
 case "$1" in
-	hibernate|suspend)
+	hibernate|suspend*)
 		suspend_bluetooth
 		;;
 	thaw|resume)

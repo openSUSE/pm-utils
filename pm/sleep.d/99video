@@ -78,7 +78,7 @@ resume_video()
 
 
 case "$1" in
-	suspend)
+	suspend*)
 		save_fbcon
 		;;
 	resume)
