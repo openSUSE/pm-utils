@@ -101,12 +101,20 @@ esac
 export PM_CMDLINE="$@"
 
 "check_$ACTION" || { echo "System does not support $ACTION sleep."; exit 1; }
-
 take_suspend_lock || exit 1
+
 # make sure we release the lock no matter how we exit
 trap remove_suspend_lock 0
 init_logfile "${PM_LOGFILE}"
+
+# Make sure we are not inhibited before we start.
 rm -f "${INHIBIT}"
+
+# run the sleep hooks
 run_hooks sleep "$ACTION"
+
+# Sleep only if we know how and if a hook did not inhibit us.
 command_exists "do_$ACTION" && [ ! -e "$INHIBIT" ] && { sync; "do_$ACTION"; }
+
+# run the sleep hooks in reverse with the wakeup action
 run_hooks sleep "$REVERSE" reverse
