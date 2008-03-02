@@ -23,7 +23,7 @@ resume_nm()
 }
 
 case "$1" in
-	hibernate|suspend)
+	hibernate|suspend*)
 		suspend_nm
 		;;
 	thaw|resume)

@@ -17,7 +17,7 @@ resume_modules()
 }
 
 case "$1" in
-	hibernate|suspend)
+	hibernate|suspend*)
 		suspend_modules
 		;;
 	thaw|resume)
