@@ -6,11 +6,11 @@ SUBDIRS =		\
 pm_libdir = $(libdir)/pm-utils
 pm_sysconfdir = $(sysconfdir)/pm
 
-pm_lib_SCRIPTS = functions
+pm_lib_SCRIPTS = functions pm-functions
 
 dist_pm_lib_DATA = defaults
 
-script_in_files = functions.in
+script_in_files = functions.in pm-functions.in
 
 CLEANFILES =  $(script_in_files:.in=)
 
