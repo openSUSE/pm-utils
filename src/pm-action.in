@@ -85,8 +85,7 @@ do
 	shift
 done
 
-export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
-. "${PM_FUNCTIONS}"
+. "@PM-UTILS-LIBDIR@/pm-functions"
 
 ACTION="$(echo ${0##*pm-} |tr - _)"
 
