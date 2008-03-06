@@ -155,6 +155,11 @@ restartservice()
 	[ -O "${STORAGEDIR}/service:$1" ] && service "$1" start
 }
 
+disablehook()
+{
+	echo "${2:-${0$$*/}}" > "${STORAGEDIR}/disable_hook:$1"
+}
+
 savestate()
 {
 	echo "$2" > "${STORAGEDIR}/state:$1"
