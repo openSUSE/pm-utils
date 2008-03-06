@@ -157,7 +157,7 @@ restartservice()
 
 disablehook()
 {
-	echo "${2:-${0$$*/}}" > "${STORAGEDIR}/disable_hook:$1"
+	echo "${2:-${0$$*/}}" > "${STORAGEDIR}/disable_hook:${1##*/}"
 }
 
 savestate()

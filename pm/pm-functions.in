@@ -29,6 +29,8 @@ LOCKDIR="${PM_UTILS_RUNDIR}/locks"
 STORAGEDIR="${PM_UTILS_RUNDIR}/storage"
 SLEEP_MODULE="kernel"
 NA=254
+NX=253
+DX=252
 PM_FUNCTIONS="$PM_UTILS_LIBDIR/functions"
 # Use c sort order
 export LC_COLLATE=C
@@ -67,8 +69,17 @@ hook_exit_status(){
 	case $1 in
 		0) echo "success." ;;
 		$NA) echo "not applicable." ;;
+		$NX) echo "not executable." ;;
+		$DX) echo "disabled." ;;
 		*) echo "Returned exit code $1." ;;
 	esac
+}
+
+hook_ok()
+{
+	[ -f "$STORAGEDIR/disable_hook:${1##*/}" ] && return $DX
+	[ -x "$1" ] || return $NX
+	return 0
 }
 
 run_hooks() {
@@ -95,12 +106,12 @@ run_hooks() {
 		elif [ -f "$phooks/$base" ]; then
 			hook="$phooks/$base"
 		fi
-		[ -x "${hook}" ] && (
+		hook_ok "$hook" && (
 			IFS="${oifs}"
 			echo "$(date): running ${hook} $2"
 			"${hook}" $2
-			hook_exit_status $?
 		)
+		hook_exit_status $?
 	done
 	IFS="${oifs}"
 }
