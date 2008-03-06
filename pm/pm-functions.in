@@ -48,6 +48,18 @@ done
 
 . "${PM_FUNCTIONS}"
 
+[ -f "$PM_UTILS_LIBDIR/blacklist" ] && {
+	# loop through the blacklist file, adding entries to our hook blacklist.
+	# Blacklist file format:
+	# name debugging text
+	# Comments begin with hash signs.
+	sed 's,#.*$,,g' < "$PM_UTILS_LIBDIR/blacklist" | \
+	while read entry comment; do
+		[ -z "$entry" ] && continue
+		disablehook "${entry##*/}" "${comment:-blacklist}"
+	done
+}
+
 take_suspend_lock()
 {
 	VT=$(fgconsole)
