@@ -73,7 +73,7 @@ suspend_video()
 	local acpi_flag=0
 	[ "${QUIRK_S3_BIOS}" = "true" ] && acpi_flag=$(($acpi_flag + 1))
 	[ "${QUIRK_S3_MODE}" = "true" ] && acpi_flag=$(($acpi_flag + 2))
-	sysctl -w kernel.acpi_video_flags=$acpi_flag
+	sysctl -w kernel.acpi_video_flags=$acpi_flag 2>&1 >/dev/null
 	
 	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_savestate
 	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_savemode
