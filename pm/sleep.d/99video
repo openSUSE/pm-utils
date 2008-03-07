@@ -10,8 +10,7 @@
 . "${PM_FUNCTIONS}"
 
 for opt in $PM_CMDLINE; do
-       [ "${opt#--quirk-}" = "$opt" ] && continue # not one we care about.
-	case "${1##--quirk-}" in # just quirks, please
+	case "${opt##--quirk-}" in # just quirks, please
 		dpms-on) 	   QUIRK_DPMS_ON="true" ;;
 		dpms-suspend) 	   QUIRK_DPMS_SUSPEND="true" ;;
 		radeon-off) 	   QUIRK_RADEON_OFF="true" ;;
@@ -25,7 +24,6 @@ for opt in $PM_CMDLINE; do
 		none) 		   QUIRK_NONE="true" ;;
 		*) continue ;;
 	esac
-	shift
 done
 
 
