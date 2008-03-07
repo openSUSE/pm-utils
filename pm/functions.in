@@ -6,7 +6,6 @@
 # for great debugging!
 [ "${PM_DEBUG}" = "true" ] && set -x
 
-
 # try to take the lock.  Fail if we cannot get it.
 try_lock()
 {
@@ -80,7 +79,7 @@ _rmmod()
 		touch "${STORAGEDIR}/module:$1"
 		return 0
 	else
-		echo "# could not unload '$1', usage count was $2"
+		log "# could not unload '$1', usage count was $2"
 		return 1
 	fi
 }
@@ -136,7 +135,7 @@ if ! command_exists service; then
 			shift
 			"/etc/init.d/$svc" "$@"
 		else
-			echo "$1" $": unrecognized service" 1>&2
+			log "$1" $": unrecognized service" 1>&2
 			return 1
 		fi
 	}
@@ -157,10 +156,20 @@ restartservice()
 
 savestate()
 {
-	echo "$2" > "${STORAGEDIR}/state:$1"
+	if [ -n "$2" ]; then
+		echo "$2" > "${STORAGEDIR}/state:$1"
+	else
+		cat > "${STORAGEDIR}/state:$1"
+	fi
 }
+
+state_exists()
+{
+	[ -O "${STORAGEDIR}/state:$1" ]
+}
+
 
 restorestate()
 {
-	[ -O "${STORAGEDIR}/state:${1}" ] && cat "${STORAGEDIR}/state:${1}"
+	state_exists "$1" && cat "${STORAGEDIR}/state:$1"
 }
