@@ -48,13 +48,14 @@ done
 
 . "${PM_FUNCTIONS}"
 
-[ -f "$PM_UTILS_LIBDIR/blacklist" ] && {
+[ -f "$PM_UTILS_SYSCONFDIR/blacklist" ] && {
 	# loop through the blacklist file, adding entries to our hook blacklist.
 	# Blacklist file format:
 	# name debugging text
 	# Comments begin with hash signs.
-	sed 's,#.*$,,g' < "$PM_UTILS_LIBDIR/blacklist" | \
+	sed 's,#.*$,,g' < "$PM_UTILS_SYSCONFDIR/blacklist" | \
 	while read entry comment; do
+		# skip blank lines
 		[ -z "$entry" ] && continue
 		disablehook "${entry##*/}" "${comment:-blacklist}"
 	done
@@ -101,6 +102,7 @@ run_hooks() {
 	# Currently only power and sleep are meaningful.
 	local syshooks="${PM_UTILS_ETCDIR}/$1.d"
 	local phooks="${PM_UTILS_LIBDIR}/$1.d"
+	command_exists before_hooks && before_hooks
 	local sort="sort"
 	local base
 	local hook
