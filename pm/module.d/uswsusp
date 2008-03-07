@@ -1,3 +1,9 @@
+# disable processing of 99video
+before_hooks()
+{
+	disablehook 99video "disabled by uswsusp"
+}
+
 check_suspend()
 {
 	grep -q mem /sys/power/state
