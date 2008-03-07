@@ -26,25 +26,18 @@
 
 # The rule here? Simplicity.
 
-help_options()
+export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
+. "${PM_FUNCTIONS}"
+
+# save the command line parameters for the hooks.
+export PM_CMDLINE="$*"
+help()
 {
 	echo "${0##*/} [options]"
 	echo
-	echo "Options can change how the supend or hibernate is done."
-	echo
-	echo "Possible actions are:"
-	echo
-	echo "  --quirk-dpms-on"
-	echo "  --quirk-dpms-suspend"
-	echo "  --quirk-radeon-off"
-	echo "  --quirk-reset-brightness"
-	echo "  --quirk-s3-bios"
-	echo "  --quirk-s3-mode"
-	echo "  --quirk-vbe-post"
-	echo "  --quirk-vbemode-restore"
-	echo "  --quirk-vbestate-restore"
-	echo "  --quirk-vga-mode3"
-	echo
+	echo "Options can change how suspend or hibernate is done."
+	run_hooks sleep help
+	exit 0
 }
 
 if [ -n "$EUID" -a "$EUID" != "0" ]; then
@@ -52,41 +45,12 @@ if [ -n "$EUID" -a "$EUID" != "0" ]; then
 	exit 1
 fi
 
-# Get the command line options
+# Save the command line options for the hooks
 while [ $# -gt 0 ]
 do
-	case "$1" in
-		--quirk-dpms-on)
-			export DISPLAY_QUIRK_DPMS_ON="true" ;;
-		--quirk-dpms-suspend)
-			export DISPLAY_QUIRK_DPMS_SUSPEND="true" ;;
-		--quirk-radeon-off)
-			export DISPLAY_QUIRK_RADEON_OFF="true" ;;
-		--quirk-reset-brightness)
-			export DISPLAY_QUIRK_RESET_BRIGHTNESS="true" ;;
-		--quirk-s3-bios)
-			export DISPLAY_QUIRK_S3_BIOS="true" ;;
-		--quirk-s3-mode)
-			export DISPLAY_QUIRK_S3_MODE="true" ;;
-		--quirk-vbe-post)
-			export DISPLAY_QUIRK_VBE_POST="true" ;;
-		--quirk-vbemode-restore)
-			export DISPLAY_QUIRK_VBEMODE_RESTORE="true" ;;
-		--quirk-vbestate-restore)
-			export DISPLAY_QUIRK_VBESTATE_RESTORE="true" ;;
-		--quirk-vga-mode3)
-			export DISPLAY_QUIRK_VGA_MODE_3="true" ;;
-		--help)
-			help_options
-			exit 0 ;;
-		*)
-			break ;; # terminate while loop
-	esac
+	[ "$1" = "--help" ] && help
 	shift
 done
-
-export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
-. "${PM_FUNCTIONS}"
 
 ACTION="$(echo ${0##*pm-} |tr - _)"
 
@@ -97,8 +61,6 @@ case "$ACTION" in
 	*)		echo "Don't know how to ${ACTION}."
 			exit 1 ;;
 esac
-
-export PM_CMDLINE="$@"
 
 "check_$ACTION" || { echo "System does not support $ACTION sleep."; exit 1; }
 take_suspend_lock || exit 1
