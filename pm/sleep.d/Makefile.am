@@ -5,7 +5,6 @@ sleep_SCRIPTS =			\
 	01grub			\
 	05led			\
 	10NetworkManager	\
-	20video			\
 	49bluetooth		\
 	50modules		\
 	55battery		\

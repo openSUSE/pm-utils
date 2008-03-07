@@ -6,12 +6,19 @@ A pm-utils hook is simply an executable file that accepts a single parameter.
 For hooks in sleep.d, the potential values of that parameter are:
 suspend -- The hook MUST perform whatever action is appropriate when the
 	system is preparing for S3 sleep (or its equivalent).
+suspend_hybrid -- The hook MUST perform whatever action is appropriate 
+		  when entering suspend mode.  The hook SHOULD also save
+		  any state it may need to bring the system back from 
+		  hibernate mode.
 resume -- The hook MUST perform whatever action is appropriate when the 
 	system is coming out of suspend.
 hibernate -- The hook MUST perform whatever action is appropriate when 
 	the system is preparing for suspend-to-disk.
 thaw -- The hook MUST perform whatever action is appropriate when the system
 	is coming out of suspend-to-disk.
+help -- If your hook parses the PM_CMDLINE environment variable for switches, 
+	this function SHOULD output text describing the parameters it parses
+	in a format easily understandable by an end-user.
 
 For hooks in power.d, the potential values of that parameter are:
 true -- the hook MUST perform whatever action is appropriate when the system 
