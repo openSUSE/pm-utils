@@ -12,16 +12,16 @@
 for opt in $PM_CMDLINE; do
        [ "${opt#--quirk-}" = "$opt" ] && continue # not one we care about.
 	case "${1##--quirk-}" in # just quirks, please
-		dpms-on) 	   DPMS_ON="true" ;;
-		dpms-suspend) 	   DPMS_SUSPEND="true" ;;
-		radeon-off) 	   RADEON_OFF="true" ;;
-		reset-brightness)  RESET_BRIGHTNESS="true" ;;
-		s3-bios) 	   S3_BIOS="true" ;;
-		s3-mode) 	   S3_MODE="true" ;;
-		vbe-post) 	   VBE_POST="true" ;;
-		vbemode-restore)   VBEMODE_RESTORE="true" ;;
-		vbestate-restore)  VBESTATE_RESTORE="true" ;;
-		vga-mode3) 	   VGA_MODE_3="true" ;;
+		dpms-on) 	   QUIRK_DPMS_ON="true" ;;
+		dpms-suspend) 	   QUIRK_DPMS_SUSPEND="true" ;;
+		radeon-off) 	   QUIRK_RADEON_OFF="true" ;;
+		reset-brightness)  QUIRK_RESET_BRIGHTNESS="true" ;;
+		s3-bios) 	   QUIRK_S3_BIOS="true" ;;
+		s3-mode) 	   QUIRK_S3_MODE="true" ;;
+		vbe-post) 	   QUIRK_VBE_POST="true" ;;
+		vbemode-restore)   QUIRK_VBEMODE_RESTORE="true" ;;
+		vbestate-restore)  QUIRK_VBESTATE_RESTORE="true" ;;
+		vga-mode3) 	   QUIRK_VGA_MODE_3="true" ;;
 		none) 		   QUIRK_NONE="true" ;;
 		*) continue ;;
 	esac
@@ -91,27 +91,27 @@ suspend_video()
 {
 	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
 	local acpi_flag=0
-	[ "${S3_BIOS}" = "true" ] && acpi_flag=$(($acpi_flag + 1))
-	[ "${S3_MODE}" = "true" ] && acpi_flag=$(($acpi_flag + 2))
+	[ "${QUIRK_S3_BIOS}" = "true" ] && acpi_flag=$(($acpi_flag + 1))
+	[ "${QUIRK_S3_MODE}" = "true" ] && acpi_flag=$(($acpi_flag + 2))
 	sysctl -w kernel.acpi_video_flags=$acpi_flag
 	
-	quirk "${VBESTATE_RESTORE}" && 	vbe_savestate
-	quirk "${VBEMODE_RESTORE}" && 	vbe_savemode
-	quirk "${RADEON_OFF}" && 	radeon_off
-	quirk "${VGA_MODE_3}" && 	vbe vbemode set 3
-	quirk "${DPMS_SUSPEND}" && 	vbe dpms suspend
+	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_savestate
+	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_savemode
+	quirk "${QUIRK_RADEON_OFF}" && 		radeon_off
+	quirk "${QUIRK_VGA_MODE_3}" && 		vbe vbemode set 3
+	quirk "${QUIRK_DPMS_SUSPEND}" && 	vbe dpms suspend
 	save_fbcon # there should be a quirk, but HAL does not pass it.
 }
 resume_video()
 {
 	# We might need to do one or many of these quirks
-	quirk "${VBE_POST}" && 		vbe_post
-	quirk "${VBESTATE_RESTORE}" && 	vbe_restorestate
-	quirk "${VBEMODE_RESTORE}" && 	vbe_restoremode
+	quirk "${QUIRK_VBE_POST}" && 		vbe_post
+	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_restorestate
+	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_restoremode
 	resume_fbcon 	# also should be handled by a quirk.
-	quirk "${RADEON_OFF}" && 	radeon_on
-	quirk "${DPMS_ON}" && 		vbe dpms on
-	quirk "${RESET_BRIGHTNESS}" && 	reset_brightness
+	quirk "${QUIRK_RADEON_OFF}" && 		radeon_on
+	quirk "${QUIRK_DPMS_ON}" && 		vbe dpms on
+	quirk "${QUIRK_RESET_BRIGHTNESS}" && 	reset_brightness
 }
 
 help() {
