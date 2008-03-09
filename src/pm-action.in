@@ -29,7 +29,6 @@
 . "@PM-UTILS-LIBDIR@/pm-functions"
 
 # save the command line parameters for the hooks.
-export PM_CMDLINE="$*"
 help()
 {
 	echo "${0##*/} [options]"

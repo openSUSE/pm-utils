@@ -17,6 +17,7 @@ set -a
 PM_UTILS_LIBDIR="@PM-UTILS-LIBDIR@"
 PM_UTILS_ETCDIR="@PM-UTILS-SYSCONFDIR@"
 PM_UTILS_RUNDIR="/var/run/pm-utils"
+PM_CMDLINE="$*"
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
 HIBERNATE_MODE="platform"
