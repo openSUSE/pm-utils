@@ -63,6 +63,19 @@ mkdir -p "$STORAGEDIR"
 	done
 }
 
+[ -f "$PM_UTILS_ETCDIR/parameters" ] && {
+	# loop through the parameters file, and add each line in it to the
+	# end of PM_CMDLINE.
+	# Comments begin with hashmarks and run to the end of the line.
+	# Because we are modifying an env var, the while read loop cannot
+	# run in a pipe like the previous one did.
+	while read parameter; do
+		parameter="$(echo $parameter |sed 's,#.*$,,g')"
+		[ -z "$parameter" ] && continue
+		PM_CMDLINE="${PM_CMDLINE} $parameter"
+	done < "$PM_UTILS_ETCDIR/parameters"
+}
+
 take_suspend_lock()
 {
 	VT=$(fgconsole)
