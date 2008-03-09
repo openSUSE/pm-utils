@@ -47,6 +47,7 @@ for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
 done
 
 . "${PM_FUNCTIONS}"
+mkdir -p "$STORAGEDIR"
 
 [ -f "$PM_UTILS_ETCDIR/blacklist" ] && {
 	# loop through the blacklist file, adding entries to our hook blacklist.
