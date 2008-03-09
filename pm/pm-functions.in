@@ -48,7 +48,7 @@ done
 
 . "${PM_FUNCTIONS}"
 
-[ -f "$PM_UTILS_SYSCONFDIR/blacklist" ] && {
+[ -f "$PM_UTILS_ETCDIR/blacklist" ] && {
 	# loop through the blacklist file, adding entries to our hook blacklist.
 	# Blacklist file format:
 	# name debugging text
