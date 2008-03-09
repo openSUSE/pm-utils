@@ -53,7 +53,7 @@ done
 	# Blacklist file format:
 	# name debugging text
 	# Comments begin with hash signs.
-	sed 's,#.*$,,g' < "$PM_UTILS_SYSCONFDIR/blacklist" | \
+	sed 's,#.*$,,g' < "$PM_UTILS_ETCDIR/blacklist" | \
 	while read entry comment; do
 		# skip blank lines
 		[ -z "$entry" ] && continue
