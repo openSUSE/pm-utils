@@ -39,25 +39,35 @@ For any given sleep/wakeup cycle, the hooks in sleep.d are run twice:
 CONVENIENCE FUNCTIONS
 
 If your hook is a shell script that supports POSIX/SuS compatible syntax, you
-MAY source /usr/lib/pm-utils/functions, which will perform the following 
-actions:
-
-1: All settings present in the files located in /etc/pm/config.d/ will be
-   available as environment variables.
-2: The following convenience functions will be made available:
-	1: try_lock
-	2: spin_lock
-	3: release_lock
-	4: get_power_status
-	5: modunload
-	6: modreload
-	7: stopservice
-	8: restartservice
-	9: savestate
-	10: restorestate
-    To get an overview of what each of those functions does and the parameters
-    they accept, read the fine source.  Note that other functions may be 
-    present -- those functions are internal to the pm-utils package and MUST NOT
-    be used by external hooks.  In the future, those functions will not be
-    available to third-party hooks.
-
+MAY source /usr/lib/pm-utils/functions, which will make the following 
+convenience functions available:
+1:  try_lock
+	try_lock expects a single parameter -- the name of the lock to 
+	try to acquire.  Exit code denotes success.
+2:  spin_lock
+	Wrapper around try_lock.  Second parameter is the number of seconds 
+	to wait for the lock before giving up.  If no second parameter
+	is passed, this function will wait forever.
+3:  release_lock
+	Release a previously acquired lock.  First parameter is the name of the
+	lock.
+4:  get_power_status
+	Outputs our power source on stdout.
+5:  modunload
+	Unload a module.  Exit code denotes success.
+6:  modreload
+	Reload all the modules unloaded by modunload.
+7:  stopservice
+	Stop a service.  First parameter is the name of the service to stop.
+8:  restartservice
+	Restart a service.  Service must have been stopped by stopservice.
+9:  savestate
+	Save state piped into this function on stdin.  First parameter is the 
+	name of the state being saved.  If a second parameter is passed, this
+	function will use it instead of stdin.
+10: restorestate
+	Outputs state saved by savestate on stdout.  The first parameter is the
+	name of the state to restore.
+11: disablehook
+	Prevent a hook from running.  The exact name of the hook (including
+	numberic prefix) must be passed.
