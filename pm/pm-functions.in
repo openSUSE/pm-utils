@@ -105,7 +105,11 @@ hook_exit_status(){
 
 hook_ok()
 {
-	[ -f "$STORAGEDIR/disable_hook:${1##*/}" ] && return $DX
+	local hook="${1##*/}"
+	## the actual name as passed to us.
+	[ -f "$STORAGEDIR/disable_hook:$hook" ] && return $DX
+	## name with zeros chopped off the filename
+	[ -f "$STORAGEDIR/disable_hook:${hook#[0-9][0-9]}" ] && return $DX
 	[ -x "$1" ] || return $NX
 	return 0
 }
