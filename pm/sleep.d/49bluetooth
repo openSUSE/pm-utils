@@ -6,20 +6,18 @@
 
 suspend_bluetooth()
 {
-	savestate ibm_bluetooth "$(awk '{ print $2 ; exit; }' /proc/acpi/ibm/bluetooth)"
-	echo disable > /proc/acpi/ibm/bluetooth
+	if grep -q enabled /proc/acpi/ibm/bluetooth; then
+		savestate ibm_bluetooth enable
+		echo disable > /proc/acpi/ibm/bluetooth
+	else
+		savestate ibm_bluetooth disable
+	fi
 }
 
 resume_bluetooth()
 {
-	case "$(restorestate ibm_bluetooth)" in
-		enabled)
-			echo enable > /proc/acpi/ibm/bluetooth
-			;;
-		disabled)
-			echo disable > /proc/acpi/ibm/bluetooth
-			;;
-	esac
+	state_exists ibm_bluetooth || return
+	restorestate ibm_bluetooth > /proc/acpi/ibm/bluetooth
 }
 
 case "$1" in
