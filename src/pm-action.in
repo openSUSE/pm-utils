@@ -26,8 +26,7 @@
 
 # The rule here? Simplicity.
 
-export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
-. "${PM_FUNCTIONS}"
+. "@PM-UTILS-LIBDIR@/pm-functions"
 
 # save the command line parameters for the hooks.
 export PM_CMDLINE="$*"

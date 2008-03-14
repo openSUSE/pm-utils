@@ -25,8 +25,7 @@
 #
 
 POWERSAVE_LOGFILE="/dev/null"
-export PM_FUNCTIONS="@PM-UTILS-LIBDIR@/functions"
-. "${PM_FUNCTIONS}"
+. "@PM-UTILS-LIBDIR@/pm-functions"
 
 if [ "$1" = "true" -o "$1" = "false" ] ; then
 	init_logfile "${POWERSAVE_LOGFILE}"
