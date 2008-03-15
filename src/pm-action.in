@@ -38,7 +38,7 @@ help()
 	exit 0
 }
 
-if [ -n "$EUID" -a "$EUID" != "0" ]; then
+if [ "$(id -u)" != "0" ]; then
 	echo This utility may only be run by the root user. 1>&2
 	exit 1
 fi
