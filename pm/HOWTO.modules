@@ -57,4 +57,12 @@ OTHER STUFF:
 
 If you define a function named "before_hook", that function will be executed
 just before the sleep/resume hooks are executed.  If you need to disable a hook,
-this is the place to do it. 
+this is the place to do it.
+
+If you define a function named "sleep_method_help", that function will be 
+executed whenever any of the pm-utils scripts is called with the "--help"
+option. If the behaviour of your sleep method can be changes by command-line
+parameters passed to pm-action or by a configuration file setting, you
+SHOULD define a sleep_method_help function and that function SHOULD explain
+how the command-line paramaters and configuration file settings can change its
+behaviour. 

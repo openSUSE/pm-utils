@@ -35,6 +35,7 @@ help()
 	echo
 	echo "Options can change how suspend or hibernate is done."
 	run_hooks sleep help
+	command_exists sleep_method_help && sleep_method_help
 	exit 0
 }
 
