@@ -125,7 +125,6 @@ run_hooks() {
 		elif [ -f "$phooks/$base" ]; then
 			hook="$phooks/$base"
 		fi
-		
 		echo $(date): running ${hook} $2
 		hook_ok "$hook" && (
 			IFS="${oifs}"
