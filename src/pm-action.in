@@ -42,6 +42,11 @@ if [ "$(id -u)" != "0" ]; then
 	echo This utility may only be run by the root user. 1>&2
 	exit 1
 fi
+# 
+take_suspend_lock || exit 1
+
+# make sure we release the lock no matter how we exit
+trap remove_suspend_lock 0
 
 # Save the command line options for the hooks
 while [ $# -gt 0 ]
@@ -61,10 +66,6 @@ case "$ACTION" in
 esac
 
 "check_$ACTION" || { echo "System does not support $ACTION sleep."; exit 1; }
-take_suspend_lock || exit 1
-
-# make sure we release the lock no matter how we exit
-trap remove_suspend_lock 0
 init_logfile "${PM_LOGFILE}"
 
 # Make sure we are not inhibited before we start.
