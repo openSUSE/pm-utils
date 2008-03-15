@@ -76,6 +76,8 @@ mkdir -p "$STORAGEDIR"
 	done < "$PM_UTILS_ETCDIR/parameters"
 }
 
+log() { [ $LOGGING ] && echo $*; }
+
 take_suspend_lock()
 {
 	VT=$(fgconsole)
@@ -95,11 +97,11 @@ remove_suspend_lock()
 
 hook_exit_status(){
 	case $1 in
-		0) echo "success." ;;
-		$NA) echo "not applicable." ;;
-		$NX) echo "not executable." ;;
-		$DX) echo "disabled." ;;
-		*) echo "Returned exit code $1." ;;
+		0) log "success." ;;
+		$NA) log "not applicable." ;;
+		$NX) log "not executable." ;;
+		$DX) log "disabled." ;;
+		*) log "Returned exit code $1." ;;
 	esac
 }
 
@@ -139,7 +141,7 @@ run_hooks() {
 		elif [ -f "$phooks/$base" ]; then
 			hook="$phooks/$base"
 		fi
-		echo $(date): running ${hook} $2
+		log  $(date): running ${hook} $2
 		hook_ok "$hook" && (
 			IFS="${oifs}"
 			"${hook}" $2
@@ -161,6 +163,7 @@ init_logfile()
 		echo "Please pass a filename to init_logfile."
 		return 1
 	fi
+	export LOGGING=true
 	exec > "$1" 2>&1
 }
 
