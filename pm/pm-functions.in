@@ -80,8 +80,6 @@ log() { [ $LOGGING ] && echo $*; }
 
 take_suspend_lock()
 {
-	VT=$(fgconsole)
-	chvt 63
 	try_lock "pm-utils.lock" || return 1
 	mkdir -p "${STORAGEDIR}"
 	return 0
@@ -89,9 +87,9 @@ take_suspend_lock()
 
 remove_suspend_lock()
 {
+	local curr_vt=$(fgconsole)
+	[ "$curr_vt" = "$VT" ] || chvt "$VT"
 	rm -rf "${STORAGEDIR}"
-	chvt 1
-	chvt $VT
 	release_lock "pm-utils.lock"
 }
 
