@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # disable processing of 99video
 before_hooks()
 {
