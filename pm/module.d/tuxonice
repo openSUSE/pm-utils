@@ -11,12 +11,17 @@ done
 
 check_suspend()
 {
-	grep -q mem /sys/power/state
+	[ -e /dev/pmu ] && return 0
+	grep -q mem /sys/power/state && return 0
 }
 
 do_suspend()
 {
-	echo "mem" >/sys/power/state
+	if [ -e /dev/pmu ]; then
+		pm-pmu --suspend
+	else
+		echo -n "mem" > /sys/power/state
+	fi
 }
 
 check_hibernate()

@@ -6,7 +6,8 @@ before_hooks()
 
 check_suspend()
 {
-	grep -q mem /sys/power/state
+	[ -e /dev/pmu ] && return 0
+	grep -q mem /sys/power/state && return 0
 }
 
 do_suspend()
