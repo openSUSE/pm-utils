@@ -4,10 +4,15 @@
 
 case "$1" in
 	hibernate|suspend*)
-		TERM=linux openvt -w -s -f -c 63 -- clear >/dev/null 2>&1
+		fgconsole |savestate console
 		chvt 63
+		TERM=linux clear
 		;;
-	thaw|resume) chvt 1 ;;
+	thaw|resume) 
+		state_exists console || exit 1
+		chvt $(restorestate console) 
+		deallocvt 63
+		;;
 	*)
 		;;
 esac

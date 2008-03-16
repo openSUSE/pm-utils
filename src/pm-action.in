@@ -48,7 +48,6 @@ take_suspend_lock || exit 1
 
 # make sure we release the lock no matter how we exit
 trap remove_suspend_lock 0
-VT=$(fgconsole)
 
 # Save the command line options for the hooks
 while [ $# -gt 0 ]

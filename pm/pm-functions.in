@@ -34,7 +34,7 @@ NX=253
 DX=252
 PM_FUNCTIONS="$PM_UTILS_LIBDIR/functions"
 # Use c sort order
-export LC_COLLATE=C
+LC_COLLATE=C
 
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 
@@ -92,8 +92,6 @@ take_suspend_lock()
 
 remove_suspend_lock()
 {
-	local curr_vt=$(fgconsole)
-	[ "$curr_vt" = "$VT" ] || chvt "$VT"
 	rm -rf "${STORAGEDIR}"
 	release_lock "pm-utils.lock"
 }
