@@ -29,23 +29,31 @@ How do "hooks" work?
 * You put an executable file in /etc/pm/sleep.d.  When suspend or
   hibernate is called, several things happen:
   
-  1) a new virtual terminal is alloced and switched to
-  2) /etc/pm/config.d/* are evaluated in C sort order.  These files can be
+  1) /etc/pm/config.d/* are evaluated in C sort order.  These files can be
      provided by individual packages outside of pm-utils.  If a global config
      variable is set, the value set to will overwrite the previous value.
      If any other variable is set, it will be ignored.
-  3) each of /etc/pm/sleep.d/* are executed in C sort order.  The first command
+  2) each of /etc/pm/sleep.d/* are executed in C sort order.  The first command
      line argument is "suspend" or "hibernate".  These files may source
      configuration files from /etc/pm/config.d/ on their own in order to pick
      up variables set there that aren't part of the global list.  Note that
      hooks should take care to preserve any global configuration variable
      which _that_ hook will later need to use, as sourcing this config file
      will clobber any such variables.
-  4) the system suspends or hibernates.
-  5) some event happens to wake the machine up
-  6) each of /etc/pm/sleep.d/* are executed in reverse C sort order.  The first
+  3) the system suspends or hibernates.
+  4) some event happens to wake the machine up
+  5) each of /etc/pm/sleep.d/* are executed in reverse C sort order.  The first
      command line argument is "resume" or "thaw".
-  7) the system switches back to the original virtual terminal from step 1.
+
+End-user customization:
+
+* If a particular hook is causing problems on your system, you can disable it
+  by adding its name to /etc/pm/blacklist
+* If you need to pass default parameters to pm-suspend and friends, you can add
+  them to /etc/pm/parameters.
+* To find out what parameters can be passed to pm-suspend and friends, run them
+  with '--help' as the first parameter as root.  This will print out the 
+  options that it supports and which hooks or modules handle those options.
 
   That's it!
 
