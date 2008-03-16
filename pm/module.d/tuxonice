@@ -1,3 +1,5 @@
+#!/bin/sh
+
 export TUXONICE_LOC
 # TODO tuxonice supports all sorts of knobs to twiddle. Since this should be as
 # simple as possible, it does not provide a mechanism for twiddling those knobs.

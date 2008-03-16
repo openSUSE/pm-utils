@@ -1,3 +1,5 @@
+#!/bin/sh
+
 check_suspend()
 {
 	grep -q mem /sys/power/state
