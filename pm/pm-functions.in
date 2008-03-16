@@ -48,9 +48,10 @@ for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
 done
 
 . "${PM_FUNCTIONS}"
-mkdir -p "$STORAGEDIR"
 
-[ -f "$PM_UTILS_ETCDIR/blacklist" ] && {
+load_hook_blacklist()
+{
+	[ -f "$PM_UTILS_ETCDIR/blacklist" ] || return
 	# loop through the blacklist file, adding entries to our hook blacklist.
 	# Blacklist file format:
 	# name debugging text
@@ -63,7 +64,9 @@ mkdir -p "$STORAGEDIR"
 	done
 }
 
-[ -f "$PM_UTILS_ETCDIR/parameters" ] && {
+load_hook_parameters()
+{
+	[ -f "$PM_UTILS_ETCDIR/parameters" ] || return
 	# loop through the parameters file, and add each line in it to the
 	# end of PM_CMDLINE.
 	# Comments begin with hashmarks and run to the end of the line.
@@ -82,6 +85,8 @@ take_suspend_lock()
 {
 	try_lock "pm-utils.lock" || return 1
 	mkdir -p "${STORAGEDIR}"
+	load_hook_blacklist
+	load_hook_parameters
 	return 0
 }
 
