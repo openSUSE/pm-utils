@@ -7,7 +7,7 @@ EXTRA_DIST = ChangeLog
 
 .PHONY: ChangeLog
 ChangeLog:
-	git log "--git-dir=$(srcdir)" > $@
+	git --git-dir="$(srcdir)/.git" log > $@
 
 dist-hook: ChangeLog
 
