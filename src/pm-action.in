@@ -49,7 +49,6 @@ take_suspend_lock || exit 1
 # make sure we release the lock no matter how we exit
 trap remove_suspend_lock 0
 
-# Save the command line options for the hooks
 while [ $# -gt 0 ]
 do
 	[ "$1" = "--help" ] && help
@@ -68,6 +67,9 @@ esac
 
 "check_$ACTION" || { echo "System does not support $ACTION sleep."; exit 1; }
 init_logfile "${PM_LOGFILE}"
+log "Initial commandline parameters: $PM_CMDLINE"
+load_hook_blacklist
+load_hook_parameters
 
 # Make sure we are not inhibited before we start.
 rm -f "${INHIBIT}"
