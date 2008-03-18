@@ -27,9 +27,9 @@ get_quirks()
 			*) continue ;;
 		esac
 	done
+	[ $ACPI_SLEEP -ne 0 ] && OPTS="$OPTS --acpi_sleep $ACPI_SLEEP"
 	# if we were told to ignore quirks, do so.
 	[ "$QUIRK_NONE" = "true" ] && OPTS=""
-	[ $ACPI_SLEEP -ne 0 ] && OPTS="$OPTS --acpi_sleep $ACPI_SLEEP"
 }
 
 check_suspend()
