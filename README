@@ -49,11 +49,16 @@ End-user customization:
 
 * If a particular hook is causing problems on your system, you can disable it
   by adding its name to /etc/pm/blacklist
-* If you need to pass default parameters to pm-suspend and friends, you can add
-  them to /etc/pm/parameters.
 * To find out what parameters can be passed to pm-suspend and friends, run them
   with '--help' as the first parameter as root.  This will print out the 
   options that it supports and which hooks or modules handle those options.
+* If a parameter (or lack thereof) passed to pm-suspend and friends is causing
+  problems, or you need to debug the suspend/resume process to work out what 
+  quirks are causing problems, you can use /etc/pm/parameters to override
+  the hooks passed by HAL.  Specifically:
+  * "add --parameter" will add --parameter to the list of parameters.
+  * "drop --parameter" will remove --parameter from the list of parameters.
+
 
   That's it!
 
