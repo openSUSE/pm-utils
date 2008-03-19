@@ -69,7 +69,7 @@ remove_parameter() {
 	for p in $PM_CMDLINE; do
 		[ "$1" = "$p" ] && continue
 		x="$x $p"
-		shift # not a bug!
+		[ "$2" ] && shift
 	done
 	PM_CMDLINE="$x"
 }
