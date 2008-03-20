@@ -22,7 +22,7 @@ check_hibernate()
 
 do_hibernate()
 {
-	[ "$HIBERNATE_MODE ] && \
+	[ "$HIBERNATE_MODE" ] && \
 		echo -n "${HIBERNATE_MODE}" > /sys/power/disk
 	echo -n "disk" > /sys/power/state
 }
