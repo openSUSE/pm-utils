@@ -5,7 +5,7 @@
 command_exists alsactl || exit $NA
 
 case "$1" in
-	hibernate|suspend*)
+	hibernate|suspend)
 		alsactl store 0 >/dev/null 2>&1
 		;;
 	thaw|resume) 

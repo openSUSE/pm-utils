@@ -20,21 +20,25 @@ PM_UTILS_RUNDIR="/var/run/pm-utils"
 PM_CMDLINE="$*"
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
-HIBERNATE_MODE="platform"
-HIBERNATE_RESUME_POST_VIDEO=no
 INHIBIT="${PM_UTILS_RUNDIR}/inhibit"
 PM_LOGFILE="${PM_LOGFILE:=/var/log/pm-suspend.log}"
-SUSPEND_MODULES=""
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCKDIR="${PM_UTILS_RUNDIR}/locks"
 STORAGEDIR="${PM_UTILS_RUNDIR}/storage"
-SLEEP_MODULE="kernel"
 NA=254
 NX=253
 DX=252
 PM_FUNCTIONS="$PM_UTILS_LIBDIR/functions"
 # Use c sort order
 LC_COLLATE=C
+
+# These should be overridden by defaults and/or config.d settings.
+# Specifically, distros should override these by modifying defaults,
+# and end users should modify these using files in /etc/pm/config.
+HIBERNATE_MODE="shutdown"
+HIBERNATE_RESUME_POST_VIDEO="no"
+SLEEP_MODULE="kernel"
+SUSPEND_MODULES=""
 
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 
@@ -49,6 +53,8 @@ done
 
 . "${PM_FUNCTIONS}"
 
+log() { [ $LOGGING ] && echo $*; }
+
 load_hook_blacklist()
 {
 	[ -f "$PM_UTILS_ETCDIR/blacklist" ] || return
@@ -61,6 +67,7 @@ load_hook_blacklist()
 		# skip blank lines
 		[ -z "$entry" ] && continue
 		disablehook "${entry##*/}" "${comment:-blacklist}"
+		log "Blacklisting ${entry##*/}."
 	done
 }
 
@@ -101,14 +108,10 @@ load_hook_parameters()
 	done < "$PM_UTILS_ETCDIR/parameters"
 }
 
-log() { [ $LOGGING ] && echo $*; }
-
 take_suspend_lock()
 {
 	try_lock "pm-utils.lock" || return 1
 	mkdir -p "${STORAGEDIR}"
-	load_hook_blacklist
-	load_hook_parameters
 	return 0
 }
 
