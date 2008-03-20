@@ -5,11 +5,12 @@
 ##########################################################
 
 # Default method to power down the system when hibernating.
-# If commented out, the system will use "shutdown" as a 
+# If commented out, the system will use the kernel default as a 
 # default value.
 #
-# Check /sys/power/disk for valid values.
-# HIBERNATE_MODE="platform"
+# Check /sys/power/disk for valid values.  The default value
+# will be surrounded by [square brackets].
+# HIBERNATE_MODE="shutdown"
 
 # Whetner we need to post the video card when resuming from
 # hibernate. You should not normally need to set this.  

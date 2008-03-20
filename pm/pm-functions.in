@@ -35,7 +35,7 @@ LC_COLLATE=C
 # These should be overridden by defaults and/or config.d settings.
 # Specifically, distros should override these by modifying defaults,
 # and end users should modify these using files in /etc/pm/config.
-HIBERNATE_MODE="shutdown"
+HIBERNATE_MODE=""
 HIBERNATE_RESUME_POST_VIDEO="no"
 SLEEP_MODULE="kernel"
 # These variables will be handled specially when we load the config file.
