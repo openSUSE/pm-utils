@@ -86,7 +86,8 @@ remove_parameters() {
 	for p in "$@"; do
 		y=""
 		for x in $PM_CMDLINE; do
-			[ "$x" = "$p" ] && {
+			# * removes all parameters.
+			[ "$x" = "$p" -o "$p" = "*" ] && {
 				log "Removing parameter $x."
 				continue
 			}
