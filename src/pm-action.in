@@ -55,17 +55,17 @@ do
 	shift
 done
 
-ACTION="$(echo ${0##*pm-} |tr - _)"
+METHOD="$(echo ${0##*pm-} |tr - _)"
 
-case "$ACTION" in
-	suspend) 	REVERSE=resume ;;
-	hibernate) 	REVERSE=thaw ;;
-	suspend_hybrid) REVERSE=resume ;;
-	*)		echo "Don't know how to ${ACTION}."
+"check_$METHOD" || { echo "System does not support $METHOD sleep."; exit 1; }
+
+case "$METHOD" in
+	suspend*) 	ACTION=suspend;   REVERSE=resume ;;
+	hibernate) 	ACTION=hibernate; REVERSE=thaw ;;
+	*)		echo "Don't know how to ${METHOD}."
 			exit 1 ;;
 esac
 
-"check_$ACTION" || { echo "System does not support $ACTION sleep."; exit 1; }
 init_logfile "${PM_LOGFILE}"
 log "Initial commandline parameters: $PM_CMDLINE"
 load_hook_blacklist
@@ -78,7 +78,7 @@ rm -f "${INHIBIT}"
 run_hooks sleep "$ACTION"
 
 # Sleep only if we know how and if a hook did not inhibit us.
-command_exists "do_$ACTION" && [ ! -e "$INHIBIT" ] && { sync; "do_$ACTION"; }
+command_exists "do_$METHOD" && [ ! -e "$INHIBIT" ] && { sync; "do_$METHOD"; }
 
 # run the sleep hooks in reverse with the wakeup action
 run_hooks sleep "$REVERSE" reverse
