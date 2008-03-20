@@ -6,7 +6,6 @@ case "$1" in
 	hibernate|suspend)
 		fgconsole |savestate console
 		chvt 63
-		TERM=linux clear
 		;;
 	thaw|resume) 
 		state_exists console || exit 1
