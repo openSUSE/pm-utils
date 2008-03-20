@@ -6,14 +6,42 @@ before_hooks()
 	disablehook 99video "disabled by uswsusp"
 }
 
+get_quirks()
+{
+	OPTS=""
+	ACPI_SLEEP=0
+	for opt in $PM_CMDLINE; do
+		case "${opt##--quirk-}" in # just quirks, please
+			dpms-on) 	   ;; # no-op
+			dpms-suspend) 	   ;; # no-op
+			radeon-off) 	   OPTS="$OPTS --radeontool" ;;
+			reset-brightness)  ;; # no-op
+			s3-bios) 	   ACPI_SLEEP=$((ACPI_SLEEP + 1)) ;;
+			s3-mode) 	   ACPI_SLEEP=$((ACPI_SLEEP + 2)) ;;
+			vbe-post) 	   OPTS="$OPTS --vbe_post" ;;
+			vbemode-restore)   OPTS="$OPTS --vbe_mode" ;;
+			vbestate-restore)  OPTS="$OPTS --vbe_save" ;;
+			vga-mode3) 	   ;; # no-op
+			save-pci)          OPTS="$OPTS --pci_save" ;;
+			none) 		   QUIRK_NONE="true" ;;
+			*) continue ;;
+		esac
+	done
+	[ $ACPI_SLEEP -ne 0 ] && OPTS="$OPTS --acpi_sleep $ACPI_SLEEP"
+	# if we were told to ignore quirks, do so.
+	[ "$QUIRK_NONE" = "true" ] && OPTS=""
+}
+
 check_suspend()
 {
-	grep -q mem /sys/power/state
+	[ -e /dev/pmu ] && return 0
+	grep -q mem /sys/power/state && return 0
 }
 
 do_suspend()
 {
-	echo "mem" >/sys/power/state
+	get_quirks
+	s2ram --force $OPTS
 }
 
 check_hibernate()
@@ -38,7 +66,25 @@ check_suspend_hybrid()
 
 do_suspend_hybrid()
 {
-	# a brief perusal of the source indicates that -f bypasses
-	# quirks application and the whitelist.
-	s2both -f
+	get_quirks
+	s2both --force $OPTS 
+}
+
+sleep_method_help()
+{
+	echo  # first echo makes it look nicer.
+	echo "Video quirk handler options:"
+	echo
+	echo "  --quirk-dpms-on"
+	echo "  --quirk-dpms-suspend"
+	echo "  --quirk-radeon-off"
+	echo "  --quirk-reset-brightness"
+	echo "  --quirk-s3-bios"
+	echo "  --quirk-s3-mode"
+	echo "  --quirk-vbe-post"
+	echo "  --quirk-vbemode-restore"
+	echo "  --quirk-vbestate-restore"
+	echo "  --quirk-vga-mode3"
+	echo "  --quirk-save-pci"
+	echo "  --quirk-none"
 }
