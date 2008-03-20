@@ -82,16 +82,17 @@ load_hook_blacklist()
 }
 
 remove_parameters() {
-	local x=""
-	for p in $PM_CMDLINE; do
-		[ "$1" = "$p" ] && {
-			log "Removing parameter $1."
-			continue
-		}
-		x="$x $p"
-		[ "$2" ] && shift
+	local x y
+	for p in "$@"; do
+		for x in $PM_CMDLINE; do
+			[ "$x" = "$p" ] && {
+				log "Removing parameter $x."
+				continue
+			}
+			y="$y $x"
+		done
+		PM_CMDLINE="$y"
 	done
-	PM_CMDLINE="$x"
 }
 
 add_parameters() {
