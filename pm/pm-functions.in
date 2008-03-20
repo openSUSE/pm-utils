@@ -76,14 +76,15 @@ load_hook_blacklist()
 	[ "$HOOK_BLACKLIST" ] || return
 	local hook
 	for hook in $HOOK_BLACKLIST; do
-		disablehook "${entry##*/}" "${comment:-blacklist}"
-		log "Blacklisting ${entry##*/}."
+		disablehook "${hook}" "blacklisted by user"
+		log "Blacklisting ${hook}."
 	done
 }
 
 remove_parameters() {
 	local x y
 	for p in "$@"; do
+		y=""
 		for x in $PM_CMDLINE; do
 			[ "$x" = "$p" ] && {
 				log "Removing parameter $x."
