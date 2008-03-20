@@ -63,7 +63,7 @@ End-user customization:
   DROP_PARAMETERS="--parameter-to-drop --another-parameter-to-drop"
 
   If you want to drop all parameters (for testing purposes, or to work around 
-  bugs in HAL), you can use DROP_PARAMETERS="*"
+  bugs in HAL), you can use DROP_PARAMETERS="all"
 
 
   That's it!
