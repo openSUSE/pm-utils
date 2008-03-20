@@ -28,7 +28,22 @@
 # The system defaults to "kernel" if this is commented out.
 # SLEEP_MODULE="kernel"
 
-# If you need to unload any modules to suspend/resume, add them
-# here.
+# These variables will be handled specially when we load files in 
+# /etc/pm/config.d.
+# Multiple declarations of these environment variables will result in 
+# their contents being concatenated instead of being overwritten.
+
+# If you need to unload any modules to suspend/resume, add them here.
 # SUSPEND_MODULES=""
+
+# If you want to keep a hook from running even though it is installed,
+# add it here.
+# HOOK_BLACKLIST=""
+
+# If you want to unconditionally add a parameter to the commandline,
+# add it here.
+# ADD_PARAMETERS=""
+
+# If you want to ignore a commandline parameter, add it here.
+# DROP_PARAMETERS=""
 

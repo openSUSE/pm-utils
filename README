@@ -48,16 +48,19 @@ How do "hooks" work?
 End-user customization:
 
 * If a particular hook is causing problems on your system, you can disable it
-  by adding its name to /etc/pm/blacklist
+  using the HOOK_BLACKLIST environment variable.by creating a file in 
+  /etc/pm/config.d and adding the line:
+  HOOK_BLACKLIST="hookname 99another-hook"
 * To find out what parameters can be passed to pm-suspend and friends, run them
   with '--help' as the first parameter as root.  This will print out the 
   options that it supports and which hooks or modules handle those options.
 * If a parameter (or lack thereof) passed to pm-suspend and friends is causing
   problems, or you need to debug the suspend/resume process to work out what 
-  quirks are causing problems, you can use /etc/pm/parameters to override
-  the hooks passed by HAL.  Specifically:
-  * "add --parameter" will add --parameter to the list of parameters.
-  * "drop --parameter" will remove --parameter from the list of parameters.
+  quirks are causing problems, you can use the ADD_PARAMETERS and 
+  DROP_PARAMETERS environment variables.  To do this, create a file in 
+  /etc/pm/config.d, and add the following lines to it:
+  ADD_PARAMETERS="--parameter-to-add --another-paramater"
+  DROP_PARAMETERS="--parameter-to-drop --another-parameter-to-drop"
 
 
   That's it!

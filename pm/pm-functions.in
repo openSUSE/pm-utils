@@ -38,7 +38,11 @@ LC_COLLATE=C
 HIBERNATE_MODE="shutdown"
 HIBERNATE_RESUME_POST_VIDEO="no"
 SLEEP_MODULE="kernel"
+# These variables will be handled specially when we load the config file.
 SUSPEND_MODULES=""
+HOOK_BLACKLIST=""
+ADD_PARAMETERS=""
+DROP_PARAMETERS=""
 
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 
@@ -46,8 +50,20 @@ set +a
 
 for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
 	[ -f "$cfg" ] || continue
+	# Ugly, I know. The goal here is to allow multiple files in
+	# /etc/pm/config.d declare these variables and have those 
+	# declarations add together instead of the last one overwriting
+	# all the others.
+	[ "$SUSPEND_MODULES" ] && REAL_SUSPEND_MODULES="$SUSPEND_MODULES"
+	[ "$HOOK_BLACKLIST" ] && REAL_HOOK_BLACKLIST="$HOOK_BLACKLIST"
+	[ "$ADD_PARAMETERS" ] && REAL_ADD_PARAMETERS="$ADD_PARAMETERS"
+	[ "$DROP_PARAMETERS" ] && REAL_DROP_PARAMETERS="$DROP_PARAMETERS"
 	set -a
 	. "${cfg}"
+	SUSPEND_MODULES="$REAL_SUSPEND_MODULES $SUSPEND_MODULES"
+	HOOK_BLACKLIST="$REAL_HOOK_BLACKLIST $HOOK_BLACKLIST"
+	ADD_PARAMETERS="$REAL_ADD_PARAMETERS $ADD_PARAMETERS"
+	DROP_PARAMETERS="$REAL_DROP_PARAMETERS $DROP_PARAMETERS"
 	set +a
 done
 
@@ -57,21 +73,15 @@ log() { [ $LOGGING ] && echo $*; }
 
 load_hook_blacklist()
 {
-	[ -f "$PM_UTILS_ETCDIR/blacklist" ] || return
-	# loop through the blacklist file, adding entries to our hook blacklist.
-	# Blacklist file format:
-	# name debugging text
-	# Comments begin with hash signs.
-	sed 's,#.*$,,g' < "$PM_UTILS_ETCDIR/blacklist" | \
-	while read entry comment; do
-		# skip blank lines
-		[ -z "$entry" ] && continue
+	[ "$HOOK_BLACKLIST" ] || return
+	local hook
+	for hook in $HOOK_BLACKLIST; do
 		disablehook "${entry##*/}" "${comment:-blacklist}"
 		log "Blacklisting ${entry##*/}."
 	done
 }
 
-remove_parameter() {
+remove_parameters() {
 	local x=""
 	for p in $PM_CMDLINE; do
 		[ "$1" = "$p" ] && {
@@ -84,28 +94,15 @@ remove_parameter() {
 	PM_CMDLINE="$x"
 }
 
-add_parameter() {
+add_parameters() {
 	log "Adding parameters $@"
 	PM_CMDLINE="$PM_CMDLINE $@"
 }
 
 load_hook_parameters()
 {
-	[ -f "$PM_UTILS_ETCDIR/parameters" ] || return
-	# loop through the parameters file, and perform the appropriate
-	# action for each parameter.
-	# Currently, only "add" and "drop" are supported.
-	# Comments begin with hashmarks and run to the end of the line.
-	# Because we are modifying an env var, the while read loop cannot
-	# run in a pipe like the previous one did.
-	while read action parameter; do
-		parameter="$(echo $parameter |sed 's,#.*$,,g')"
-		[ -z "$parameter" ] && continue
-		case $action in
-			add) add_parameter $parameter ;;
-			drop) remove_parameter $parameter ;;
-		esac
-	done < "$PM_UTILS_ETCDIR/parameters"
+	[ "$DROP_PARAMETERS" ] && remove_parameters $DROP_PARAMETERS
+	[ "$ADD_PARAMETERS" ]  && add_parameters $ADD_PARAMETERS
 }
 
 take_suspend_lock()
