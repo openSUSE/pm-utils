@@ -173,7 +173,7 @@ run_hooks() {
 		elif [ -f "$phooks/$base" ]; then
 			hook="$phooks/$base"
 		fi
-		log -n "${hook} $2:"
+		log -n "${hook} $2: "
 		hook_ok "$hook" && (
 			IFS="${oifs}"
 			"${hook}" $2
