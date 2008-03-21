@@ -1,4 +1,5 @@
 #!/bin/bash
+git log  --pretty=format:"pm-utils (%ct.%h) unstable; urgency=low%n%n  * %s%n%n -- %an <%ae>  %aD%n" --no-merges >debian/changelog && \
 autoreconf --install && \
 ./configure && \
 make dist && \
