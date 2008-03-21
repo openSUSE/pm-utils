@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+  
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+
+binary-install/pm-utils::
+	# be nice, don't overwrite on_ac_power.
+	# It is provided in powermgmt-base
+	rm -f debian/pm-utils/usr/bin/on_ac_power
+	rm -f debian/pm-utils/usr/share/man/man1/on_ac_power.1
