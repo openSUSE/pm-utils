@@ -1,0 +1,12 @@
+#!/bin/bash
+autoreconf --install && \
+./configure && \
+make dist && \
+for x in *.tar.gz; do
+	tar xzvf "$x";
+	cd "${x%.tar.gz}";
+	dpkg-buildpackage
+	cd ..
+done
+cp *.deb ..
+git clean -f -x -d
