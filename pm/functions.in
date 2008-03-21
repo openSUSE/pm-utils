@@ -123,7 +123,10 @@ modunload()
 modreload()
 {
 	for x in "${STORAGEDIR}"/module:* ; do
-		[ -O "${x}" ] && modprobe "${x##*:}" >/dev/null 2>&1
+		[ -O "${x}" ] || continue
+		modprobe "${x##*:}" >/dev/null 2>&1 || \
+			log "Could not reload module ${x##*:}."
+
 	done
 }
 

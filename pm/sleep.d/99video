@@ -110,6 +110,7 @@ resume_video()
 	quirk "${QUIRK_RADEON_OFF}" && 		radeon_on
 	quirk "${QUIRK_DPMS_ON}" && 		vbe dpms on
 	quirk "${QUIRK_RESET_BRIGHTNESS}" && 	reset_brightness
+	return 0  # avoid spurious hook exit failure message.
 }
 
 help() {
