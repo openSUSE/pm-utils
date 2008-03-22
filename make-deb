@@ -3,5 +3,4 @@ git log  --pretty=format:"pm-utils (%ct.%h) unstable; urgency=low%n%n  * %s%n%n 
 autoreconf --install && \
 ./configure && \
 dpkg-buildpackage && \
-cp *.deb .. && \
 git clean -f -x -d
