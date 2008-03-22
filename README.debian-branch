@@ -1,0 +1,21 @@
+This branch does not share any ancestry with the rest of pm-utils,
+and it is best that it never do.  Only apply patches for the debian/
+directory to this branch!
+
+You can use this branch to easily make a .deb out of whatever branch of
+pm-utils you happen to be playing around with.  To do that:
+
+1: git checkout branch-to-make-a-deb-of
+2: git checkout -b throwaway-branch
+3: git merge whatever other branches
+4: git merge debian
+5: ./make-deb
+
+When you are finished, you will have a shiny new .deb in the parent directory
+of the repository (assuming all went well).  You can then install it and use
+it on a live debian system.  Please note that it would be a good idea to have
+the .deb for the original installed version of pm-utils lying around to 
+reinstall after testing is finished.
+
+As the name of the branch implies, you should delete throwaway-branch after 
+you are finished with your testing.
