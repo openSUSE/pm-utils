@@ -13,7 +13,7 @@ done
 
 check_suspend()
 {
-	[ -e /dev/pmu ] && return 0
+	[ -c /dev/pmu ] && return 0
 	grep -q mem /sys/power/state && return 0
 }
 
