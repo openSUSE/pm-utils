@@ -1,1 +1,46 @@
-News goes here
+There have been many changes to pm-utils since the last release of
+0.99.4. 
+
+Major changes include:
+
+* All the scripts that make up pm-utils have been rewritten to conform
+  to POSIX and the Single Unix Specification.  Any remaining bashisms
+  or GNUisms are bugs.  If you encounter a script that is not POSIX 
+  and SuS compliant, please file a bug.
+
+* There have been several changes to the way hooks are detected and
+  invoked. If you have a custom-written hook that breaks upon
+  installation of this package, you may have to perform some minor
+  fixups to make it work again.  All the hooks that are supplied with 
+  pm-utils have been updated to take full advantage of these changes,
+  so use them as examples. For more detailed information, see
+  pm/HOWTO.hooks.
+
+* pm-utils now has a modular sleep backend. There are currently
+  plugins for the default kernel sleep methods, the uswsusp tools
+  (s2ram/s2disk/s2both), and rudimentary support for tuxonice. You can
+  switch between the sleep modules by setting the SLEEP_MODULE
+  environment variable to the desired sleep module.  If you want to
+  write a sleep module, see pm/HOWTO.modules.
+
+* pm-utils has a greatly expanded set of debugging features:
+  - If the environment variable PM_DEBUG is set to true, the
+    pm-suspend.log will contain a full trace of all the actions taken by
+    pm-utils.
+  - The HOOK_BLACKLIST environment variable allows you to disable a
+    hook without having to modify it.
+  - The ADD_PARAMETERS and DROP_PARAMETERS environment variables allow
+    you to modify the parameters passed by calling programs (such as
+    HAL).
+  - More complete logging, including logging the commandline
+    parameters, which hooks ran and did not run (and the reasons why),
+    and logging the status codes of executed hooks.
+
+* pm-utils has pkg-config support.  This makes it much easier for
+  other programs to rely on pm-utils for all their suspend/resume
+  quirk handling needs.
+
+In addition to these major changes, there have been a whole slew of
+minor changes and bugfixes.  Most of the major pm-utils related bugs
+that the distributions have encountered have been fixed in this
+release. Please see the ChangeLog for more details.

@@ -1,0 +1,24 @@
+* pm-utils has no provision for halting the suspend/resume process if
+  a hook fails. Adding naive support for this is easy, getting it
+  right is less so.
+* There are no provisions for configuring the tuxonice backend.
+  Tuxonice has lots of things that can be tuned, but doing so would
+  end up duplicating alot of the tuxonice project's hibernate script.
+  We should talk to their maintainers about merging common
+  functionality.
+* If a hook needs to handle parameters passed from the command line,
+  it has to do that on its own.  A simple parameter-parsing engine
+  might come in handy.
+* Currently, we really only handle suspend/resume.  The
+  powermanagement system chould use some maintenance. Should we also
+  handle other powermanagement-related tasks?  
+* Beef up the abstraction layer between the hooks and the pm-utils
+  core infrastructure.  We should work on making that API stable
+  enough that...
+* pm-utils to become the default low-level userspace power management handling
+  infrastructure for the majority of Linux (and mabye other
+  unixalikes) distributions.  The core pm-utils infrastructure is
+  already fairly distro-agnostic, leveraging it to be os-agnostic
+  should also be possible.  We should get it to the point that any
+  program that needs something to happen when running a power
+  management task uses our functionality instead of rewriting their own.
