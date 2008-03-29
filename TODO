@@ -10,7 +10,7 @@
   it has to do that on its own.  A simple parameter-parsing engine
   might come in handy.
 * Currently, we really only handle suspend/resume.  The
-  powermanagement system chould use some maintenance. Should we also
+  powermanagement system should use some maintenance. Should we also
   handle other powermanagement-related tasks?  
 * Beef up the abstraction layer between the hooks and the pm-utils
   core infrastructure.  We should work on making that API stable

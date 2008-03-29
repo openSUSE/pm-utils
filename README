@@ -12,7 +12,7 @@ Why do we need it?
   functionality to support common power management
   operations. pm-utils provides a standardized distribution agnostic
   layout and interface for common power management tasks, which frees
-  software and hardware vndors from having to maintain
+  software and hardware vendors from having to maintain
   distribution-specific suspend/resume functionality.
 
 * Suspend/resume functionality can be easily modified by installing
@@ -35,7 +35,7 @@ How do "hooks" work?
   
   1) The files in /etc/pm/config.d/* are evaluated in C sort order.  
      These files can be provided by individual packages outside of
-     pm-utils, and contain globally availabl configuration settings
+     pm-utils, and contain globally available configuration settings
      for pm-utils and the hooks.
   2) Each of the hooks in /etc/pm/sleep.d/* are executed in C sort
      order, with a command line argument of either "suspend" or "hibernate". 
@@ -56,7 +56,7 @@ End-user customization and debugging:
   quirks are causing problems, you can use the ADD_PARAMETERS and 
   DROP_PARAMETERS environment variables.  To do this, create a file in 
   /etc/pm/config.d, and add the following lines to it:
-  ADD_PARAMETERS="--parameter-to-add --another-paramater"
+  ADD_PARAMETERS="--parameter-to-add --another-parameter"
   DROP_PARAMETERS="--parameter-to-drop --another-parameter-to-drop"
 
   If you want to drop all parameters (for testing purposes, or to work around 
