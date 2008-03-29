@@ -1,4 +1,6 @@
 #!/bin/sh
+# Ensure grub will load the correct kernel on resume from hibernate,
+# TODO: This is rather redhat specific, and very grub specific.
 
 default_resume_kernel()
 {

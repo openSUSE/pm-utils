@@ -12,7 +12,7 @@
 # will be surrounded by [square brackets].
 # HIBERNATE_MODE="shutdown"
 
-# Whetner we need to post the video card when resuming from
+# Whether we need to post the video card when resuming from
 # hibernate. You should not normally need to set this.  
 # In the future pm-utils will get this setting from HAL.
 #
@@ -37,14 +37,13 @@
 # If you need to unload any modules to suspend/resume, add them here.
 # SUSPEND_MODULES=""
 
-# If you want to keep a hook from running even though it is installed,
-# add it here.
+# If you want to keep hooks from running, add their names  here.
 # HOOK_BLACKLIST=""
 
-# If you want to unconditionally add a parameter to the commandline,
-# add it here.
+# If you want to unconditionally add parameters to the commandline,
+# add them here.
 # ADD_PARAMETERS=""
 
-# If you want to ignore a commandline parameter, add it here.
+# If you want to ignore commandline parameters, add them here.
 # DROP_PARAMETERS=""
 

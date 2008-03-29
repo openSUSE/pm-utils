@@ -1,4 +1,7 @@
 #!/bin/sh
+# IBM specific hack to disable/enable bluetooth.
+# TODO: Doesn't the working USB suspend/resume functionality
+#       make this code more or less obsolete?
 
 . "${PM_FUNCTIONS}"
 

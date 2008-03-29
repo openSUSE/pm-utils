@@ -1,4 +1,6 @@
 #!/bin/sh
+# Log some extra information at the beginning of a suspend/resume cycle.
+# TODO: Make this hook only run when PM_DEBUG is true?
 
 . "${PM_FUNCTIONS}"
 

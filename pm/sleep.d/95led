@@ -1,4 +1,6 @@
 #!/bin/sh
+# IBM specific hook to handle the suspend LED.
+# TODO: Merge with 05led.
 
 [ -f /proc/acpi/ibm/led ] || exit $NA
 

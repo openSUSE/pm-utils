@@ -1,4 +1,5 @@
 #!/bin/sh
+# Unload requested modules.
 
 . "${PM_FUNCTIONS}"
 

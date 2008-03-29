@@ -1,4 +1,6 @@
 #!/bin/sh
+# Have HAL rescan batteries on resume.
+# TODO: Merge this code back into HAL, it should not be in pm-utils.
 
 . "${PM_FUNCTIONS}"
 

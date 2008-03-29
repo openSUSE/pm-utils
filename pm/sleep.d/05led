@@ -1,4 +1,6 @@
 #!/bin/sh
+# On an IBM system. make the suspend LED blink.
+# TODO: Merge with 95led?  Should be trivial.
 
 [ -f /proc/acpi/ibm/led ] || exit $NA
 

@@ -1,4 +1,9 @@
 #!/bin/sh
+# Synchronize system time with hardware time.
+# TODO: Split NTP handling to its own hook. Having it here is ugly and silly.
+#       Do modern kernels handle this correctly?  If so, we should detect that
+#       and skip this hook.
+
 . "${PM_FUNCTIONS}"
 
 NTPD_LOCK="pm-ntpd.lock"

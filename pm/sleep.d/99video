@@ -7,6 +7,11 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
+# Handle video quirks.  If you are having suspend/resume issues,
+# troubleshooting using this hook is probably the best place to start.
+# If it weren't for video card quirks, suspend/resume on Linux would be 
+# a whole lot more stable.
+
 . "${PM_FUNCTIONS}"
 
 for opt in $PM_CMDLINE; do

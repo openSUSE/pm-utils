@@ -1,4 +1,7 @@
 #!/bin/sh
+# Ensure that ALSA state is saved and restored correctly.
+# TODO: Modern ALSA does not need this hack.  Is it worth trying to detect
+#       that and disable this hook if we do not need it?
 
 . "${PM_FUNCTIONS}"
 

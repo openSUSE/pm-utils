@@ -1,4 +1,7 @@
 #!/bin/sh
+# Ensure cpu governor is set to something sane.
+# TODO: Which of the cpu governors is still insane?  File bugs against
+#       those that are.
 
 . "${PM_FUNCTIONS}"
 

@@ -28,7 +28,6 @@
 
 . "@PM-UTILS-LIBDIR@/pm-functions"
 
-# save the command line parameters for the hooks.
 help()
 {
 	echo "${0##*/} [options]"
@@ -43,7 +42,6 @@ if [ "$(id -u)" != "0" ]; then
 	echo This utility may only be run by the root user. 1>&2
 	exit 1
 fi
-# 
 take_suspend_lock || exit 1
 
 # make sure we release the lock no matter how we exit

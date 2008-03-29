@@ -1,4 +1,7 @@
 #!/bin/sh
+# Ensure we eare in text mode by switching to an unused vt.
+# Also avoids lots of ghastly suspend/resume errors due to trying
+# to suspend/resume while running in X.
 
 . "${PM_FUNCTIONS}"
 

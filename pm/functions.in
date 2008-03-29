@@ -38,7 +38,7 @@ spin_lock()
 release_lock()
 {
 	# $1 = lockfile
-	# make sure it is ours first.i
+	# make sure it is ours first.
 	local lock="${LOCKDIR}/${1##*/}"
 	rm -f "${lock}"
 	return $?
@@ -73,6 +73,8 @@ get_power_status()
 	return $RETVAL
 }
 
+# TODO: Module loading and unloading is Linux-specific.  
+# Look into modularizing this into an os-specific set of support routines.
 _rmmod()
 {
 	if modprobe -r "$1"; then
@@ -120,6 +122,7 @@ modunload()
 }
 
 # reload all the modules in no particular order.
+# modprobe should take care of loading prerequisites for us.
 modreload()
 {
 	for x in "${STORAGEDIR}"/module:* ; do
@@ -130,6 +133,8 @@ modreload()
 	done
 }
 
+# Service management is sysv dependent.
+# TODO: modularize this to make it work with other init systems.
 if ! command_exists service; then
 	service()
 	{
