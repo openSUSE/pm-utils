@@ -2,58 +2,55 @@
 
 What is pm-utils?
 
-* Provides simple shell command line tools to suspend and hibernate computer
-that can be used to run vendor or distro supplied scripts on suspend and resume.
+* Pm-utils provides simple shell command line tools to suspend and
+  hibernate computer that can be used to run vendor, distribution, or
+  user supplied scripts on suspend and resume.
 
 Why do we need it?
 
-* As all the main distros are re-implimenting the same thing, over and over, to
-do something that's really quite trivial.
-Having the common locations for stuff means that software and hardware vendors
-can just install one file to do the clever stuff.
+* All the main distributions  are re-implementing the same
+  functionality to support common power management
+  operations. pm-utils provides a standardized distribution agnostic
+  layout and interface for common power management tasks, which frees
+  software and hardware vndors from having to maintain
+  distribution-specific suspend/resume functionality.
 
-* Distros can easily add/remove functionality by installing/removing one
-file into the hooks directory, for example:
-
-- enabling and disabling standby LED's on laptop hardware 
-- enabling suspend GUI's like suspend2 
-- re-enabling video
-- starting and stopping services that can't cope with suspending 
-- re-syncing the time with ntp 
-- removing and modprobing modules when needed 
-- setting grub to be the default target for a hibernate-resume 
-- other wacky things that need doing on specific systems
+* Suspend/resume functionality can be easily modified by installing
+  files into the /etc/pm/sleep.d directory.  These files, known as
+  "hooks" can perform specific tasks on suspend/resume, such as:
+   
+   - enabling and disabling standby LED's on laptop hardware 
+   - enabling suspend GUI's like suspend2 
+   - re-enabling video
+   - starting and stopping services that can't cope with suspending 
+   - re-syncing the time with ntp 
+   - removing and modprobing modules when needed 
+   - setting grub to be the default target for a hibernate-resume 
+   - other wacky things that need doing on specific systems
 
 How do "hooks" work?
 
 * You put an executable file in /etc/pm/sleep.d.  When suspend or
   hibernate is called, several things happen:
   
-  1) /etc/pm/config.d/* are evaluated in C sort order.  These files can be
-     provided by individual packages outside of pm-utils.  If a global config
-     variable is set, the value set to will overwrite the previous value.
-     If any other variable is set, it will be ignored.
-  2) each of /etc/pm/sleep.d/* are executed in C sort order.  The first command
-     line argument is "suspend" or "hibernate".  These files may source
-     configuration files from /etc/pm/config.d/ on their own in order to pick
-     up variables set there that aren't part of the global list.  Note that
-     hooks should take care to preserve any global configuration variable
-     which _that_ hook will later need to use, as sourcing this config file
-     will clobber any such variables.
-  3) the system suspends or hibernates.
-  4) some event happens to wake the machine up
-  5) each of /etc/pm/sleep.d/* are executed in reverse C sort order.  The first
-     command line argument is "resume" or "thaw".
+  1) The files in /etc/pm/config.d/* are evaluated in C sort order.  
+     These files can be provided by individual packages outside of
+     pm-utils, and contain globally availabl configuration settings
+     for pm-utils and the hooks.
+  2) Each of the hooks in /etc/pm/sleep.d/* are executed in C sort
+     order, with a command line argument of either "suspend" or "hibernate". 
+  3) The system suspends or hibernates.
+  4) Some event happens to wake the machine up
+  5) Each of /etc/pm/sleep.d/* are executed in reverse C sort order,
+     with a command line argument of "resume" or "thaw".
 
-End-user customization:
+End-user customization and debugging:
 
 * If a particular hook is causing problems on your system, you can disable it
-  using the HOOK_BLACKLIST environment variable.by creating a file in 
+  using the HOOK_BLACKLIST environment variable by creating a file in 
   /etc/pm/config.d and adding the line:
   HOOK_BLACKLIST="hookname 99another-hook"
-* To find out what parameters can be passed to pm-suspend and friends, run them
-  with '--help' as the first parameter as root.  This will print out the 
-  options that it supports and which hooks or modules handle those options.
+
 * If a parameter (or lack thereof) passed to pm-suspend and friends is causing
   problems, or you need to debug the suspend/resume process to work out what 
   quirks are causing problems, you can use the ADD_PARAMETERS and 
@@ -65,6 +62,14 @@ End-user customization:
   If you want to drop all parameters (for testing purposes, or to work around 
   bugs in HAL), you can use DROP_PARAMETERS="all"
 
+* If you suspect that a kernel module is preventing you from being
+  able to suspend and resume, you can use the SUSPEND_MODULES
+  environment variable to have that module removed when the system
+  suspends and reloaded when the system wakes up.
+
+* To find out what parameters can be passed to pm-suspend and friends, run them
+  with '--help' as the first parameter as root.  This will print out the 
+  options that it supports and which hooks or modules handle those options.
 
   That's it!
 
