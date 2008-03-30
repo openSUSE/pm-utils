@@ -1,5 +1,4 @@
-There have been many changes to pm-utils since the last release of
-0.99.4. 
+There have been many changes to pm-utils since the release of 0.99.4. 
 
 Major changes include:
 
@@ -41,6 +40,31 @@ Major changes include:
   quirk handling needs.
 
 In addition to these major changes, there have been a whole slew of
-minor changes and bugfixes.  Most of the major pm-utils related bugs
-that the distributions have encountered have been fixed in this
+minor changes and bugfixes.  Most of the pm-utils related bugs that
+the distributions have encountered have been fixed in this
 release. Please see the ChangeLog for more details.
+
+There have also been major changes in the pm-utils project:
+
+* Richard Hughes assumed maintainership of the project after a long
+  period of inactivity by Peter Jones. Richard then transitioned the
+  project from using CVS to using git as the version control system,
+  and opened the floor to several new contributors.
+
+* Victor Lowther rewrote all the scripts to be POSIX compliant, added
+  the modular sleep backends, added the new debugging features, and
+  did lots of code cleanups and bug fixes. If you find a bug, it is
+  probably his fault.
+
+* Michael Biebl improved the PMU support and caught most of the bugs
+  that Victor did not catch. 
+
+* Till Maas improved the locking code through clever use of noclobber.
+
+* Dan Nicholson cleaned up our use of autotools, and added pkg-config
+  support.
+
+* pm-utils now uses git as it source-control repository. You can
+  browse the code at http://cgit.freedesktop.org/pm-utils/, and 
+
+  
