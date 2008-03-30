@@ -75,10 +75,10 @@ rm -f "${INHIBIT}"
 # run the sleep hooks
 log "$(date): Running hooks for $ACTION."
 run_hooks sleep "$ACTION"
-log -n "$(date): $METHOD now."
+log "$(date): ${METHOD}ing"
 # Sleep only if we know how and if a hook did not inhibit us.
 command_exists "do_$METHOD" && [ ! -e "$INHIBIT" ] && { sync; "do_$METHOD"; }
-
+log "$(date): Awake."
 log "$(date): Running hooks for $REVERSE"
 # run the sleep hooks in reverse with the wakeup action
 run_hooks sleep "$REVERSE" reverse

@@ -65,6 +65,8 @@ There have also been major changes in the pm-utils project:
   support.
 
 * pm-utils now uses git as it source-control repository. You can
-  browse the code at http://cgit.freedesktop.org/pm-utils/, and 
+  browse the code at http://cgit.freedesktop.org/pm-utils/
+
+
 
   
