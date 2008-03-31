@@ -34,3 +34,9 @@
   should also be possible.  We should get it to the point that any
   program that needs something to happen when running a power
   management task uses our functionality instead of rewriting their own.
+
+* Merge the man pages for pm-action/pm-is-supported/pm-powersave from Debian
+  (which are written in docbook xml). Also convert the existing man pages from
+  docbook sgml to docbook xml.
+  The man pages should be improved to document new configuration variables,
+  contain examples how to write hooks etc.
