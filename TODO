@@ -1,20 +1,32 @@
 * pm-utils has no provision for halting the suspend/resume process if
   a hook fails. Adding naive support for this is easy, getting it
   right is less so.
+
+* suspend-hybrid handling is less than optimal.  The current code
+  assumes it is always resuming from suspend.  While this is probably
+  the common case, we need to take into account that we will also
+  sometimes be returning from hibernate and run the hooks
+  accordingly. Otherwise, suspend-hybrid and video quirk handling are
+  going to interact very badly some of the time.
+
 * There are no provisions for configuring the tuxonice backend.
   Tuxonice has lots of things that can be tuned, but doing so would
   end up duplicating alot of the tuxonice project's hibernate script.
   We should talk to their maintainers about merging common
   functionality.
+
 * If a hook needs to handle parameters passed from the command line,
   it has to do that on its own.  A simple parameter-parsing engine
   might come in handy.
+
 * Currently, we really only handle suspend/resume.  The
   powermanagement system should use some maintenance. Should we also
   handle other powermanagement-related tasks?  
+
 * Beef up the abstraction layer between the hooks and the pm-utils
   core infrastructure.  We should work on making that API stable
   enough that...
+
 * pm-utils to become the default low-level userspace power management handling
   infrastructure for the majority of Linux (and mabye other
   unixalikes) distributions.  The core pm-utils infrastructure is
