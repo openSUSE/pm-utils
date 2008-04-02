@@ -34,6 +34,7 @@ get_quirks()
 
 check_suspend()
 {
+	command_exists s2ram || return 1
 	[ -c /dev/pmu ] && return 0
 	grep -q mem /sys/power/state && return 0
 }
