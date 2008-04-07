@@ -8,7 +8,7 @@ check_suspend()
 
 do_suspend()
 {
-	if [ -e /dev/pmu ]; then
+	if [ -c /dev/pmu ]; then
 		pm-pmu --suspend
 	else
 		echo -n "mem" > /sys/power/state
