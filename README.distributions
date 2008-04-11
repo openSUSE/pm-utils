@@ -1,0 +1,13 @@
+Note for distro maintainers:
+
+When writing sleep hooks, please consider adding any needed hooks to the package
+that requires the hooks, rather than pm-utils.  
+
+An example would be if you distro wants anacrom to run on resume -- the optimal
+fix would be to have the anacron package install a hook in 
+/usr/lib/pm-utils/sleep.d that wakes anacron up on resume.
+
+This will also help package maintenance by allowing package maintainers to 
+keep track of what the best way to handle any suspend/resume functionality their
+package requires insteas of leaving it up to the pm-utils maintainers to guess
+at what functionality is needed.
