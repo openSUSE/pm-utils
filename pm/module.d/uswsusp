@@ -17,8 +17,8 @@ get_quirks()
 			dpms-suspend) 	   ;; # no-op
 			radeon-off) 	   OPTS="$OPTS --radeontool" ;;
 			reset-brightness)  ;; # no-op
-			s3-bios) 	   ACPI_SLEEP=$((ACPI_SLEEP + 1)) ;;
-			s3-mode) 	   ACPI_SLEEP=$((ACPI_SLEEP + 2)) ;;
+			s3-bios) 	   ACPI_SLEEP=$(($ACPI_SLEEP + 1)) ;;
+			s3-mode) 	   ACPI_SLEEP=$(($ACPI_SLEEP + 2)) ;;
 			vbe-post) 	   OPTS="$OPTS --vbe_post" ;;
 			vbemode-restore)   OPTS="$OPTS --vbe_mode" ;;
 			vbestate-restore)  OPTS="$OPTS --vbe_save" ;;
