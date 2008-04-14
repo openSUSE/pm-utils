@@ -39,8 +39,8 @@ For any given sleep/wakeup cycle, the hooks in sleep.d are run twice:
 CONVENIENCE FUNCTIONS
 
 If your hook is a shell script that supports POSIX/SuS compatible syntax, you
-MAY source /usr/lib/pm-utils/functions, which will make the following 
-convenience functions available:
+MAY source "${PM_FUNCTIONS}". The variable will be set in the environment of
+the hook. This will make the following convenience functions available:
 1:  try_lock
 	try_lock expects a single parameter -- the name of the lock to 
 	try to acquire.  Exit code denotes success.
