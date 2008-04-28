@@ -19,6 +19,12 @@ dnl ---------------------------------------------------------------------------
 CPPFLAGS="$CPPFLAGS -g"
 
 dnl ---------------------------------------------------------------------------
+dnl - Manual page build
+dnl ---------------------------------------------------------------------------
+AC_PATH_PROG(DOCBOOK2MAN, docbook2man, no)
+AM_CONDITIONAL(HAVE_DOCBOOK, [test "x$DOCBOOK2MAN" != xno])
+
+dnl ---------------------------------------------------------------------------
 dnl - Make paths available for source files
 dnl ---------------------------------------------------------------------------
 AC_SUBST(SYSCONFDIR, $sysconfdir)

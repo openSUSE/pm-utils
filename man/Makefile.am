@@ -1,20 +1,25 @@
-man_MANS =			\
+pm_mans =			\
 	on_ac_power.1		\
 	pm-pmu.1
+
+if HAVE_DOCBOOK
+man_MANS =			\
+	$(pm_mans)
+endif
 
 EXTRA_DIST =			\
 	on_ac_power.sgml	\
 	pm-pmu.sgml		\
-	$(man_MANS)
+	$(pm_mans)
 
 MAINTAINERCLEANFILES =		\
-	$(man_MANS)
+	$(pm_mans)
 
 pm-pmu.1: pm-pmu.sgml
-	docbook2man $?
+	$(DOCBOOK2MAN) $?
 
 on_ac_power.1: on_ac_power.sgml
-	docbook2man $?
+	$(DOCBOOK2MAN) $?
 
 clean-local :
 	rm -f *~
