@@ -38,13 +38,10 @@ spin_lock()
 release_lock()
 {
 	# $1 = lockfile
-	# make sure it is ours first.
 	local lock="${LOCKDIR}/${1##*/}"
 	rm -f "${lock}"
 	return $?
 }
-
-
 
 command_exists()
 {
@@ -56,21 +53,15 @@ command_exists()
 
 get_power_status()
 {
-	RETVAL=0
 	on_ac_power
 	case "$?" in
-		"0")
-			echo "ac"
-			;;
-		"1")
-			echo "battery"
-			;;
-		"255")
-			echo "error"
-			RETVAL=1
+		"0")    echo "ac" ;;
+		"1")    echo "battery" ;;
+		"255")  echo "error"
+			return 1
 			;;
 	esac
-	return $RETVAL
+	return 0
 }
 
 # TODO: Module loading and unloading is Linux-specific.  
@@ -162,13 +153,21 @@ restartservice()
 	[ -O "${STORAGEDIR}/service:$1" ] && service "$1" start
 }
 
+# Disable a hook.
 disablehook()
 {
+	# $1 = name of hook to disable.
+	# $2 = optional comment.
 	echo "${2:-${0##*/}}" > "${STORAGEDIR}/disable_hook:${1##*/}"
 }
 
+# Save an arbitrary piece of state for later use.
+# If called with just one argument, it reads stdin and saves it to a file.
+# If called with 2 arguments, it saves $2 to a file.
 savestate()
 {
+	# $1 = name of state to save
+	# $2 (optional) State to save.  If omitted, save stdin.
 	if [ -n "$2" ]; then
 		echo "$2" > "${STORAGEDIR}/state:$1"
 	else
@@ -176,13 +175,16 @@ savestate()
 	fi
 }
 
+# Check to see of a piece of state exists.
 state_exists()
 {
+	# $1 = name of state
 	[ -O "${STORAGEDIR}/state:$1" ]
 }
 
-
+# Output previously saved state to stdout.
 restorestate()
 {
+	# $1 = name of state
 	state_exists "$1" && cat "${STORAGEDIR}/state:$1"
 }

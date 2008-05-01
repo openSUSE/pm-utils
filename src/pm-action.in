@@ -56,7 +56,7 @@ done
 METHOD="$(echo ${0##*pm-} |tr - _)"
 
 command_exists "check_$METHOD" && command_exists "do_$METHOD" || {
-	log "pm-utils does not know how to $1 on this system."
+	log "pm-utils does not know how to $METHOD on this system."
 	exit 1
 }
 
