@@ -81,7 +81,7 @@ vbe_restorestate() { restorestate vbestate |vbe vbestate restore; }
 
 # save/restore the vbe mode
 vbe_savemode() { vbe vbemode get |savestate vbemode; }
-vbe_restoremode() { vbe vbemode get |savestate vbemode; }
+vbe_restoremode() { vbe vbemode set $(restorestate vbemode); }
 
 # post the video card
 vbe_post() { vbe post; sleep 0.1; }
