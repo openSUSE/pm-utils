@@ -22,6 +22,9 @@ dnl ---------------------------------------------------------------------------
 dnl - Manual page build
 dnl ---------------------------------------------------------------------------
 AC_PATH_PROG(XMLTO, xmlto, no)
+if test "$XMLTO" = "no" ; then
+	AC_MSG_ERROR([Cannot find xmlto. Aborting...])
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl - Make paths available for source files
