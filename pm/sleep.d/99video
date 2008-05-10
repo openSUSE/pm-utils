@@ -81,7 +81,16 @@ vbe_restorestate() { restorestate vbestate |vbe vbestate restore; }
 
 # save/restore the vbe mode
 vbe_savemode() { vbe vbemode get |savestate vbemode; }
-vbe_restoremode() { vbe vbemode set $(restorestate vbemode); }
+vbe_restoremode() 
+{
+	# this is a little mode complicated to handle special-casing mode 3.
+	local vbemode=$(restorestate vbemode)
+	if [ "$vbemode" = "3" ]; then
+		vbe vgamode set $vbemode
+	else 
+		vbe vbemode set $vbemode
+	fi
+}
 
 # post the video card
 vbe_post() { vbe post; sleep 0.1; }
