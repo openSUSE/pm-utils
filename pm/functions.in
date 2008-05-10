@@ -11,7 +11,7 @@ try_lock()
 {
 	# $1 = file to use as lockfile
 	# $2 (optional) content to write to the lockfile,
-	#               extra newline will be appended
+	# extra newline will be appended
 	# make sure the directory where the lockfile should be exists
 	mkdir -p "${LOCKDIR}"
 	local lock="${LOCKDIR}/${1##*/}"
@@ -134,7 +134,7 @@ if ! command_exists service; then
 			shift
 			"/etc/init.d/$svc" "$@"
 		else
-			log "$1" $": unrecognized service" 1>&2
+			log "${1}: unrecognized service"
 			return 1
 		fi
 	}
