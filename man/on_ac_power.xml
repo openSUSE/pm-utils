@@ -1,6 +1,9 @@
-<!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+
   <!ENTITY date        "<date>05 June, 2006</date>">
-  <!ENTITY package     "pm-pmu">
+  <!ENTITY package     "on_ac_power">
   <!ENTITY gnu         "<acronym>GNU</acronym>">
   <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
 ]>
@@ -26,7 +29,7 @@
   </refmeta>
   <refnamediv>
     <refname>&package;</refname>
-    <refpurpose>suspend the computer on machines using a Macintosh-style PMU</refpurpose>
+    <refpurpose>test whether the computer is running on line power</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <cmdsynopsis>
@@ -37,14 +40,13 @@
     <title>DESCRIPTION</title>
     <para>This manual page documents briefly the
       <command>&package;</command> command.</para>
-    <para><command>&package;</command> is a command line program to suspend a computer on machines using a Macintosh-style PMU</para>
+    <para><command>&package;</command> is a command line program to test whether the computer is running on line power</para>
   </refsect1>
   <refsect1>
     <title>EXIT CODES</title>
     <para>
-      The command succeeds (status 0) if the machine uses a Macintosh-style
-      PMU, and suspended successfully.  The command fails (status other than
-      0) otherwise.
+      The command succeeds (status 0) if the system is using line power
+      and fails (status other than 0) otherwise.
       It is designed to be easy to use in shell scripts.
     </para>
     <variablelist>
@@ -53,7 +55,7 @@
           <option>0 (true)</option>
         </term>
         <listitem>
-          <para>System was suspended using PMU.</para>
+          <para>System is on line power.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -61,31 +63,7 @@
           <option>1 (false)</option>
         </term>
         <listitem>
-          <para>System could not be suspended using PMU.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
-  </refsect1>
-  <refsect1>
-    <title>OPTIONS</title>
-    <para>This program follows the usual &gnu; command line syntax,
-      with long options starting with two dashes (`-').  A summary of
-      options is included below. </para>
-    <variablelist>
-      <varlistentry>
-        <term>
-          <option>--suspend</option>
-        </term>
-        <listitem>
-          <para>Suspend the computer.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>
-          <option>--help</option>
-        </term>
-        <listitem>
-          <para>Show help message.</para>
+          <para>System is not on line power.</para>
         </listitem>
       </varlistentry>
     </variablelist>
