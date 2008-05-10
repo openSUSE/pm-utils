@@ -21,10 +21,7 @@ CPPFLAGS="$CPPFLAGS -g"
 dnl ---------------------------------------------------------------------------
 dnl - Manual page build
 dnl ---------------------------------------------------------------------------
-AC_PATH_PROG(DOCBOOK2MAN, docbook2man, no)
-AM_CONDITIONAL(HAVE_DOCBOOK, [test "x$DOCBOOK2MAN" != xno])
-
-AC_PATH_PROG(XMLTO, XMLTO, no)
+AC_PATH_PROG(XMLTO, xmlto, no)
 
 dnl ---------------------------------------------------------------------------
 dnl - Make paths available for source files
