@@ -1,7 +1,7 @@
 man_MANS =			\
 	on_ac_power.1		\
-	pm-pmu.1		\
 	pm-is-supported.1	\
+	pm-pmu.8		\
 	pm-powersave.8		\
 	pm-action.8
 

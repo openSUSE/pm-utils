@@ -70,7 +70,12 @@
   </refsect1>
   <refsect1>
     <title>SEE ALSO</title>
-    <para>pm-suspend (1).</para>
+    <para>
+      <citerefentry>
+        <refentrytitle>pm-suspend</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry>
+    </para>
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>
