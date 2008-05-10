@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+
+
+  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
+  <!ENTITY dhfirstname "Tim">
+  <!ENTITY dhsurname   "Dijkstra">
+  <!-- dhusername could also be set to "&firstname; &surname;". -->  
+  <!ENTITY dhusername  "Tim Dijkstra">
+  <!ENTITY dhemail     "tim@famdijkstra.org">
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate      "Apr 18, 2007">
+  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+       allowed: see man(7), man(1) and
+       http://www.tldp.org/HOWTO/Man-Page/q2.html. -->
+  <!ENTITY dhsection   "1">
+  <!-- TITLE should be something like "User commands" or similar (see
+       http://www.tldp.org/HOWTO/Man-Page/q2.html). -->
+  <!ENTITY dhtitle     "pm-utils User Manual">
+  <!ENTITY dhucpackage "pm-is-supported">
+  <!ENTITY dhpackage   "pm-is-supported">
+
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <title>&dhtitle;</title>
+    <productname>&dhpackage;</productname>
+    <date>&dhdate;</date>
+    <authorgroup>
+      <author>
+	<firstname>&dhfirstname;</firstname>
+	<surname>&dhsurname;</surname>
+	<contrib>Manpage author.</contrib>
+	<address>
+	  <email>&dhemail;</email>
+	</address>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>2007</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    <legalnotice>
+      <para>
+	This manual page was written for the &debian; system
+	(but may be used by others).
+      </para>
+      <para>
+	Permission is granted to copy, distribute and/or modify this
+	document under the terms of the &gnu; General Public License,
+	Version 2 or (at your option) any later version published by
+	the Free Software Foundation.
+      </para>
+      <para>
+	On Debian systems, the complete text of the GNU General Public
+	License can be found
+	in <filename>file:///usr/share/common-licenses/GPL</filename>.
+      </para>
+    </legalnotice>
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>&dhucpackage;</refentrytitle>
+    <manvolnum>&dhsection;</manvolnum>
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+    <refpurpose>Does my computer support suspend and/or hibernate.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <!-- These are several examples, how syntaxes could look -->
+      <arg choice="opt">
+	<group choice="req">
+	  <arg choice="plain"><option>--suspend</option></arg>
+	  <arg choice="plain"><option>--hibernate</option></arg>
+	  <arg choice="plain"><option>--suspend-hybrid</option></arg>
+	</group>
+      </arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>DESCRIPTION</title>
+    <para>
+      This manual page documents briefly the
+      <command>&dhpackage;</command> command.
+    </para>
+    <para>
+      This manual page was written for the &debian; distribution
+      because the original program does not have a manual page.
+    </para>
+    <para>
+      The intended purpose of <command>&dhpackage;</command> is to
+      find out which power management modes are supported by the 
+      system. hald(8) will call it to do just that.
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>OPTIONS</title>
+    <variablelist>
+      <!-- Use the variablelist.term.separator and the
+	   variablelist.term.break.after parameters to
+	   control the term elements. -->
+      <varlistentry>
+	<term><option>--suspend</option></term>
+	<listitem>
+	  <para>
+	    Is suspend supported? Suspend is a state where
+	    most devices are shutdown, except for RAM. This
+	    state still draws power.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><option>--hibernate</option></term>
+        <listitem>
+	  <para>
+	    Is hibernate supported? During hibernate the state of the
+	    system is saved to disk, the system is fully powered off.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><option>--suspend-hybrid</option></term>
+	<listitem>
+	  <para>
+	    Is hybrid-suspend supported? Hybrid-suspend is the process
+	    where first the state of the system is saved to disk 
+	    -- just like with hibernate -- but instead of poweroff, the 
+	    system goes in suspend state, which means it can wakeup 
+	    quicker than for normal hibernation. The advantage over
+	    suspend is that you can resume even if you run out of power.
+	    s2both is a hybrid-suspend implementation.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id="diagnostics">
+    <title>RETURN VALUE</title>
+    <para>
+      The result of the test for a certain powermanagement state
+      is defined by the following exit codes.
+    </para>
+    <segmentedlist>
+      <segtitle>Code</segtitle>
+      <segtitle>Diagnostic</segtitle>
+      <seglistitem>
+	<seg><errorcode>0</errorcode></seg>
+	<seg>State available.</seg>
+      </seglistitem>
+      <seglistitem>
+	<seg><errorcode>1</errorcode></seg>
+	<seg>State NOT available.</seg>
+      </seglistitem>
+    </segmentedlist>
+  </refsect1>
+
+  <refsect1 id="see_also">
+    <title>SEE ALSO</title>
+    <!-- In alpabetical order. -->
+    <para>
+      <citerefentry>
+	<refentrytitle>hald</refentrytitle>
+	<manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+	<refentrytitle>pm-suspend</refentrytitle>
+	<manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+	<refentrytitle>s2both</refentrytitle>
+	<manvolnum>8</manvolnum>
+      </citerefentry>
+    </para>
+  </refsect1>
+</refentry>
