@@ -69,6 +69,8 @@ done
 
 . "${PM_FUNCTIONS}"
 
+# Simple little logging function.
+# We do it this way because 'echo -n' is not posix.
 log()
 {
 	[ $LOGGING ] || return;
@@ -77,6 +79,7 @@ log()
 	printf "$fmt" "$*"
 }
 
+# if the user asked us to blacklist any hooks, do it.
 load_hook_blacklist()
 {
 	[ "$HOOK_BLACKLIST" ] || return
@@ -87,6 +90,8 @@ load_hook_blacklist()
 	done
 }
 
+# If we were told by the user to ignore some parameters from HAL.
+# remove them from our list.  This implementation is rather stupid.
 remove_parameters() {
 	local x y
 	for p in "$@"; do
@@ -103,6 +108,7 @@ remove_parameters() {
 	done
 }
 
+# 
 add_parameters() {
 	log "Adding parameters $@"
 	PM_CMDLINE="$PM_CMDLINE $@"
@@ -129,14 +135,15 @@ remove_suspend_lock()
 
 hook_exit_status(){
 	case $1 in
-		0) log "success." ;;
+		0)   log "success." ;;
 		$NA) log "not applicable." ;;
 		$NX) log "not executable." ;;
 		$DX) log "disabled." ;;
-		*) log "Returned exit code $1." ;;
+		*)   log "Returned exit code $1." ;;
 	esac
 }
 
+# check to see if a hook is a candidate for being run.
 hook_ok()
 {
 	local hook="${1##*/}"
@@ -148,6 +155,7 @@ hook_ok()
 	return 0
 }
 
+# Run all applicalbe hooks, logging success and failure as we go.
 run_hooks() {
 	# $1 = type of hook to find.  
 	# $2 = paramaters to pass to hooks.
@@ -183,16 +191,17 @@ run_hooks() {
 	IFS="${oifs}"
 }
 
+# Try to reinitalize the logfile. Fail unless certian criteria are met.
 init_logfile()
 {
-	if [ -h "$1" ]; then
+	if [ -z "$1" ]; then
+		echo "Please pass a filename to init_logfile."
+		return 1	
+	elif [ -h "$1" ]; then
 		echo "$1 is a symbolic link, refusing to overwrite."
 		return 1
 	elif [ -f "$1" -a ! -O "$1"  ]; then
 		echo "We do not own $1, refusing to overwrite."
-		return 1
-	elif [ -z "$1" ]; then
-		echo "Please pass a filename to init_logfile."
 		return 1
 	fi
 	export LOGGING=true
