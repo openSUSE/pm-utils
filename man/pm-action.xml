@@ -47,19 +47,14 @@
     </copyright>
     <legalnotice>
       <para>
-	This manual page was written for the &debian; system
-	(but may be used by others).
+	This manual page was originally written for the &debian; system, and
+	has been adopted by the pm-utils project.
       </para>
       <para>
 	Permission is granted to copy, distribute and/or modify this
 	document under the terms of the &gnu; General Public License,
 	Version 2 or (at your option) any later version published by
         the Free Software Foundation.
-      </para>
-      <para>
-	On Debian systems, the complete text of the GNU General Public
-	License can be found
-	in <filename>file:///usr/share/common-licenses/GPL</filename>.
       </para>
     </legalnotice>
   </refentryinfo>
@@ -108,8 +103,8 @@
       This manual page documents briefly the
       <command>&dhpackage;</command>, <command>pm-hibernate</command>,
       <command>pm-suspend</command> and <command>pm-suspend-hybrid</command>
-      commands. This manual page was written for the &debian; distribution
-      because the original program does not have a manual page.
+      commands. This manual page was originally written for the &debian; 
+      distribution and has been adopted by the pm-utils project.
     </para>
     <para>
       These commands can be used to put the machine in a sleep 
@@ -133,8 +128,11 @@
 	<term><option>pm-suspend</option></term>
 	<listitem>
 	  <para>
-	    Suspend is a state where most devices are shutdown, except 
-	    for RAM. This state still draws power.
+	    During suspend most devices are shutdown, and system state is 
+	    saved in RAM. The system still requires power in this state. Most
+	    modern systems require 3 to 5 seconds to enter and leave suspend,
+	    and most laptops can stay in suspend mode for 1 to 3 days before
+	    exhausting their battery.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -142,10 +140,11 @@
 	<term><option>pm-hibernate</option></term>
 	<listitem>
 	  <para>
-	    During hibernate the state of the system is saved to disk, 
-	    the system is fully powered off. Except maybe for a very low
-	    power state on - for example - an ethernet card to enable
-	    wake-on-lan.
+	    During hibernate the system is fully powered off, and system state
+	    is saved to disk. The system does not require power, and can stay
+	    in hibernate mode indefinitely. Most modern systems require 15 to 45
+	    seconds to enter and leave hibernate, and entering and leaving
+	    hibernate takes longer when you have more memory.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -155,7 +154,7 @@
 	  <para>
 	    Hybrid-suspend is the process where first the state of the 
 	    system is saved to disk - just like with hibernate - but 
-	    instead of poweroff, the 
+	    instead of shutting down, the 
 	    system goes in suspend state, which means it can wakeup 
 	    quicker than for normal hibernation. The advantage over
 	    suspend is that you can resume even if you run out of power.
@@ -171,10 +170,10 @@
     <title>OPTIONS</title>
     <para>
       Om most hardware putting the video card in the suspend state and 
-      recovering from it needs some hacks.
+      recovering from it needs some special quirk handling.
       With the --quirk-* options of the <command>pm-suspend</command> and
       <command>pm-suspend-hybrid</command> commands you can select which
-      should be used.
+      quirks should be used.
     </para>
 
     <variablelist>
@@ -242,9 +241,9 @@
         <term><option>--quirk-vbe-post</option></term>
         <listitem>
           <para>
-            This option will attempt to run BIOS code located at c000:0003
-            during resume. This is the code also run by the system BIOS at
-            boot in order to initialize the video hardware.
+            This option will attempt to reinitialize the video card when
+	    resuming from suspend, using the same code the system BIOS uses
+	    at boot in order to initialize the video hardware.
           </para>
         </listitem>
       </varlistentry>
@@ -271,7 +270,8 @@
         <term><option>--quirk-vga-mode3</option></term>
         <listitem>
           <para>
-            This option will try to re-enable the video card on resume.
+            This option will try to force the video card into a standard
+	    text mode on resume.  
           </para>
         </listitem>
       </varlistentry>
@@ -328,7 +328,7 @@
 	<term><filename>/var/log/pm-suspend.log</filename></term>
 	<listitem>
 	  <para>
-	    The log file showing what is done on suspend/hibernate
+	    The log file shows what was done on the last suspend/hibernate
 	    and resume/thaw.
 	  </para>
 	</listitem>
@@ -345,7 +345,7 @@
 
     <variablelist>
       <varlistentry>
-        <term><envar>SLEEP_MODULE [=auto]</envar></term>
+        <term><envar>SLEEP_MODULE [=kernel]</envar></term>
         <listitem>
           <para>
             The default suspend backend to use. Valid values are:
@@ -372,15 +372,7 @@
                 <term><parameter>tuxonice</parameter></term>
                 <listitem>
                   <para>
-                    If your system has support for tuxonice, use this.
-                  </para>
-                </listitem>
-              </varlistentry>
-              <varlistentry>
-                <term><parameter>auto</parameter></term>
-                <listitem>
-                  <para>
-                    Try to autodetect which backend to use.
+                    If your system has support for tuxonice/suspend2, use this.
                   </para>
                 </listitem>
               </varlistentry>
