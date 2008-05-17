@@ -193,10 +193,16 @@ restorestate()
 # remove them from our list.  This implementation is rather stupid.
 remove_parameters() {
 	local x y
-	[ "$1" = "all" ] && { rm "${STORAGEDIR}/parm:"*; return; }
-	for p in "$@"; do
-	    [ -O "${STORAGEDIR}/parm:$p" ] && rm "${STORAGEDIR}/parm:$p"
-	done
+	if [ "$1" = "all" ]; then
+	    for p in "${STORAGEDIR}/parm:"*; do 
+		[ -O "$p" ] && rm -f "$p"; 
+	    done
+	else
+	    for p in "$@"; do
+		[ -O "${STORAGEDIR}/parm:$p" ] && \
+		    rm "${STORAGEDIR}/parm:$p"
+	    done
+	fi
 }
 
 # 
