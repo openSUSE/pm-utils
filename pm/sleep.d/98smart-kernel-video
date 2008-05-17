@@ -27,6 +27,6 @@ smart_kernel_video()
 
 case $1 in
      suspend|hibernate)
-	smart_kernel_video && disablehook 99video "Smart kernel driver";;
+	smart_kernel_video && add_parameters "--quirk-none" ;;
      *) exit 0 ;;
 esac

@@ -17,7 +17,6 @@ set -a
 PM_UTILS_LIBDIR="@PM-UTILS-LIBDIR@"
 PM_UTILS_ETCDIR="@PM-UTILS-SYSCONFDIR@"
 PM_UTILS_RUNDIR="/var/run/pm-utils"
-PM_CMDLINE="$*"
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
 INHIBIT="${PM_UTILS_RUNDIR}/inhibit"
@@ -47,6 +46,11 @@ DROP_PARAMETERS=""
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 
 set +a
+
+# save our parameter list. Second stupidest way of doing this.
+for x in "$@"; do
+    touch "${STORAGEDIR}/parm:${x}"
+done
 
 for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
 	[ -f "$cfg" ] || continue
@@ -88,30 +92,6 @@ load_hook_blacklist()
 		disablehook "${hook}" "blacklisted by user"
 		log "Blacklisting ${hook}."
 	done
-}
-
-# If we were told by the user to ignore some parameters from HAL.
-# remove them from our list.  This implementation is rather stupid.
-remove_parameters() {
-	local x y
-	for p in "$@"; do
-		y=""
-		for x in $PM_CMDLINE; do
-			# 'all' removes all parameters.
-			[ "$x" = "$p" -o "$p" = 'all' ] && {
-				log "Removing parameter $x."
-				continue
-			}
-			y="$y $x"
-		done
-		PM_CMDLINE="$y"
-	done
-}
-
-# 
-add_parameters() {
-	log "Adding parameters $@"
-	PM_CMDLINE="$PM_CMDLINE $@"
 }
 
 load_hook_parameters()
