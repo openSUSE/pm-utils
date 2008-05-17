@@ -209,7 +209,7 @@ add_parameters() {
 
 get_parameters() {
 	for x in "${STORAGEDIR}/parm:"*; do
-	    echo "${x##*:}"
+	    [ -O "$x" ] && echo "${x##*:}"
 	done
 }
 
