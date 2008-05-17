@@ -1,29 +1,24 @@
 #!/bin/sh
 #
-# Copyright 2006-2007 Richard Hughes <richard@hughsie.com>
-# Copyright 2007 Peter Jones <pjones@redhat.com>
+# Copyright 2008 Victor Lowther <victor.lowther@gmail.com
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-# Handle video quirks.  If you are having suspend/resume issues,
-# troubleshooting using this hook is probably the best place to start.
-# If it weren't for video card quirks, suspend/resume on Linux would be 
-# a whole lot more stable.
 
 . "${PM_FUNCTIONS}"
 
 
-# Test to see if the kernel has a video driver that is smart enough
-# to handle quirks without external assistance.
+# Test to see if the kernel has a video driver that is smart enough to 
+# handle quirks without external assistance. If it is, disable 99video.
 smart_kernel_video() 
 {
-        # If we are using an ATI or nVidia binary driver, do nothing.
+        # If we are using an ATI or nVidia binary driver, no quirks required.
 	[ -d /sys/module/nvidia -o -d /sys/module/fglrx ] && return 0;
 
 	local kernel_rev="$(uname -r |awk -F '[_-]' '{print $1}')"
-        # Intel can to the same thing, but only at or after kernel 2.6.26.
+        # Intel at or after kernel 2.6.26 is also quirk-free.
 	# FIXME: a more accurate way of testing this?
 	[ -d /sys/module/i915 ] && \
 	    [ "$kernel_rev" >= "2.6.26" ] && return 0;
@@ -31,6 +26,7 @@ smart_kernel_video()
 }
 
 case $1 in
-     suspend|hibernate) smart_kernel_video && disablehook 99video ;;
+     suspend|hibernate)
+	smart_kernel_video && disablehook 99video "Smart kernel driver";;
      *) exit 0 ;;
 esac
