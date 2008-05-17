@@ -87,7 +87,7 @@ log()
 update_parameters()
 {
 	[ -f "${STORAGEDIR}/new-parm" ] || return
-	PM_CMDLINE="$(get_parameters)"
+	export PM_CMDLINE="$(get_parameters)"
 	rm "${STORAGEDIR}/new-parm"
 }
 
