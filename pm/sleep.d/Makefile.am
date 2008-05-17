@@ -12,6 +12,7 @@ sleep_SCRIPTS =			\
 	90clock			\
 	94cpufreq		\
 	95led			\
+	98smart-kernel-video 	\
 	99video
 
 EXTRA_DIST=$(sleep_SCRIPTS)

@@ -31,7 +31,6 @@ for opt in $PM_CMDLINE; do
 	esac
 done
 
-
 reset_brightness()
 {
 	for bl in /sys/class/backlight/* ; do
@@ -106,21 +105,6 @@ vbe_post()
 radeon_off() { radeon dac off; radeon light off; }
 radeon_on() { radeon dac on; radeon light on; }
 
-# Test to see if the kernel has a video driver that is smart enough
-# to handle quirks without external assistance.
-smart_kernel_video() 
-{
-        # If we are using an ATI or nVidia binary driver, do nothing.
-	[ -d /sys/module/nvidia -o -d /sys/module/fglrx ] && return 0;
-
-	local kernel_rev="$(uname -r |awk -F '[_-]' '{print $1}')"
-        # Intel can to the same thing, but only at or after kernel 2.6.26.
-	# FIXME: a more accurate way of testing this?
-	[ -d /sys/module/i915 ] && \
-	    [ "$kernel_rev" >= "2.6.26" ] && return 0;
-	return 1
-}
-
 suspend_video()
 {
 	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
@@ -128,7 +112,6 @@ suspend_video()
 	quirk "${QUIRK_S3_BIOS}" && 		acpi_flag=$(($acpi_flag + 1))
 	quirk "${QUIRK_S3_MODE}" && 		acpi_flag=$(($acpi_flag + 2))
 	[ 0 -ne $acpi_flag ] && sysctl -w kernel.acpi_video_flags=$acpi_flag
-	smart_kernel_video && return
 	
 	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_savestate
 	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_savemode
@@ -139,7 +122,6 @@ suspend_video()
 }
 resume_video()
 {
-	smart_kernel_video && return
 	# We might need to do one or many of these quirks
 	quirk "${QUIRK_VBE_POST}" && 		vbe_post
 	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_restorestate
