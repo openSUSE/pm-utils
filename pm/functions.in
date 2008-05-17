@@ -203,6 +203,7 @@ remove_parameters() {
 		    rm "${STORAGEDIR}/parm:$p"
 	    done
 	fi
+	touch "${STORAGEDIR}/new-parm"
 }
 
 # Add a parameter to our commandline parameters. 
@@ -210,6 +211,8 @@ add_parameters() {
 	for x in "$@"; do
 	    touch "${STORAGEDIR}/parm:${x}"
 	done
+	# update for next hook.
+	touch "${STORAGEDIR}/new-parm"
 }
 
 # Remove a parameter from our commandline parameters.  
@@ -218,5 +221,3 @@ get_parameters() {
 	    [ -O "$x" ] && echo "${x##*:}"
 	done
 }
-
-PM_CMDLINE="$(get_parameters)"
