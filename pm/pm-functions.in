@@ -178,6 +178,7 @@ run_hooks() {
 		update_parameters
 		IFS="${nifs}"
 	done
+	IFS="${oifs}"
 }
 
 # Try to reinitalize the logfile. Fail unless certian criteria are met.
