@@ -205,14 +205,14 @@ remove_parameters() {
 	fi
 }
 
-# 
+# Add a parameter to our commandline parameters. 
 add_parameters() {
 	for x in "$@"; do
-	    log "Adding parameter: $x"
 	    touch "${STORAGEDIR}/parm:${x}"
 	done
 }
 
+# Remove a parameter from our commandline parameters.  
 get_parameters() {
 	for x in "${STORAGEDIR}/parm:"*; do
 	    [ -O "$x" ] && echo "${x##*:}"
