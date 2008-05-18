@@ -85,6 +85,7 @@
       This manual page documents briefly the <command>&dhpackage;</command>
       command.
     </para>
+    <para>
       <command>&dhpackage;</command> can be used to set your system into
       low power mode.
     </para>
@@ -141,7 +142,7 @@
 	    name and without the execute bit set.
 	  </para>
         </listitem>
-      </varlistentry>
+      </varlistentry>    
     </variablelist>
   </refsect1>
 
