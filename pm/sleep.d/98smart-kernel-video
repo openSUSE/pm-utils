@@ -21,7 +21,8 @@ smart_kernel_video()
         # Intel at or after kernel 2.6.26 is also quirk-free.
 	# FIXME: a more accurate way of testing this?
 	[ -d /sys/module/i915 ] && \
-	    [ "$kernel_rev" >= "2.6.26" ] && return 0;
+	    [ "$kernel_rev" > "2.6.26" -o "$kernel_rev" = "2.6.26" ] && \
+	    return 0;
 	return 1
 }
 
