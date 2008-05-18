@@ -1,0 +1,25 @@
+#!/bin/sh
+
+NTPD_LOCK="pm-ntpd.lock"
+
+stop_ntp()
+{
+	if try_lock "${NTPD_LOCK}"; then
+		trap 'release_lock "${NTPD_LOCK}"' 0
+		stopservice ntpd
+	fi
+
+start_ntp()
+{
+	# Bring back ntpd _after_ NetworkManager and such come back...
+	( spin_lock "${NTPD_LOCK}";
+	trap 'release_lock "${NTPD_LOCK}"' 0
+	sleep 20
+	restartservice ntpd; ) &
+}
+
+case "$1" in
+	hibernate|suspend) stop_ntp ;;
+	thaw|resume) start_ntp ;;
+	*) exit $NA ;;
+esac

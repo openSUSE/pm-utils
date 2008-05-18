@@ -1,0 +1,20 @@
+#!/bin/sh
+# Have HAL rescan batteries on resume.
+# TODO: Merge this code back into HAL, it should not be in pm-utils.
+
+. "${PM_FUNCTIONS}"
+
+resume_batteries()
+{
+	for x in $(hal-find-by-capability --capability battery 2>/dev/null); do
+		dbus-send --system --reply-timeout=2000 \
+			--dest=org.freedesktop.Hal "$x" \
+			org.freedesktop.Hal.Device.Rescan "string:$x"
+	done
+}
+
+case "$1" in
+	resume|thaw)
+		resume_batteries
+		;;
+esac

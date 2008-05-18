@@ -1,15 +1,16 @@
 #!/bin/sh
-# IBM specific hook to handle the suspend LED.
-# TODO: Merge with 05led.
+# On an IBM system. make the suspend LED blink.
+# TODO: Merge with 95led?  Should be trivial.
 
 [ -f /proc/acpi/ibm/led ] || exit $NA
 
 case "$1" in
-	thaw|resume)
+	hibernate|suspend)
 		echo "7 blink" >/proc/acpi/ibm/led
 		;;
-	*)
+	thaw|resume) 
+		echo "7 off" >/proc/acpi/ibm/led
+		;;
+	*) exit $NA
 		;;
 esac
-
-exit $NA
