@@ -65,33 +65,30 @@
   </refmeta>
   <refnamediv>
     <refname>&dhpackage;</refname>
-    <refpurpose>suspend or hibernate your computer</refpurpose>
+    <refpurpose>Suspend or Hibernate your computer</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
 
     <cmdsynopsis>
       <command>pm-hibernate</command>
+      <group choice="opt">
+	<option>--help</option>
+      </group>
     </cmdsynopsis>
   
     <cmdsynopsis>
       <command>pm-suspend</command>
       <group choice="opt">
-	<arg choice="plain">
-	  <group choice="req">
-	    <arg choice="plain"><option>--quirk-*</option></arg>
-	  </group>
-        </arg>
+	<option>--quirk-*</option>
+	<option>--help</option>
       </group>
     </cmdsynopsis>
 
     <cmdsynopsis>
       <command>pm-suspend-hybrid</command>
       <group choice="opt">
-	<arg choice="plain">
-	  <group choice="req">
-	    <arg choice="plain"><option>--quirk-*</option></arg>
-	  </group>
-        </arg>
+	<option>--quirk-*</option>
+	<option>--help</option>
       </group>
     </cmdsynopsis>
 
@@ -108,7 +105,7 @@
     </para>
     <para>
       These commands can be used to put the machine in a sleep 
-      state. The precise  way how this is done can be
+      state. The precise way how this is done can be
       influenced by installing executables and configuration snippets. 
       For some options external programs are needed.
     </para>
@@ -152,12 +149,10 @@
 	<term><option>pm-suspend-hybrid</option></term>
 	<listitem>
 	  <para>
-	    Hybrid-suspend is the process where first the state of the 
-	    system is saved to disk - just like with hibernate - but 
-	    instead of shutting down, the 
-	    system goes in suspend state, which means it can wakeup 
-	    quicker than for normal hibernation. The advantage over
-	    suspend is that you can resume even if you run out of power.
+	    Hybrid-suspend is the process where the system does everything it
+	    needs to hibernate, suspends instead of shutting down. This means that 
+	    your computer can wake up quicker than for normal hibernation 
+	    if you do not run out of power, and you can resume even if you run out of power.
 	    s2both(8) is an hybrid-suspend implementation.
 	  </para>
 	</listitem>
@@ -186,7 +181,7 @@
           <para>
             This option forces the video hardware to turn on the screen during
             resume. Most video adapters turn on the screen themselves, but if
-            you get a blank screen on resume, that can be turned back on by
+            you get a blank screen on resume that can be turned back on by
             moving the mouse or typing then this option may be useful.
           </para>
         </listitem>
@@ -195,12 +190,10 @@
         <term><option>--quirk-dpms-suspend</option></term>
         <listitem>
           <para>
-            This option forces the video hardware to turn off the output
-            device when suspending. Most video adapters seem to do this
-            correctly, but some leave the backlight on (with a blank screen)
-            using lots and lots of power in the process. If you can see the
-            backlight is on when you have successfully suspended you may need
-            to use this option.
+            This option forces the video hardware to turn off the screen when suspending. 
+	    Most video adapters seem to do this correctly, but some do not, which
+            wastes lits of power. If your screen is still on after successfully suspending
+	    you may need to use this option.
           </para>
         </listitem>
       </varlistentry>
@@ -208,8 +201,8 @@
         <term><option>--quirk-radeon-off</option></term>
         <listitem>
           <para>
-            This option forces Radeon hardware to turn on the brightness DAC
-            and also to turn on the backlight during resume. You only need to
+            This option forces Radeon hardware to turn off the display 
+	    during suspend and turn it back on during resume. You only need to
             do this on some old ThinkPads of the '30 series 
             (T30, X31, R32,... ) with Radeon video hardware.
           </para>
@@ -244,6 +237,8 @@
             This option will attempt to reinitialize the video card when
 	    resuming from suspend, using the same code the system BIOS uses
 	    at boot in order to initialize the video hardware.
+	    Not all video cards need this, and using this option on systems 
+	    where it is not needed can cause a system to lock up when resuming.
           </para>
         </listitem>
       </varlistentry>
@@ -261,8 +256,8 @@
         <term><option>--quirk-vbestate-restore</option></term>
         <listitem>
           <para>
-            This option uses the VESA 0x4f0f extensions to save and restore
-            hardware state which may be invalid after suspend.
+            This option saves and restores some low level hardware state
+	    which may be invalid after suspend.
           </para>
         </listitem>
       </varlistentry>
@@ -320,7 +315,8 @@
 	    the one in /etc/pm/sleep.d will get preference. It
 	    is possible to disable a hook in the distribution
 	    directory by putting a non-executable file in 
-	    /etc/pm/sleep.d.
+	    /etc/pm/sleep.d, or by adding it to the HOOK_BLACKLIST 
+	    configuration variable.
 	  </para>
 	</listitem>
       </varlistentry>
