@@ -11,7 +11,7 @@ ChangeLog:
 
 dist-hook: ChangeLog
 
-DISTCLEANFILES = ChangeLog
+MAINTAINERCLEANFILES = ChangeLog
 
 clean-local :
 	rm -f *~
