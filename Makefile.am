@@ -7,7 +7,14 @@ EXTRA_DIST = ChangeLog
 
 .PHONY: ChangeLog
 ChangeLog:
-	git --git-dir="$(srcdir)/.git" log > $@
+	@if test -d $(srcdir)/.git; then \
+	  echo git --git-dir="$(srcdir)/.git" log > $@; \
+	  git --git-dir="$(srcdir)/.git" log > $@; \
+	elif test -f $(srcdir)/ChangeLog; then \
+	  touch $(srcdir)/$@; \
+	else \
+	  touch $@; \
+	fi
 
 dist-hook: ChangeLog
 
