@@ -21,10 +21,10 @@ MAINTAINERCLEANFILES =		\
 	$(pm_mans)
 
 .xml.1:
-	$(XMLTO) man $?
+	$(XMLTO) man $<
 
 .xml.8:
-	$(XMLTO) man $?
+	$(XMLTO) man $<
 
 install-data-hook: install-man
 	@if test -f $(DESTDIR)$(mandir)/man8/pm-action.8; then \
