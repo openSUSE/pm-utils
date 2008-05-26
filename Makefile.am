@@ -3,6 +3,10 @@ SUBDIRS = pm man src
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pm-utils.pc
 
+dist_doc_DATA = README			\
+		README.debugging	\
+	        README.distributions
+
 EXTRA_DIST = ChangeLog
 
 .PHONY: ChangeLog

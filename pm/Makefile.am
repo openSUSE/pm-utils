@@ -10,6 +10,9 @@ pm_lib_SCRIPTS = functions pm-functions
 
 dist_pm_lib_DATA = defaults
 
+dist_doc_DATA = HOWTO.hooks	\
+	        HOWTO.modules
+
 script_in_files = functions.in pm-functions.in
 
 CLEANFILES =  $(script_in_files:.in=)
