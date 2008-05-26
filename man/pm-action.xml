@@ -1,0 +1,462 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+
+
+  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
+  <!ENTITY dhfirstname "Tim">
+  <!ENTITY dhsurname   "Dijkstra">
+  <!-- dhusername could also be set to "&firstname; &surname;". -->  
+  <!ENTITY dhusername  "Tim Dijkstra">
+  <!ENTITY dhemail     "tim@famdijkstra.org">
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate      "Apr 25, 2007">
+  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+       allowed: see man(7), man(1) and
+       http://www.tldp.org/HOWTO/Man-Page/q2.html. -->
+  <!ENTITY dhsection   "8">
+  <!-- TITLE should be something like "User commands" or similar (see
+       http://www.tldp.org/HOWTO/Man-Page/q2.html). -->
+  <!ENTITY dhtitle     "pm-utils User Manual">
+  <!ENTITY dhucpackage "pm-action">
+  <!ENTITY dhpackage   "pm-action">
+
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <title>&dhtitle;</title>
+    <productname>&dhpackage;</productname>
+    <date>&dhdate;</date>
+    <authorgroup>
+      <author>
+	<firstname>&dhfirstname;</firstname>
+	<surname>&dhsurname;</surname>
+	<contrib>Manpage author.</contrib>
+	<address>
+	  <email>&dhemail;</email>
+	</address>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>2007</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    <legalnotice>
+      <para>
+	This manual page was originally written for the &debian; system, and
+	has been adopted by the pm-utils project.
+      </para>
+      <para>
+	Permission is granted to copy, distribute and/or modify this
+	document under the terms of the &gnu; General Public License,
+	Version 2 or (at your option) any later version published by
+        the Free Software Foundation.
+      </para>
+    </legalnotice>
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>&dhucpackage;</refentrytitle>
+    <manvolnum>&dhsection;</manvolnum>
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+    <refpurpose>Suspend or Hibernate your computer</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+
+    <cmdsynopsis>
+      <command>pm-hibernate</command>
+      <group choice="opt">
+	<option>--help</option>
+      </group>
+    </cmdsynopsis>
+  
+    <cmdsynopsis>
+      <command>pm-suspend</command>
+      <group choice="opt">
+	<option>--quirk-*</option>
+	<option>--help</option>
+      </group>
+    </cmdsynopsis>
+
+    <cmdsynopsis>
+      <command>pm-suspend-hybrid</command>
+      <group choice="opt">
+	<option>--quirk-*</option>
+	<option>--help</option>
+      </group>
+    </cmdsynopsis>
+
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>DESCRIPTION</title>
+    <para>
+      This manual page documents briefly the
+      <command>&dhpackage;</command>, <command>pm-hibernate</command>,
+      <command>pm-suspend</command> and <command>pm-suspend-hybrid</command>
+      commands. This manual page was originally written for the &debian; 
+      distribution and has been adopted by the pm-utils project.
+    </para>
+    <para>
+      These commands can be used to put the machine in a sleep 
+      state. The precise way how this is done can be
+      influenced by installing executables and configuration snippets. 
+      For some options external programs are needed.
+    </para>
+    <para>
+      These commands will usually be called by 
+      <command>hald</command> when triggered to do so by a program
+      in a desktop session such as <command>gnome-power-manager</command>. 
+      Calling them from the command line is also possible, but it is not 
+      guaranteed that all programs in your desktop session keep working
+      as expected.
+    </para>
+    <variablelist>
+      <!-- Use the variablelist.term.separator and the
+	   variablelist.term.break.after parameters to
+	   control the term elements. -->
+      <varlistentry>
+	<term><option>pm-suspend</option></term>
+	<listitem>
+	  <para>
+	    During suspend most devices are shutdown, and system state is 
+	    saved in RAM. The system still requires power in this state. Most
+	    modern systems require 3 to 5 seconds to enter and leave suspend,
+	    and most laptops can stay in suspend mode for 1 to 3 days before
+	    exhausting their battery.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><option>pm-hibernate</option></term>
+	<listitem>
+	  <para>
+	    During hibernate the system is fully powered off, and system state
+	    is saved to disk. The system does not require power, and can stay
+	    in hibernate mode indefinitely. Most modern systems require 15 to 45
+	    seconds to enter and leave hibernate, and entering and leaving
+	    hibernate takes longer when you have more memory.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><option>pm-suspend-hybrid</option></term>
+	<listitem>
+	  <para>
+	    Hybrid-suspend is the process where the system does everything it
+	    needs to hibernate, suspends instead of shutting down. This means that 
+	    your computer can wake up quicker than for normal hibernation 
+	    if you do not run out of power, and you can resume even if you run out of power.
+	    s2both(8) is an hybrid-suspend implementation.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>OPTIONS</title>
+    <para>
+      Om most hardware putting the video card in the suspend state and 
+      recovering from it needs some special quirk handling.
+      With the --quirk-* options of the <command>pm-suspend</command> and
+      <command>pm-suspend-hybrid</command> commands you can select which
+      quirks should be used.
+    </para>
+
+    <variablelist>
+      <!-- Use the variablelist.term.separator and the
+	   variablelist.term.break.after parameters to
+	   control the term elements. -->
+      <varlistentry>
+	<term><option>--quirk-dpms-on</option></term>
+	<listitem>
+          <para>
+            This option forces the video hardware to turn on the screen during
+            resume. Most video adapters turn on the screen themselves, but if
+            you get a blank screen on resume that can be turned back on by
+            moving the mouse or typing then this option may be useful.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-dpms-suspend</option></term>
+        <listitem>
+          <para>
+            This option forces the video hardware to turn off the screen when suspending. 
+	    Most video adapters seem to do this correctly, but some do not, which
+            wastes lits of power. If your screen is still on after successfully suspending
+	    you may need to use this option.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-radeon-off</option></term>
+        <listitem>
+          <para>
+            This option forces Radeon hardware to turn off the display 
+	    during suspend and turn it back on during resume. You only need to
+            do this on some old ThinkPads of the '30 series 
+            (T30, X31, R32,... ) with Radeon video hardware.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-s3-bios</option></term>
+        <listitem>
+          <para>
+            This option calls the video BIOS during S3 resume. Unfortunately,
+            it is not always allowed to call the video BIOS at this point, so
+            sometimes adding this option can actually break resume on some
+            systems.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-s3-mode</option></term>
+        <listitem>
+          <para>
+            This option initializes the video card into a VGA text mode, and
+            then uses the BIOS to set the video mode. On some systems S3 BIOS
+            only initializes the video bios to text mode, and so both S3 BIOS
+            and S3 MODE are needed.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-vbe-post</option></term>
+        <listitem>
+          <para>
+            This option will attempt to reinitialize the video card when
+	    resuming from suspend, using the same code the system BIOS uses
+	    at boot in order to initialize the video hardware.
+	    Not all video cards need this, and using this option on systems 
+	    where it is not needed can cause a system to lock up when resuming.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-vbemode-restore</option></term>
+        <listitem>
+          <para>
+            This option will save and restore the current VESA mode which may
+            be necessary to avoid X screen corruption. Using this feature on
+            Intel graphics hardware is probably a bad idea.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-vbestate-restore</option></term>
+        <listitem>
+          <para>
+            This option saves and restores some low level hardware state
+	    which may be invalid after suspend.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-vga-mode3</option></term>
+        <listitem>
+          <para>
+            This option will try to force the video card into a standard
+	    text mode on resume.  
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--quirk-save-pci</option></term>
+        <listitem>
+          <para>
+            Save the PCI config space for the VGA card.
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id="files">
+    <title>FILES</title>
+    <variablelist>
+      <varlistentry>
+	<term><filename>/etc/pm/config.d</filename></term>
+	<listitem>
+	  <para>
+	    The files in this directory are evaluated in C sort order. 
+	    These files can be provided by individual packages outside 
+	    of pm-utils. If a global configuration variable is set, the 
+	    value set to will be appended to the previous value.
+	    If any other variable is set, it will be ignored. 
+	    The syntax is simply: VAR_NAME = value.
+	    See the
+	    CONFIGURATION VARIABLES section for valid variables defined
+	    by pm-utils. External packages can define others, see
+	    their respective documentation for more information.
+	  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><filename>/etc/pm/sleep.d</filename></term>
+	<term><filename>/usr/lib/pm-utils/sleep.d</filename></term>
+	<listitem>
+	  <para>
+	    Programs in these directories (we call them hooks) are 
+	    combined and executed in C sort order before suspend and 
+	    hibernate with as argument 'suspend' or 'hibernate'.
+	    Afterwards they are called  in reverse order with
+	    argument 'resume' and 'thaw' respectively.
+	    If both directories contain a similar named file,
+	    the one in /etc/pm/sleep.d will get preference. It
+	    is possible to disable a hook in the distribution
+	    directory by putting a non-executable file in 
+	    /etc/pm/sleep.d, or by adding it to the HOOK_BLACKLIST 
+	    configuration variable.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><filename>/var/log/pm-suspend.log</filename></term>
+	<listitem>
+	  <para>
+	    The log file shows what was done on the last suspend/hibernate
+	    and resume/thaw.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id="config_vars">
+    <title>CONFIGURATION VARIABLES</title>
+    <para>
+      Configuration variables defined by pm-utils. These can be set 
+      in any file in /etc/pm/config.d
+    </para>
+
+    <variablelist>
+      <varlistentry>
+        <term><envar>SLEEP_MODULE [=kernel]</envar></term>
+        <listitem>
+          <para>
+            The default suspend backend to use. Valid values are:
+            <variablelist>
+              <varlistentry>
+                <term><parameter>kernel</parameter></term>
+                <listitem>
+                  <para>
+                    The built-in kernel suspend/resume support.
+                    Use this if nothing else is supported on your system.
+                </para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><parameter>uswsusp</parameter></term>
+                <listitem>
+                  <para>
+                    If your system has support for the userspace
+                    suspend programs (s2ram/s2disk/s2both), then use this.
+                  </para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term><parameter>tuxonice</parameter></term>
+                <listitem>
+                  <para>
+                    If your system has support for tuxonice/suspend2, use this.
+                  </para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><envar>HIBERNATE_RESUME_POST_VIDEO [=no]</envar></term>
+        <listitem>
+          <para>
+            If video should be posted after hibernate, just like
+            after suspend. You should not normally need to set this.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><envar>SUSPEND_MODULES</envar></term>
+        <listitem>
+          <para>
+            Space separated list of modules to unload before suspend.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><envar>HOOK_BLACKLIST</envar></term>
+        <listitem>
+          <para>
+            Space separated list of hooks that should be disabled.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><envar>HIBERNATE_MODE</envar></term>
+        <listitem>
+          <para>
+            Default method to power down the system when hibernating.
+            If not set, the system will use the kernel default as a
+            default value.
+            Check /sys/power/disk for valid values. The default value
+            will be surrounded by [square brackets].
+          </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id="bugs">
+    <title>BUGS</title>
+    <para>
+      The upstream <acronym>BTS</acronym> can be found
+      at <ulink url="https://bugs.freedesktop.org/"/>.
+      Select 'pm-utils' as product.
+    </para>
+  </refsect1>
+
+  <refsect1 id="see_also">
+    <title>SEE ALSO</title>
+    <!-- In alpabetical order. -->
+    <para>
+      <citerefentry>
+        <refentrytitle>s2ram</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>s2disk</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>s2both</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>pm-is-supported</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>pm-powersave</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>vbetool</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>radeontool</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry> 
+    </para>
+  </refsect1>
+</refentry>
