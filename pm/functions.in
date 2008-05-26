@@ -188,3 +188,36 @@ restorestate()
 	# $1 = name of state
 	state_exists "$1" && cat "${STORAGEDIR}/state:$1"
 }
+
+# If we were told by the user to ignore some parameters from HAL.
+# remove them from our list.  This implementation is rather stupid.
+remove_parameters() {
+	local x y
+	if [ "$1" = "all" ]; then
+	    for p in "${STORAGEDIR}/parm:"*; do 
+		[ -O "$p" ] && rm -f "$p"; 
+	    done
+	else
+	    for p in "$@"; do
+		[ -O "${STORAGEDIR}/parm:$p" ] && \
+		    rm "${STORAGEDIR}/parm:$p"
+	    done
+	fi
+	touch "${STORAGEDIR}/new-parm"
+}
+
+# Add a parameter to our commandline parameters. 
+add_parameters() {
+	for x in "$@"; do
+	    touch "${STORAGEDIR}/parm:${x}"
+	done
+	# update for next hook.
+	touch "${STORAGEDIR}/new-parm"
+}
+
+# Remove a parameter from our commandline parameters.  
+get_parameters() {
+	for x in "${STORAGEDIR}/parm:"*; do
+	    [ -O "$x" ] && echo "${x##*:}"
+	done
+}

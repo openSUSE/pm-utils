@@ -31,7 +31,6 @@ for opt in $PM_CMDLINE; do
 	esac
 done
 
-
 reset_brightness()
 {
 	for bl in /sys/class/backlight/* ; do
@@ -93,7 +92,14 @@ vbe_restoremode()
 }
 
 # post the video card
-vbe_post() { vbe post; sleep 0.1; }
+vbe_post() 
+{
+	local rom="/var/run/video.rom"
+	# if we do not have a romfile, do not post with it.
+	[ -f "$rom" ] || unset rom
+	vbe post $rom
+	sleep 0.1 
+}
 
 # turn critical bits of radeon cards off/on
 radeon_off() { radeon dac off; radeon light off; }
