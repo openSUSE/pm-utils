@@ -42,18 +42,12 @@ SUSPEND_MODULES=""
 HOOK_BLACKLIST=""
 ADD_PARAMETERS=""
 DROP_PARAMETERS=""
+PARAMETERS="${STORAGEDIR}/parameters"
+NEW_PARAMETERS="${STORAGEDIR}/new_parameters"
 
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
 
 set +a
-
-# save our parameter list. Second stupidest way of doing this.
-
-mkdir -p "${STORAGEDIR}"
-
-for x in "$@"; do
-    touch "${STORAGEDIR}/parm:${x}"
-done
 
 for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
 	[ -f "$cfg" ] || continue
@@ -76,6 +70,12 @@ done
 
 . "${PM_FUNCTIONS}"
 
+# save our parameter list.
+mkdir -p "${STORAGEDIR}"
+[ -f "$PARAMETERS" ] && echo '' >"$PARAMETERS"
+
+add_parameters "$@"
+
 # Simple little logging function.
 # We do it this way because 'echo -n' is not posix.
 log()
@@ -89,11 +89,10 @@ log()
 # update PM_CMDLINE iff someone changed our parameters
 update_parameters()
 {
-	[ -f "${STORAGEDIR}/new-parm" ] || return
+	[ -f "$NEW_PARAMETERS" ] || return
+	mv "$NEW_PARAMETERS" "$PARAMETERS"
 	export PM_CMDLINE="$(get_parameters)"
-	rm "${STORAGEDIR}/new-parm"
 }
-
 
 # if the user asked us to blacklist any hooks, do it.
 load_hook_blacklist()
