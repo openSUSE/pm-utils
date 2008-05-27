@@ -72,7 +72,7 @@ done
 
 # save our parameter list.
 mkdir -p "${STORAGEDIR}"
-[ -f "$PARAMETERS" ] && echo '' >"$PARAMETERS"
+[ -f "$PARAMETERS" ] || echo '' >"$PARAMETERS"
 
 add_parameters "$@"
 
