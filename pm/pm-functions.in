@@ -48,6 +48,9 @@ DROP_PARAMETERS=""
 set +a
 
 # save our parameter list. Second stupidest way of doing this.
+
+mkdir -p "${STORAGEDIR}"
+
 for x in "$@"; do
     touch "${STORAGEDIR}/parm:${x}"
 done
@@ -113,7 +116,6 @@ load_hook_parameters()
 take_suspend_lock()
 {
 	try_lock "pm-utils.lock" || return 1
-	mkdir -p "${STORAGEDIR}"
 	return 0
 }
 
