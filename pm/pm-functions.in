@@ -70,12 +70,6 @@ done
 
 . "${PM_FUNCTIONS}"
 
-# save our parameter list.
-mkdir -p "${STORAGEDIR}"
-[ -f "$PARAMETERS" ] || echo '' >"$PARAMETERS"
-
-add_parameters "$@"
-
 # Simple little logging function.
 # We do it this way because 'echo -n' is not posix.
 log()
@@ -115,6 +109,10 @@ load_hook_parameters()
 take_suspend_lock()
 {
 	try_lock "pm-utils.lock" || return 1
+        # save our parameter list.
+	mkdir -p "${STORAGEDIR}"
+	[ -f "$PARAMETERS" ] || echo '' >"$PARAMETERS"
+	add_parameters "$@"
 	return 0
 }
 
