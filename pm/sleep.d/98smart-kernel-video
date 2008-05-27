@@ -23,7 +23,7 @@ smart_kernel_video()
 	[ -d /sys/module/i915 ] && \
 	    [ "$kernel_rev" > "2.6.26" -o "$kernel_rev" = "2.6.26" ] && \
 	    return 0;
-	return 1
+	return $NA
 }
 
 case $1 in
