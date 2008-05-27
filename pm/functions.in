@@ -196,7 +196,7 @@ remove_parameters() {
 	if [ "$1" = "all" ]; then
 	    echo '' > "$NEW_PARAMETERS"
 	else
-	    [ -f "$PARAMETERS.rm" ] && rm "$PARAMETERS.rm"
+	    echo '' >"$PARAMETERS.rm"
 	    for p in "$@"; do
 		echo "$p" >> "$PARAMETERS.rm"
 	    done
