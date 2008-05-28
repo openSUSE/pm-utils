@@ -110,8 +110,10 @@ load_hook_parameters()
 take_suspend_lock()
 {
 	try_lock "pm-utils.lock" || return 1
-        # save our parameter list.
+	# clean up from the last run
+	rm -rf "${STORAGEDIR}"
 	mkdir -p "${STORAGEDIR}"
+        # save our parameter list.
 	[ -f "$PARAMETERS" ] || echo '' >"$PARAMETERS"
 	add_parameters "$PM_CMDLINE"
 	return 0
@@ -119,7 +121,6 @@ take_suspend_lock()
 
 remove_suspend_lock()
 {
-	rm -rf "${STORAGEDIR}"
 	release_lock "pm-utils.lock"
 }
 

@@ -209,7 +209,7 @@ remove_parameters() {
 add_parameters() {
 	remove_parameters "$@" # no dups, please.
 	for x in "$@"; do
-	    echo "$x" >"$NEW_PARAMETERS"
+	    echo "$x" >>"$NEW_PARAMETERS"
 	done
 }
 
