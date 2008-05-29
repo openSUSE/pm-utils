@@ -114,7 +114,7 @@ take_suspend_lock()
 	mkdir -p "${STORAGEDIR}"
         # save our parameter list.
 	[ -f "$PARAMETERS" ] || echo '' >"$PARAMETERS"
-	add_parameters "$PM_CMDLINE"
+	add_parameters $PM_CMDLINE
 	update_parameters
 	return 0
 }
