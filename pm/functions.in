@@ -194,26 +194,27 @@ restorestate()
 remove_parameters() {
 	local p
 	if [ "$1" = "all" ]; then
-	    echo '' > "$NEW_PARAMETERS"
+	    echo '' > "$PARAMETERS.new"
 	else
 	    echo '' >"$PARAMETERS.rm"
 	    for p in "$@"; do
 		echo "$p" >> "$PARAMETERS.rm"
 	    done
 	    # let grep do the dirty work.
-	    grep -vxFf "$PARAMETERS.rm" "$PARAMETERS" > "$NEW_PARAMETERS"
+	    grep -vxFf "$PARAMETERS.rm" "$PARAMETERS" > "$PARAMETERS.new"
 	fi
+	cp -f "$PARAMETERS.new" "$PARAMETERS"
 }
 
 # Add a parameter to our commandline parameters. 
 add_parameters() {
 	remove_parameters "$@" # no dups, please.
 	for x in "$@"; do
-	    echo "$x" >>"$NEW_PARAMETERS"
+	    echo "$x" >>"$PARAMETERS"
 	done
 }
 
-# Remove a parameter from our commandline parameters.  
+# Get our commandline parameters
 get_parameters() {
-	cat "$PARAMETERS"
+       cat "$PARAMETERS"
 }

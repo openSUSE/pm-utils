@@ -43,7 +43,6 @@ HOOK_BLACKLIST=""
 ADD_PARAMETERS=""
 DROP_PARAMETERS=""
 PARAMETERS="${STORAGEDIR}/parameters"
-NEW_PARAMETERS="${STORAGEDIR}/new_parameters"
 PM_CMDLINE="$*"
 
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
@@ -84,9 +83,9 @@ log()
 # update PM_CMDLINE iff someone changed our parameters
 update_parameters()
 {
-	[ -f "$NEW_PARAMETERS" ] || return
-	mv "$NEW_PARAMETERS" "$PARAMETERS"
+	[ -f "$PARAMETERS.new" ] || return
 	export PM_CMDLINE="$(get_parameters)"
+	rm -f "$PARAMETERS.new"
 }
 
 # if the user asked us to blacklist any hooks, do it.
@@ -116,6 +115,7 @@ take_suspend_lock()
         # save our parameter list.
 	[ -f "$PARAMETERS" ] || echo '' >"$PARAMETERS"
 	add_parameters "$PM_CMDLINE"
+	update_parameters
 	return 0
 }
 
