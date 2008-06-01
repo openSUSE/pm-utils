@@ -1,14 +1,15 @@
 sleepdir = $(libdir)/pm-utils/sleep.d
 
 sleep_SCRIPTS =			\
-	00clear			\
+	00logging		\
 	01grub			\
-	05led 			\
-	10NetworkManager	\
 	49bluetooth		\
-	50modules		\
+	50ntpd			\
 	55battery		\
+	55NetworkManager	\
 	65alsa			\
+	75modules		\
+	90chvt			\
 	90clock			\
 	94cpufreq		\
 	95led			\
