@@ -36,6 +36,28 @@ For any given sleep/wakeup cycle, the hooks in sleep.d are run twice:
 * Once in C lexical sort order before the system goes to sleep, and
 * Once in reverse C lexical sort order when the system wakes up.
 
+SLEEP HOOK ORDERING CONVENTION
+
+00 - 49: user and (most) package supplied hooks.
+If your hook assumes that all of the usual services and userspace 
+infrastructure is still running, it should be here.
+
+50 - 74: service-handling hooks. 
+If you need to stop or start a service, you should have a hook in this range.
+
+75 - 89: module and non-core hardware handling.
+If you need to load/unload a module, or mess with some non-video related 
+hardware that would otherwise break suspend or hibernate, the hook that
+does that should be in this range.
+
+90 - 99: reserved for critical suspend hooks. 
+The hooks in this range should not be messed with unless you know what
+you are doing.  They start with 90chvt and end with 99video
+
+At or before 50, you can assume that all services are still enabled.
+
+At or before 75, you can assume that all modules are still loaded.
+
 CONVENIENCE FUNCTIONS
 
 If your hook is a shell script that supports POSIX/SuS compatible syntax, you
