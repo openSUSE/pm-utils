@@ -171,7 +171,7 @@ run_hooks() {
 		# if we are running backwards, skip hooks that we did not 
 		# run going forwards due to a hook failing.
 		[ "$3" -a "$3" = "reverse" -a "$LAST_HOOK" ] && \
-		    [ "$LAST_HOOK" \> "$base" ] && continue
+		    [ "$base" \> "$LAST_HOOK" ] && continue
 		# if we have already inhibited suspend/resume,
 		# don't run any more hooks.
 		[ ! "$3" ] && inhibited && continue
