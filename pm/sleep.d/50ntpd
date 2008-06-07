@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. "${PM_FUNCTIONS}"
+
 NTPD_LOCK="pm-ntpd.lock"
 
 stop_ntp()
@@ -8,6 +10,7 @@ stop_ntp()
 		trap 'release_lock "${NTPD_LOCK}"' 0
 		stopservice ntpd
 	fi
+}
 
 start_ntp()
 {
