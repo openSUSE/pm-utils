@@ -8,6 +8,7 @@ stop_ntp()
 		trap 'release_lock "${NTPD_LOCK}"' 0
 		stopservice ntpd
 	fi
+}
 
 start_ntp()
 {
