@@ -183,10 +183,9 @@ run_hooks() {
 		fi
 		log -n "${hook} $2: "
 		hook_ok "$hook" && "${hook}" $2 
-		# if the hook exited with an unknown exit code, inhibit.
-		hook_exit_status $? || inhibit
-		# if we are not inhibited, record the last hook that ran.
-		inhibited || LAST_HOOK="$base"
+		# if the hook exited with an unknown exit code inhibit,
+		# otherwise record this as the last hook that ran.
+		hook_exit_status $? && LAST_HOOK="$base" || inhibit
 		IFS="${nifs}"
 	done
 	IFS="${oifs}"
