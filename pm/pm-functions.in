@@ -174,7 +174,7 @@ run_hooks() {
 		    [ "$base" \> "$LAST_HOOK" ] && continue
 		# if we have already inhibited suspend/resume,
 		# don't run any more hooks.
-		[ ! "$3" ] && inhibited && continue
+		[ ! "$3" ] && inhibited && break
 		update_parameters
 		if [ -f "$syshooks/$base" ]; then
 			hook="$syshooks/$base"
