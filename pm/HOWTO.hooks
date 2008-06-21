@@ -93,3 +93,8 @@ the hook. This will make the following convenience functions available:
 11: disablehook
 	Prevent a hook from running.  The exact name of the hook (including
 	numberic prefix) must be passed.
+12: inhibit
+	Inhibit the suspend/hibernate process.  pm-utils will not try to
+	hibernate the system after this function is called.
+13: inhibited
+	Test to see if inhibit has been called.
