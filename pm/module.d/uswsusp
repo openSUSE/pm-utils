@@ -3,7 +3,7 @@
 # disable processing of 99video
 before_hooks()
 {
-	disablehook 00clear "disabled by uswsusp"
+	disablehook 90chvt "disabled by uswsusp"
 	disablehook 99video "disabled by uswsusp"
 }
 
