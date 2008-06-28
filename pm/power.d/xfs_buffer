@@ -1,0 +1,27 @@
+#!/bin/sh
+
+. "${PM_FUNCTIONS}"
+
+XFS="/proc/sys/fs/xfs"
+[ -f $XFS/age_buffer_centisecs ] || exit $NA
+
+
+xfs_ac() {
+    echo 1500 >$XFS/age_buffer_centisecs
+    echo 3000 >$XFS/xfssyncd_centisecs
+    echo 100  >$XFS/xfsbufd_centisecs
+}
+
+xfs_battery() {
+    echo 60000 >$XFS/age_buffer_centisecs
+    echo 60000 >$XFS/xfssyncd_centisecs
+    echo 3000  >$XFS/xfsbufd_centisecs
+}
+
+case $1 in
+    true) xfs_battery ;;
+    false) xfs_ac ;;
+    *) exit $NA ;;
+esac
+
+exit 0

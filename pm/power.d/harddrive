@@ -1,0 +1,25 @@
+#!/bin/sh
+
+[ -x /sbin/hdparm ] || exit $NA
+
+harddrive_ac () {
+    for dev in /dev/[hs]d[a-z]; do
+	#enable write caching, do not spin down the drive.
+	hdparm -W 1 -S 0 $dev
+    done
+}
+
+harddrive_battery() {
+    for dev in /dev/[hs]d[a-z]; do
+	# disable write caching, spin down after 30 seconds
+	hdparm -W 0 -S 6 $dev
+    done
+}
+
+case $1 in
+    true) harddrive_battery ;;
+    false) harddrive_ac ;;
+    *) exit $NA ;;
+esac
+
+exit 0

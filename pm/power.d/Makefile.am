@@ -1,7 +1,11 @@
 powerdir = $(libdir)/pm-utils/power.d
 
 power_SCRIPTS =			\
-	sched-powersave
+	sched-powersave		\
+	harddrive		\
+	laptop-mode		\
+	xfs_buffer		\
+	readahead
 
 EXTRA_DIST=$(power_SCRIPTS)
 

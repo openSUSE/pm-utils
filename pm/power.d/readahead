@@ -1,0 +1,17 @@
+#!/bin/sh
+
+[ -x /sbin/blockdev ] || exit $NA
+
+readahead() {
+    for dev in $(awk '/^\/dev\// {print $1}'</etc/mtab); do
+	/sbin/blockdev --setfra $1 "$dev"
+    done
+}
+
+case $1 in
+    true) readahead 3072 ;;
+    false) readahead 256 ;;
+    *) exit $NA ;;
+esac
+
+exit 0
