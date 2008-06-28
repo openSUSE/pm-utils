@@ -4,15 +4,16 @@
 
 harddrive_ac () {
     for dev in /dev/[hs]d[a-z]; do
-	#enable write caching, do not spin down the drive.
-	hdparm -W 1 -S 0 $dev
+	# disable write caching, do not spin down the drive, disable APM 
+	# and acoustic management, and sync everything to drive.
+	hdparm -W 0 -S 0 -B 254 -M 254 -f -F $dev
     done
 }
 
 harddrive_battery() {
     for dev in /dev/[hs]d[a-z]; do
-	# disable write caching, spin down after 30 seconds
-	hdparm -W 0 -S 6 $dev
+	# disable write caching, enable acoustic management
+	hdparm -W 0 -M 128 $dev
     done
 }
 
