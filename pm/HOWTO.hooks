@@ -30,6 +30,19 @@ NAMING SCHEME
 
 All hooks are run in lexical sort order according to the C locale.
 
+HOOK EXIT CODES
+
+In normal operation, hooks should only return either 0 or 254 as exit codes.
+0 indicates that the hook performed its task normally.
+254 indicates that the hook is not applicable to this system.
+
+Any other return code is interpreted by the pm-utils machinery as a signal 
+from the hook that it should abort whatever it is doing. When running sleep.d
+hooks, that means that pm-utils stops running hooks, aborts the suspend/resume
+process, calls any hooks that ran sucessfully prior to this one with the 
+appropriate wakeup options, and exits with a non-zero exit code. When running
+power.d hooks, any hooks after this one will be skipped.
+
 SLEEP.D SPECIFIC NOTES
 
 For any given sleep/wakeup cycle, the hooks in sleep.d are run twice:
@@ -93,3 +106,8 @@ the hook. This will make the following convenience functions available:
 11: disablehook
 	Prevent a hook from running.  The exact name of the hook (including
 	numberic prefix) must be passed.
+12: inhibit
+	Inhibit the suspend/hibernate process.  pm-utils will not try to
+	hibernate the system after this function is called.
+13: inhibited
+	Test to see if inhibit has been called.

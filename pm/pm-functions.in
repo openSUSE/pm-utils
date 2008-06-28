@@ -19,7 +19,6 @@ PM_UTILS_ETCDIR="@PM-UTILS-SYSCONFDIR@"
 PM_UTILS_RUNDIR="/var/run/pm-utils"
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
-INHIBIT="${PM_UTILS_RUNDIR}/inhibit"
 PM_LOGFILE="${PM_LOGFILE:=/var/log/pm-suspend.log}"
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCKDIR="${PM_UTILS_RUNDIR}/locks"
@@ -43,6 +42,7 @@ HOOK_BLACKLIST=""
 ADD_PARAMETERS=""
 DROP_PARAMETERS=""
 PARAMETERS="${STORAGEDIR}/parameters"
+INHIBIT="${STORAGEDIR}/inhibit"
 PM_CMDLINE="$*"
 
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
@@ -130,7 +130,7 @@ hook_exit_status(){
 		$NA) log "not applicable." ;;
 		$NX) log "not executable." ;;
 		$DX) log "disabled." ;;
-		*)   log "Returned exit code $1." ;;
+		*)   log "Returned exit code $1."; return 1 ;;
 	esac
 }
 
@@ -168,18 +168,29 @@ run_hooks() {
 		do [ -O "$f" ] && echo ${f##*/} ; done | $sort | uniq) ;
 	do
 		IFS="${oifs}"
+		# if we are running backwards, skip hooks that we did not 
+		# run going forwards due to a hook failing.
+		[ "$3" -a "$3" = "reverse" -a "$LAST_HOOK" ] && \
+		    [ "$base" \> "$LAST_HOOK" ] && continue
+		# if we have already inhibited suspend/resume,
+		# don't run any more hooks.
+		[ ! "$3" ] && inhibited && break
+		update_parameters
 		if [ -f "$syshooks/$base" ]; then
 			hook="$syshooks/$base"
 		elif [ -f "$phooks/$base" ]; then
 			hook="$phooks/$base"
 		fi
 		log -n "${hook} $2: "
-		hook_ok "$hook" && "${hook}" $2
-		hook_exit_status $?
-		update_parameters
+		hook_ok "$hook" && "${hook}" $2 
+		# if the hook exited with an unknown exit code inhibit,
+		# otherwise record this as the last hook that ran.
+		hook_exit_status $? && LAST_HOOK="$base" || inhibit
 		IFS="${nifs}"
 	done
 	IFS="${oifs}"
+	# return value is 1 if something was inhibited, 0 otherwise.
+	inhibited && return 1 || return 0
 }
 
 # Try to reinitalize the logfile. Fail unless certian criteria are met.

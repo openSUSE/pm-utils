@@ -189,6 +189,19 @@ restorestate()
 	state_exists "$1" && cat "${STORAGEDIR}/state:$1"
 }
 
+# Inhibit suspend/resume and running any more hooks.
+# Any parameters passed ti this function will be saved in the inhibit file.
+inhibit()
+{
+    echo "$*" > "$INHIBIT"
+}
+
+# Are we inhibited?
+inhibited()
+{
+    [ -f "$INHIBIT" ]
+}
+
 # If we were told by the user to ignore some parameters from HAL.
 # remove parameters from our list
 remove_parameters() {
