@@ -5,7 +5,7 @@ Major changes include:
 * All the scripts that make up pm-utils have been rewritten to conform
   to POSIX and the Single Unix Specification.  Any remaining bashisms
   or GNUisms are bugs.  If you encounter a script that is not POSIX 
-  and SuS compliant, please file a bug.
+  and SuS compliant, please file a bug against pm-utils at bugs.freedesktop.org
 
 * There have been several changes to the way hooks are detected and
   invoked. If you have a custom-written hook that breaks upon
@@ -23,14 +23,12 @@ Major changes include:
   write a sleep module, see pm/HOWTO.modules.
 
 * pm-utils has a greatly expanded set of debugging features:
-  - If the environment variable PM_DEBUG is set to true, the
-    pm-suspend.log will contain a full trace of all the actions taken by
-    pm-utils.
+  - If the environment variable PM_DEBUG is set to true, pm-suspend.log 
+    will contain a full trace of all the actions taken by pm-utils.
   - The HOOK_BLACKLIST environment variable allows you to disable a
     hook without having to modify it.
   - The ADD_PARAMETERS and DROP_PARAMETERS environment variables allow
-    you to modify the parameters passed by calling programs (such as
-    HAL).
+    you to modify the parameters passed by calling programs (such as HAL).
   - More complete logging, including logging the commandline
     parameters, which hooks ran and did not run (and the reasons why),
     and logging the status codes of executed hooks.
@@ -54,7 +52,8 @@ There have also been major changes in the pm-utils project:
 * Victor Lowther rewrote all the scripts to be POSIX compliant, added
   the modular sleep backends, added the new debugging features, and
   did lots of code cleanups and bug fixes. If you find a bug, it is
-  probably his fault.
+  probably his fault.  Since he now maintains pm-utils, he is in a great
+  position to fix it.
 
 * Michael Biebl improved the PMU support and caught most of the bugs
   that Victor did not catch. 
@@ -67,6 +66,3 @@ There have also been major changes in the pm-utils project:
 * pm-utils now uses git as it source-control repository. You can
   browse the code at http://cgit.freedesktop.org/pm-utils/
 
-
-
-  
