@@ -5,6 +5,7 @@ VM="/proc/sys/vm"
 [ -f $VM/laptop_mode -a -f $VM/dirty_ratio ] || exit $NA
 
 laptop_mode_ac() {
+    # disable laptop mode, set vm parameters back to sane defaults
     echo 0 >$VM/laptop_mode
     echo 5 >$VM/dirty_background_ratio
     echo 2999 >$VM/dirty_expire_centisecs
@@ -13,6 +14,8 @@ laptop_mode_ac() {
 }
 
 laptop_mode_battery() {
+    # enable laptop mode, set vm parameters to buffer as many writes as 
+    # possible.
     echo 1 >$VM/laptop_mode
     echo 1 >$VM/dirty_background_ratio
     echo 60000 >$VM/dirty_expire_centisecs

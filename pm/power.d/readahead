@@ -3,6 +3,10 @@
 [ -x /sbin/blockdev ] || exit $NA
 
 readahead() {
+    # the intent here is to iterate through all filesystems
+    # mounted on a local block device. It Works For The Maintainer(tm).
+    # More sophistication in figuring out what exactly is a local block device
+    # would be welcome.
     for dev in $(awk '/^\/dev\// {print $1}'</etc/mtab); do
 	/sbin/blockdev --setfra $1 "$dev"
     done

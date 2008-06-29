@@ -7,12 +7,14 @@ XFS="/proc/sys/fs/xfs"
 
 
 xfs_ac() {
+    # don't buffer so much, flush data out regularly.
     echo 1500 >$XFS/age_buffer_centisecs
     echo 3000 >$XFS/xfssyncd_centisecs
     echo 100  >$XFS/xfsbufd_centisecs
 }
 
 xfs_battery() {
+    # buffer lots
     echo 60000 >$XFS/age_buffer_centisecs
     echo 60000 >$XFS/xfssyncd_centisecs
     echo 3000  >$XFS/xfsbufd_centisecs
