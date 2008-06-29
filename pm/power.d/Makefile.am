@@ -5,7 +5,9 @@ power_SCRIPTS =			\
 	harddrive		\
 	laptop-mode		\
 	xfs_buffer		\
-	readahead
+	readahead		\
+	intel-audio-powersave	\
+	wireless
 
 EXTRA_DIST=$(power_SCRIPTS)
 

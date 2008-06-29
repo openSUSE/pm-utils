@@ -1,0 +1,15 @@
+#!/bin/sh
+
+audio_powersave() {
+    for dev in /sys/module/snd_*_codec/parameters/power_save; do
+	[ -w $dev ] && echo $1 > $dev
+    done
+}
+
+case $1 in
+    true) audio_powersave 1 ;;
+    false) audio_powersave 0 ;;
+    *) exit $NA
+esac
+
+exit 0

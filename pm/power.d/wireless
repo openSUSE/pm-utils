@@ -1,0 +1,24 @@
+#!/bin/sh
+
+[ -x /sbin/iwconfig ] || exit $NA
+
+wireless_powersave() {
+    case $1 in
+	on) iwparams="txpower auto power on" ;;
+	off) iwparams="txpower auto power off" ;;
+	*) exit $NA ;;
+    esac
+    cd /sys/class/net
+    for dev in *; do
+	[ -w "${dev}/wireless" ] || continue
+	/sbin/iwconfig $dev $iwparams
+    done
+}
+
+case $1 in
+    true) wireless_powersave on ;;
+    false) wireless_powersave off ;;
+    *) exit $NA ;;
+esac
+
+exit 0
