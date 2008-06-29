@@ -5,6 +5,8 @@
 XFS="/proc/sys/fs/xfs"
 [ -f $XFS/age_buffer_centisecs ] || exit $NA
 
+# Why does XFS have its own parameters instead of just using the
+# VM subsystem ones?  Only SGI knows...
 
 xfs_ac() {
     # don't buffer so much, flush data out regularly.

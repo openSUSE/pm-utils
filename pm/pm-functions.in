@@ -85,6 +85,12 @@ done
 
 . "${PM_FUNCTIONS}"
 
+if command_exists dmidecode; then
+    export CHASSIS_TYPE="$(dmidecode -s chassis-type)"
+else
+    export CHASSIS_TYPE=Unknown
+fi
+
 # Simple little logging function.
 # We do it this way because 'echo -n' is not posix.
 log()

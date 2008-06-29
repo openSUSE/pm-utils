@@ -2,6 +2,9 @@
 
 [ -x /sbin/blockdev ] || exit $NA
 
+# more readahead = (hopefully) less hard drive activity.
+# less readahead = less trashing the page cache.
+
 readahead() {
     # the intent here is to iterate through all filesystems
     # mounted on a local block device. It Works For The Maintainer(tm).
