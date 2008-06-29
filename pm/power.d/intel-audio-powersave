@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Allow the driver to put the audio hardware to sleep
+# once the driver has been inactive for a second.
+# This hook should work with at least the ac97 and hda codecs.
+
 audio_powersave() {
     for dev in /sys/module/snd_*_codec/parameters/power_save; do
 	[ -w $dev ] && echo $1 > $dev

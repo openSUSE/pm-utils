@@ -2,6 +2,13 @@
 
 [ -x /sbin/iwconfig ] || exit $NA
 
+# This hook is very generic and only works on wireless hardware that 
+# iwconfig can actually configure power settings on.  Sadly, this misses
+# some more popular cards *cough* iwlwifi *cough*.
+
+# Better heuristics and better control for specific cards
+# would be welcome.
+
 wireless_powersave() {
     case $1 in
 	on) iwparams="txpower auto power on" ;;
