@@ -1,6 +1,7 @@
 #!/bin/sh
 
 [ -x /sbin/blockdev ] || exit $NA
+[ "$CHASSIS_TYPE" = "Portable" ] || exit $NA
 
 # more readahead = (hopefully) less hard drive activity.
 # less readahead = less trashing the page cache.

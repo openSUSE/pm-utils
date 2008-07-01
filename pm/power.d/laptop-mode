@@ -4,9 +4,8 @@ VM="/proc/sys/vm"
 
 [ -w $VM/laptop_mode -a -w $VM/dirty_ratio ] || exit $NA
 
-# We might only want to enable laptop mode on actual laptops.
-# It really depends on how green we want to try to make the Linux
-# world.  
+# only actually enable on laptops for now.
+[ "$CHASSIS_TYPE" = "Portable" ] || exit $NA
 
 laptop_mode_ac() {
     # disable laptop mode, set vm parameters back to sane defaults

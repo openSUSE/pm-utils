@@ -4,6 +4,7 @@
 
 XFS="/proc/sys/fs/xfs"
 [ -f $XFS/age_buffer_centisecs ] || exit $NA
+[ "$CHASSIS_TYPE" = "Portable" ] || exit $NA
 
 # Why does XFS have its own parameters instead of just using the
 # VM subsystem ones?  Only SGI knows...
