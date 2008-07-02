@@ -4,6 +4,7 @@
 
 default_resume_kernel()
 {
+        [ "$1" = "suspend" ] && return $NA
 	case $(uname -m) in
 		i?86|x86_64|athlon)
 	    		;;
@@ -25,8 +26,8 @@ default_resume_kernel()
 }
 
 case "$1" in
-	hibernate|suspend_hybrid)
-		default_resume_kernel
+	hibernate|suspend)
+		default_resume_kernel $2
 		;;
 	*) exit $NA
 		;;
