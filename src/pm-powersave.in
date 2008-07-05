@@ -24,13 +24,32 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-POWERSAVE_LOGFILE="/dev/null"
+export STASHNAME=pm-powersave
 . "@PM-UTILS-LIBDIR@/pm-functions"
 
+remove_powersave_lock() {
+    release_lock "${STASHNAME}.lock"
+}
+
+# take the powersave lock.
+# ensure it gets released no matter how we exit.
+try_lock "${STASHNAME}.lock" || exit 1
+trap remove_powersave_lock 0
+mkdir -p "${STORAGEDIR}"
+rm -f "${INHIBIT}"
+
 if [ "$1" = "true" -o "$1" = "false" ] ; then
-	init_logfile "${POWERSAVE_LOGFILE}"
+	init_logfile "${PM_LOGFILE}"
 	run_hooks power "$1"
+elif [ ! "$1" ]; then
+    # no arg?  Guess!
+    init_logfile "${PM_LOGFILE}"
+    if on_ac_power; then
+	run_hooks power false;
+    else
+	run_hooks power true;
+    fi
 else
-	echo "Argument needs to be true or false" >&2
-	exit 1
+    echo "Argument needs to be true or false" >&2
+    exit 1
 fi

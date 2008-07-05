@@ -19,10 +19,10 @@ PM_UTILS_ETCDIR="@PM-UTILS-SYSCONFDIR@"
 PM_UTILS_RUNDIR="/var/run/pm-utils"
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:"${PM_UTILS_LIBDIR}"/bin
-PM_LOGFILE="${PM_LOGFILE:=/var/log/pm-suspend.log}"
+PM_LOGFILE="/var/log/${STASHNAME}.log"
 TEMPORARY_CPUFREQ_GOVERNOR="performance"
 LOCKDIR="${PM_UTILS_RUNDIR}/locks"
-STORAGEDIR="${PM_UTILS_RUNDIR}/storage"
+STORAGEDIR="${PM_UTILS_RUNDIR}/${STASHNAME}/storage"
 NA=254
 NX=253
 DX=252
@@ -45,11 +45,15 @@ PARAMETERS="${STORAGEDIR}/parameters"
 INHIBIT="${STORAGEDIR}/inhibit"
 PM_CMDLINE="$*"
 
+# when loading configuration files, allow stash-specific ones
+# to override the pm-utils global ones.
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
-
+[ -f "${PM_UTILS_LIBDIR}/${STASHNAME}.defaults" ] && \
+    . "${PM_UTILS_LIBDIR}/${STASHNAME}.defaults"
 set +a
 
-for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
+for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] \
+           "${PM_UTILS_ETCDIR}/${STASHNAME}.config.d"/*[!~]; do
 	[ -f "$cfg" ] || continue
 	# Ugly, I know. The goal here is to allow multiple files in
 	# /etc/pm/config.d declare these variables and have those 
@@ -69,6 +73,12 @@ for cfg in "${PM_UTILS_ETCDIR}"/config.d/*[!~] ; do
 done
 
 . "${PM_FUNCTIONS}"
+
+if [ "$(id -u)" = "0" ] && command_exists dmidecode; then
+    export CHASSIS_TYPE="$(dmidecode -s chassis-type)"
+else
+    export CHASSIS_TYPE=Unknown
+fi
 
 # Simple little logging function.
 # We do it this way because 'echo -n' is not posix.
@@ -106,23 +116,6 @@ load_hook_parameters()
 	update_parameters
 }
 
-take_suspend_lock()
-{
-	try_lock "pm-utils.lock" || return 1
-	# clean up from the last run
-	rm -rf "${STORAGEDIR}"
-	mkdir -p "${STORAGEDIR}"
-        # save our parameter list.
-	[ -f "$PARAMETERS" ] || echo '' >"$PARAMETERS"
-	add_parameters $PM_CMDLINE
-	update_parameters
-	return 0
-}
-
-remove_suspend_lock()
-{
-	release_lock "pm-utils.lock"
-}
 
 hook_exit_status(){
 	case $1 in
