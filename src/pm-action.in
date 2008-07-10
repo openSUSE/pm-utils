@@ -93,7 +93,7 @@ load_hook_parameters
 
 # run the sleep hooks
 log "$(date): Running hooks for $ACTION."
-if run_hooks sleep "$ACTION"; then
+if run_hooks sleep "$ACTION $METHOD"; then
         # Sleep only if we know how and if a hook did not inhibit us.
 	log "$(date): performing $METHOD"
 	sync
@@ -104,7 +104,7 @@ else
 fi
 log "$(date): Running hooks for $REVERSE"
 # run the sleep hooks in reverse with the wakeup action
-if run_hooks sleep "$REVERSE" reverse; then
+if run_hooks sleep "$REVERSE $METHOD" reverse; then
         log "$(date): Finished."
 else 
         exit 1

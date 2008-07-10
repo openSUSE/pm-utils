@@ -45,4 +45,7 @@ do_suspend_hybrid()
 {
 	echo 3 >"${TUXONICE_LOC}/powerdown_method"
 	echo anything >"${TUXONICE_LOC}/do_hibernate"
+	[ -f /sys/power/tuxonice/did_suspend_to_both ] && \
+	    [ "$(cat /sys/power/tuxonice/did_suspend_to_both)" != "1" ] && \
+	    REVERSE="thaw"
 }
