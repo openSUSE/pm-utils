@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Tim Dijkstra <tim@famdijkstra.org>
 Uploaders: Michael Biebl <biebl@debian.org>
-Build-Depends: debhelper (>= 5), docbook-utils, cdbs
+Build-Depends: debhelper (>= 5), xmlto, cdbs
 Standards-Version: 3.7.2
 
 Package: pm-utils
