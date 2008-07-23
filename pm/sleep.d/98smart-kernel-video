@@ -67,6 +67,7 @@ smart_kernel_intel()
 	--quirk-reset-brightness \
 	--quirk-radeon-off
 
+}
 smart_kernel_video() 
 {
         smart_kernel_nvidia || smart_kernel_fglrx || smart_kernel_intel || \
