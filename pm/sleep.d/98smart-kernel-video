@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2008 Victor Lowther <victor.lowther@gmail.com
+# Copyright 2008 Victor Lowther <victor.lowther@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -11,23 +11,70 @@
 
 
 # Test to see if the kernel has a video driver that is smart enough to 
-# handle quirks without external assistance. If it is, disable 99video.
+# handle quirks without external assistance. If it is, remove the quirks.
+smart_kernel_nvidia()
+{
+    # despite the bad rep the nvidia driver has, it is miles better than 
+    # any other video driver when it comes to handling power managment and
+    # suspend/resume in a quirk-free manner.
+    [ -d /sys/module/nvidia ] || return 1
+    remove_parameters --quirk-dpms-on \
+    	--quirk-dpms-suspend \
+	--quirk-s3-mode \
+    	--quirk-s3-bios \
+	--quirk-vbe-post \
+	--quirk-vbe-post \
+	--quirk-vga-mode3 \
+	--quirk-vbemode-restore \
+	--quirk-vbestate-restore \
+	--quirk-reset-brightness \
+	--quirk-radeon-off
+}
+
+smart_kernel_fglrx()
+{
+    # the ATI driver is pretty good about it, too.
+    [ -d /sys/module/fglrx ] || return 1
+    remove_parameters --quirk-dpms-on \
+    	--quirk-dpms-suspend \
+	--quirk-s3-mode \
+    	--quirk-s3-bios \
+	--quirk-vbe-post \
+	--quirk-vbe-post \
+	--quirk-vga-mode3 \
+	--quirk-vbemode-restore \
+	--quirk-vbestate-restore \
+	--quirk-reset-brightness \
+	--quirk-radeon-off
+}
+
+smart_kernel_intel()
+{
+    # currently, intel kernel modesetting is not quite smart enough
+    # we still need acpi s3 kernel modesetting hooks, so don't remove those
+    # options if they were passed.
+    [ -d /sys/module/i915 ] || return 1
+    
+    local kernel_rev="$(uname -r |awk -F '[_-]' '{print $1}')"
+    [ "$kernel_rev" \> "2.6.26" -o "$kernel_rev" = "2.6.26" ] || return 1
+    remove_parameters --quirk-dpms-on \
+    	--quirk-dpms-suspend \
+	--quirk-vbe-post \
+	--quirk-vbe-post \
+	--quirk-vga-mode3 \
+	--quirk-vbemode-restore \
+	--quirk-vbestate-restore \
+	--quirk-reset-brightness \
+	--quirk-radeon-off
+
 smart_kernel_video() 
 {
-        # If we are using an ATI or nVidia binary driver, no quirks required.
-	[ -d /sys/module/nvidia -o -d /sys/module/fglrx ] && return 0;
-
-	local kernel_rev="$(uname -r |awk -F '[_-]' '{print $1}')"
-        # Intel at or after kernel 2.6.26 is also quirk-free.
-	# FIXME: a more accurate way of testing this?
-	[ -d /sys/module/i915 ] && \
-	    [ "$kernel_rev" \> "2.6.26" -o "$kernel_rev" = "2.6.26" ] && \
-	    return 0;
+        smart_kernel_nvidia || smart_kernel_fglrx || smart_kernel_intel || \
 	return $NA
 }
 
 case $1 in
      suspend|hibernate)
-	smart_kernel_video && add_parameters "--quirk-none" ;;
+	smart_kernel_video
      *) exit 0 ;;
 esac
