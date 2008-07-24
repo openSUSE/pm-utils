@@ -1,0 +1,38 @@
+#!/bin/sh
+
+. ${PM_FUNCTIONS}
+
+# actually remount the file system
+remount_fs()
+{
+	# $1 = filesystem to remount
+	# $2 = mount option to change
+	mount -o remount,$2 $1
+}
+
+# invoked on an ext3 file system
+handle_ext3()
+{
+	# $1 = filesystem to remount
+	# $2 = commit time
+	remount_fs $1 "commit=${2}"
+}
+
+handle_filesystems()
+{
+	# $1 = new journal commit time in seconds
+	while read DEV MOUNT FSTYPE REST; 
+	do
+		command_exists "handle_${FSTYPE}" || continue
+		"handle_${FSTYPE}" $MOUNT $1
+	done < /proc/mounts
+}
+
+case $1 in
+	true) handle_filesystems 600 ;;
+	false) handle_filesystems 5 ;;
+	*) exit $NA ;;
+esac
+
+exit 0
+

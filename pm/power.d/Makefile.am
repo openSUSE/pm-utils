@@ -7,7 +7,8 @@ power_SCRIPTS =			\
 	xfs_buffer		\
 	readahead		\
 	intel-audio-powersave	\
-	wireless
+	wireless 		\
+	journal-commit
 
 EXTRA_DIST=$(power_SCRIPTS)
 
