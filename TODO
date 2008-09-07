@@ -1,14 +1,3 @@
-* pm-utils has no provision for halting the suspend/resume process if
-  a hook fails. Adding naive support for this is easy, getting it
-  right is less so.
-
-* suspend-hybrid handling is less than optimal.  The current code
-  assumes it is always resuming from suspend.  While this is probably
-  the common case, we need to take into account that we will also
-  sometimes be returning from hibernate and run the hooks
-  accordingly. Otherwise, suspend-hybrid and video quirk handling are
-  going to interact very badly some of the time.
-
 * There are no provisions for configuring the tuxonice backend.
   Tuxonice has lots of things that can be tuned, but doing so would
   end up duplicating alot of the tuxonice project's hibernate script.
