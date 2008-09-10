@@ -1,0 +1,26 @@
+#!/bin/sh
+
+. "${PM_FUNCTIONS}"
+
+do_add_quirks()
+{
+	add_parameters $(lshal | \
+	awk -F '[. ]' \
+		'/  power_management.quirk.[a-z_]+ = true/ \
+			{gsub(/_/, "-", $5); printf("--quirk-%s", $5)}')
+}
+	
+mabye_add_quirks()
+{
+	for p in ${PM_CMDLINE}; do
+		[ "$p" = "--auto-quirks" ] || continue
+		do_add_quirks
+		remove_parameters --auto-quirks
+	done
+}
+
+case $1 in
+	suspend|hibernate) mabye_add_quirks ;;
+	*) exit $NA
+esac
+
