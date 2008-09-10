@@ -52,18 +52,14 @@ mabye_add_quirks()
 		do_add_quirks
 		return 0
 	}
-	for p in ${PM_CMDLINE}; do
-		[ "$p" = "--auto-quirks" ] || continue
-		do_add_quirks
-		remove_parameters --auto-quirks
-	done
+	has_parameter --auto-quirks || return 0
+	do_add_quirks
+	remove_parameters --auto-quirks
 }
 
 maybe_save_quirks()
 {
-	for p in ${PM_CMDLINE}; do
-		[ "$p" = "--store-quirks-as-fdi" ] && do_save_quirks
-	done
+	has_parameter --store-quirks-as-fdi && do_save_quirks
 	return 0
 }
 
