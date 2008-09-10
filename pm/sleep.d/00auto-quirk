@@ -12,6 +12,10 @@ do_add_quirks()
 	
 mabye_add_quirks()
 {
+	[ -z "$PM_CMDLINE" ] && {
+		do_add_quirks
+		return 0
+	}
 	for p in ${PM_CMDLINE}; do
 		[ "$p" = "--auto-quirks" ] || continue
 		do_add_quirks
