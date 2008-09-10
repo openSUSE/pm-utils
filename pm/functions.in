@@ -231,3 +231,12 @@ add_parameters() {
 get_parameters() {
        cat "$PARAMETERS"
 }
+
+# check to see if a single parameter exists
+has_parameter()
+{
+	for p in $PARAMETERS; do
+		[ "$p" = "$1" ] && return 0
+	done
+	return 1
+}
