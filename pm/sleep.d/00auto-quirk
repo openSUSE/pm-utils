@@ -28,7 +28,8 @@ help()
 	echo
 	echo "Auto quirk handler option:"
 	echo
-	echo "--auto-quirks"
+	echo "  --auto-quirks"
+	echo "  Running without any options will also invoke auto quirk."
 }
 
 case $1 in
