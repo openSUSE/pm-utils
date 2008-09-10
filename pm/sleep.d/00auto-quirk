@@ -9,6 +9,42 @@ do_add_quirks()
 		'/  power_management.quirk.[a-z_]+ = true/ \
 			{gsub(/_/, "-", $5); printf("--quirk-%s", $5)}')
 }
+
+do_save_quirks()
+{
+	# better to gather too much information than not enough
+	hgp="hal-get-property --udi /org/freedesktop/Hal/devices/computer --key"
+	vendor=$($hgp system.hardware.vendor)
+	product=$($hgp system.hardware.product)
+	firmware=$($hgp system.firmware.version)
+	video_vendor=$($hgp system.hardware.primary_video.vendor --hex)
+	video_card=$($hgp system.hardware.primary_video.product --hex)
+	(
+	exec >"/tmp/pm-utils-created.fdi"
+	echo '<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->'
+	echo '<!-- Created by pm-utils -->'
+	echo '<deviceinfo version="0.2">'
+	echo '  <device>'
+	echo "    <match key=\"system.hardware.vendor\" string=\"${vendor}\">"
+	echo "      <match key=\"system.hardware.product\" string=\"${product}\">"
+	echo "        <match key=\"system.firmware.version\" string=\"${firmware}\">"
+	echo "          <match key=\"system.hardware.primary_video.vendor\" int=\"0x${video_vendor}\">"
+	echo "            <match key=\"system.hardware.primary_video.product\" int=\"0x${video_card}\">"
+	for p in ${PM_CMDLINE}; do
+		quirk="${p#--quirk-}"
+		[ "$p" = "$quirk" ] && continue
+		echo "              <merge key=\"power_management.quirk.${quirk}\" type=\"bool\">true</merge>" |tr - _
+	done
+	echo "            </match>"
+	echo "          </match>"
+	echo "        </match>"
+	echo "      </match>"
+	echo "    </match>"
+	echo "  </device>"
+	echo "</deviceinfo>"
+	)
+	echo "FDI file created as /tmp/pm-utils=created.fdi"
+}
 	
 mabye_add_quirks()
 {
@@ -23,6 +59,14 @@ mabye_add_quirks()
 	done
 }
 
+maybe_save_quirks()
+{
+	for p in ${PM_CMDLINE}; do
+		[ "$p" = "--store-quirks-as-fdi" ] && do_save_quirks
+	done
+	return 0
+}
+
 help()
 {
 	echo
@@ -30,10 +74,13 @@ help()
 	echo
 	echo "  --auto-quirks"
 	echo "  Running without any options will also invoke auto quirk."
+	echo
+	echo "  --store-quirks-as-fdi"
 }
 
 case $1 in
 	suspend|hibernate) mabye_add_quirks ;;
+	thaw|resume) maybe_save_quirks ;;
 	help) help ;;
 	*) exit $NA ;;
 esac
