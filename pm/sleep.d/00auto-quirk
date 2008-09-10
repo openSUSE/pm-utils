@@ -19,8 +19,17 @@ mabye_add_quirks()
 	done
 }
 
+help()
+{
+	echo
+	echo "Auto quirk handler option:"
+	echo
+	echo "--auto-quirks"
+}
+
 case $1 in
 	suspend|hibernate) mabye_add_quirks ;;
-	*) exit $NA
+	help) help ;;
+	*) exit $NA ;;
 esac
 
