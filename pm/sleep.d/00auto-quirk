@@ -46,11 +46,16 @@ do_save_quirks()
 	echo "FDI file created as /tmp/pm-utils=created.fdi"
 }
 	
-mabye_add_quirks()
+maybe_add_quirks()
 {
 	[ -z "$PM_CMDLINE" ] && {
+		command_exists lshal || return $NA
 		do_add_quirks
 		return 0
+	}
+	command_exists lshal || { 
+		echo "--auto-quirks requires HAL. Aborting"
+		return 1
 	}
 	has_parameter --auto-quirks || return 0
 	do_add_quirks
@@ -75,7 +80,7 @@ help()
 }
 
 case $1 in
-	suspend|hibernate) mabye_add_quirks ;;
+	suspend|hibernate) maybe_add_quirks ;;
 	thaw|resume) maybe_save_quirks ;;
 	help) help ;;
 	*) exit $NA ;;
