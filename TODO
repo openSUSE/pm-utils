@@ -27,7 +27,3 @@
 * The man pages should be improved to document new configuration variables,
   contain examples how to write hooks etc.
 
-* Provide an "--auto" option for pm-suspend, which tries to get the quirks from
-  hal. Add an option (let's call it "--store-quirks-as-fdi" for now), which
-  allows to easily generate an fdi file with the quirk parameters passed to
-  pm-suspend.
