@@ -46,6 +46,9 @@ INHIBIT="${STORAGEDIR}/inhibit"
 PM_CMDLINE="$*"
 BEFORE_HOOKS=""
 MODULE_HELP=""
+SUSPEND_MODULE=""
+HIBERNATE_MODULE=""
+SUSPEND_HYBRID_MODULE=""
 
 # when loading configuration files, allow stash-specific ones
 # to override the pm-utils global ones.
@@ -232,6 +235,10 @@ init_logfile()
 	export LOGGING=true
 	exec > "$1" 2>&1
 }
+
+check_suspend() { [ -n "$SUSPEND_MODULE" ]; }
+check_hibernate() { [ -n "$HIBERNATE_MODULE" ]; }
+check_suspend_hybrid() { [ -n "$SUSPEND_HYBRID_MODULE" ]; }
 
 SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
 [ -f "${SLEEP_FUNCTIONS}" ] || { 

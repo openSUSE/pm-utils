@@ -11,41 +11,26 @@ for loc in "/sys/power/tuxonice" "/sys/power/suspend2"; do
 	[ -d "${loc}" ] && { TUXONICE_LOC="${loc}"; break; }
 done 
 
-check_suspend()
-{
-	[ -c /dev/pmu ] || grep -q mem /sys/power/state
-}
+if [ -z "$HIBERNATE_MODULE" -a -n "$TUXONICE_LOC" ] && \
+	[ -f "${TUXONICE_LOC}/do_hibernate" ]; then
+	HIBERNATE_METHOD="tuxonice"
+	do_hibernate()
+	{
+		echo 5 > "${TUXONICE_LOC}/powerdown_method"
+		echo anything > "${TUXONICE_LOC}/do_hibernate"
+	}
+fi
 
-do_suspend()
-{
-	if [ -c /dev/pmu ]; then
-		pm-pmu --suspend
-	else
-		echo -n "mem" > /sys/power/state
-	fi
-}
-
-check_hibernate()
-{
-	[ -f "${TUXONICE_LOC}/do_hibernate" ]
-}
-
-do_hibernate()
-{
-	echo 5 > "${TUXONICE_LOC}/powerdown_method"
-	echo anything > "${TUXONICE_LOC}/do_hibernate"
-}
-
-check_suspend_hybrid()
-{
+if [ -z "$SUSPEND_HYBRID_MODULE" -a -n "$TUXONICE_LOC" ] && \
 	grep -q mem /sys/power/state && \
-	[ -f "${TUXONICE_LOC}/do_hibernate" ]
-}
-do_suspend_hybrid()
-{
-	echo 3 >"${TUXONICE_LOC}/powerdown_method"
-	echo anything >"${TUXONICE_LOC}/do_hibernate"
-	[ -f /sys/power/tuxonice/did_suspend_to_both ] && \
-	    [ "$(cat /sys/power/tuxonice/did_suspend_to_both)" != "1" ] && \
-	    REVERSE="thaw"
-}
+	[ -f "${TUXONICE_LOC}/do_hibernate" ]; then
+	SUSPEND_HYBRID_METHOD="tuxonice"
+	do_suspend_hybrid()
+	{
+		echo 3 >"${TUXONICE_LOC}/powerdown_method"
+		echo anything >"${TUXONICE_LOC}/do_hibernate"
+		[ -f /sys/power/tuxonice/did_suspend_to_both ] && \
+	    	[ "$(cat /sys/power/tuxonice/did_suspend_to_both)" != "1" ] && \
+	    	REVERSE="thaw"
+	}
+fi

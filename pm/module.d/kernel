@@ -1,38 +1,24 @@
 #!/bin/sh
 
-check_suspend()
-{
-	[ -c /dev/pmu ] || grep -q mem /sys/power/state
-}
-
-do_suspend()
-{
-	if [ -c /dev/pmu ]; then
-		pm-pmu --suspend
-	else
-		echo -n "mem" > /sys/power/state
+if [ -z "$SUSPEND_MODULE" ]; then
+	if grep -q mem /sys/power/state; then
+		SUSPEND_MODULE="kernel"
+		do_suspend() { echo -n "mem" >/sys/power/state; }
+	elif [ -c /dev/pmu ] && pm-pmu --check; then
+		SUSPEND_MODULE="kernel"
+		do_suspend() { pm-pmu --suspend; }
 	fi
-}
+fi
 
-check_hibernate()
-{
-	[ -f /sys/power/disk ] && grep -q disk /sys/power/state
-}
-
-do_hibernate()
-{
-	[ -n "${HIBERNATE_MODE}" ] && \
-	grep -qw "${HIBERNATE_MODE}" /sys/power/disk && \
-	echo -n "${HIBERNATE_MODE}" > /sys/power/disk
-	echo -n "disk" > /sys/power/state
-}
-
-check_suspend_hybrid()
-{
-	return 1
-}
-
-do_suspend_hybrid()
-{
-	return 1
-}
+if [ -z "$HIBERNATE_MODULE" ] && \
+	[ -f /sys/power/disk ] && \
+	grep -q disk /sys/power/state; then
+	HIBERNATE_MODULE="kernel"
+	do_hibernate()
+	{
+		[ -n "${HIBERNATE_MODE}" ] && \
+		grep -qw "${HIBERNATE_MODE}" /sys/power/disk && \
+		echo -n "${HIBERNATE_MODE}" > /sys/power/disk
+		echo -n "disk" > /sys/power/state
+	}
+fi

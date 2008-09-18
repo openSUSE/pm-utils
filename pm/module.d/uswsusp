@@ -33,44 +33,6 @@ uswsusp_get_quirks()
 	[ "$QUIRK_NONE" = "true" ] && OPTS=""
 }
 
-check_suspend()
-{
-	command_exists s2ram || return 1
-	[ -c /dev/pmu ] || grep -q mem /sys/power/state
-}
-
-do_suspend()
-{
-	uswsusp_get_quirks
-	s2ram --force $OPTS
-}
-
-check_hibernate()
-{
-	[ -f /sys/power/disk ] && \
-	grep -q disk /sys/power/state && \
-	[ -c /dev/snapshot ] &&
-	command_exists s2disk	
-}
-
-do_hibernate()
-{
-	s2disk
-}
-
-check_suspend_hybrid()
-{
-	grep -q mem /sys/power/state && \
-	command_exists s2both && \
-	check_hibernate
-}
-
-do_suspend_hybrid()
-{
-	uswsusp_get_quirks
-	s2both --force $OPTS 
-}
-
 uswsusp_help()
 {
 	echo  # first echo makes it look nicer.
@@ -90,5 +52,45 @@ uswsusp_help()
 	echo "  --quirk-none"
 }
 
-add_module_help uswsusp_help
-add_before_hooks uswsusp_hooks
+if [ -z "$SUSPEND_METHOD" ] && command_exists s2ram && \
+	( grep -q mem /sys/power/state || \
+		( [ -c /dev/pmu ] && pm-pmu --check; ); ); then
+	SUSPEND_METHOD="uswsusp"
+	do_suspend()
+	{
+		uswsusp_get_quirks
+		s2ram --force $OPTS
+	}
+	if [ "$METHOD" = "suspend" ]; then
+		add_before_hooks uswsusp_hooks
+		add_module_help uswsusp_help
+	fi
+fi
+
+if [ -z "$HIBERNATE_METHOD" ] && \
+	[ -f /sys/power/disk ] && \
+	grep -q disk /sys/power/state && \
+	[ -c /dev/snapshot ] &&
+	command_exists s2disk; then
+	HIBERNATE_METHOD="uswsusp"
+	do_hibernate()
+	{
+		s2disk
+	}
+fi
+
+if [ -z "$SUSPEND_HYBRID_METHOD" ] && 
+	grep -q mem /sys/power/state && \
+	command_exists s2both && \
+	check_hibernate; then
+	SUSPEND_HYBRID_METHOD="uswsusp"
+	do_suspend_hybrid()
+	{
+		uswsusp_get_quirks
+		s2both --force $OPTS 
+	}
+	if [ "$METHOD" = "suspend_hybrid" ]; then
+		add_before_hooks uswsusp_hooks
+		add_module_help uswsusp_help
+	fi
+fi
