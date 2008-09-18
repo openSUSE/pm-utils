@@ -240,13 +240,16 @@ check_suspend() { [ -n "$SUSPEND_MODULE" ]; }
 check_hibernate() { [ -n "$HIBERNATE_MODULE" ]; }
 check_suspend_hybrid() { [ -n "$SUSPEND_HYBRID_MODULE" ]; }
 
-SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
-[ -f "${SLEEP_FUNCTIONS}" ] || { 
-	echo "Requested sleep module $SLEEP_MODULE not available."
-	exit 1
-}
+# allow autodetection of sleep methods
+if [ "$SLEEP_MODULE" = "auto" ]; then
+    SLEEP_MODULE="tuxonice uswsusp"
+fi
 
-. "${SLEEP_FUNCTIONS}"
+for mod in $SLEEP_MODULE; do
+    mod="${PM_UTILS_LIBDIR}/module.d/${mod}"
+    [ -f "$mod" ] || continue
+    . "$mod"
+done
 
 # always fall back to kernel methods if nothing else was declared
 
