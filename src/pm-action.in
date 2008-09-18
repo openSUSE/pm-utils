@@ -26,6 +26,7 @@
 
 # The rule here? Simplicity.
 export STASHNAME=pm-suspend
+export METHOD="$(echo ${0##*pm-} |tr - _)"
 . "@PM-UTILS-LIBDIR@/pm-functions"
 
 help()
@@ -67,7 +68,6 @@ do
 	shift
 done
 
-METHOD="$(echo ${0##*pm-} |tr - _)"
 
 command_exists "check_$METHOD" && command_exists "do_$METHOD" || {
 	log "pm-utils does not know how to $METHOD on this system."
