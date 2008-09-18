@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # disable processing of 99video
-before_hooks()
+uswsusp_hooks()
 {
 	disablehook 90chvt "disabled by uswsusp"
 	disablehook 99video "disabled by uswsusp"
 }
 
-get_quirks()
+uswsusp_get_quirks()
 {
 	OPTS=""
 	ACPI_SLEEP=0
@@ -41,7 +41,7 @@ check_suspend()
 
 do_suspend()
 {
-	get_quirks
+	uswsusp_get_quirks
 	s2ram --force $OPTS
 }
 
@@ -67,11 +67,11 @@ check_suspend_hybrid()
 
 do_suspend_hybrid()
 {
-	get_quirks
+	uswsusp_get_quirks
 	s2both --force $OPTS 
 }
 
-sleep_method_help()
+uswsusp_help()
 {
 	echo  # first echo makes it look nicer.
 	echo "Video quirk handler options:"
@@ -89,3 +89,6 @@ sleep_method_help()
 	echo "  --quirk-save-pci"
 	echo "  --quirk-none"
 }
+
+add_module_help uswsusp_help
+add_before_hooks uswsusp_hooks
