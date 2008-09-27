@@ -28,7 +28,9 @@ smart_kernel_nvidia()
 	--quirk-vbemode-restore \
 	--quirk-vbestate-restore \
 	--quirk-reset-brightness \
-	--quirk-radeon-off
+	--quirk-radeon-off \
+	--quirk-no-fb \
+	--quirk-pci-save
 }
 
 smart_kernel_fglrx()
@@ -45,7 +47,9 @@ smart_kernel_fglrx()
 	--quirk-vbemode-restore \
 	--quirk-vbestate-restore \
 	--quirk-reset-brightness \
-	--quirk-radeon-off
+	--quirk-radeon-off \
+	--quirk-no-fb \
+	--quirk-pci-save
 }
 
 smart_kernel_intel()
@@ -65,7 +69,9 @@ smart_kernel_intel()
 	--quirk-vbemode-restore \
 	--quirk-vbestate-restore \
 	--quirk-reset-brightness \
-	--quirk-radeon-off
+	--quirk-radeon-off \
+	--quirk-no-fb \
+	--quirk-pci-save
 }
 
 smart_kernel_video() 
