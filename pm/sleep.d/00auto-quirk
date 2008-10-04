@@ -43,7 +43,7 @@ do_save_quirks()
 	echo "  </device>"
 	echo "</deviceinfo>"
 	)
-	echo "FDI file created as /tmp/pm-utils=created.fdi"
+	echo "FDI file created as /tmp/pm-utils-created.fdi"
 }
 	
 maybe_add_quirks()
