@@ -44,6 +44,11 @@ DROP_PARAMETERS=""
 PARAMETERS="${STORAGEDIR}/parameters"
 INHIBIT="${STORAGEDIR}/inhibit"
 PM_CMDLINE="$*"
+BEFORE_HOOKS=""
+MODULE_HELP=""
+SUSPEND_MODULE=""
+HIBERNATE_MODULE=""
+SUSPEND_HYBRID_MODULE=""
 
 # when loading configuration files, allow stash-specific ones
 # to override the pm-utils global ones.
@@ -88,6 +93,34 @@ log()
 	local fmt='%s\n'
 	[ "$1" = "-n" ] && { fmt='%s'; shift; }
 	printf "$fmt" "$*"
+}
+
+add_before_hooks() {
+	[ -z "$BEFORE_HOOKS" ] && BEFORE_HOOKS="$*" || \
+		BEFORE_HOOKS="$BEFORE_HOOKS $*"
+}
+
+add_module_help() {
+	[ -z "$MODULE_HELP" ] && MODULE_HELP="$*" || \
+		MODULE_HELP="$MODULE_HELP $*"
+}
+
+before_hooks()
+{
+	[ -z "$BEFORE_HOOKS" ] && return 0
+	local meth
+	for meth in $BEFORE_HOOKS; do
+		command_exists "$meth" && "$meth"
+	done
+}
+
+sleep_module_help()
+{
+	[ -z "$MODULE_HELP" ] && return 0
+	local meth
+	for meth in $MODULE_HELP; do
+		command_exists "$meth" && "$meth"
+	done
 }
 
 # update PM_CMDLINE iff someone changed our parameters
@@ -203,12 +236,42 @@ init_logfile()
 	exec > "$1" 2>&1
 }
 
+check_suspend() { [ -n "$SUSPEND_MODULE" ]; }
+check_hibernate() { [ -n "$HIBERNATE_MODULE" ]; }
+check_suspend_hybrid() { [ -n "$SUSPEND_HYBRID_MODULE" ]; }
 
-SLEEP_FUNCTIONS="${PM_UTILS_LIBDIR}/module.d/${SLEEP_MODULE}"
-[ -f "${SLEEP_FUNCTIONS}" ] || { 
-	echo "Requested sleep module $SLEEP_MODULE not available."
-	exit 1
-}
+# allow autodetection of sleep methods
+if [ "$SLEEP_MODULE" = "auto" ]; then
+    SLEEP_MODULE="tuxonice uswsusp"
+fi
 
-. "${SLEEP_FUNCTIONS}"
+for mod in $SLEEP_MODULE; do
+    mod="${PM_UTILS_LIBDIR}/module.d/${mod}"
+    [ -f "$mod" ] || continue
+    . "$mod"
+done
 
+# always fall back to kernel methods if nothing else was declared
+
+if [ -z "$SUSPEND_MODULE" ]; then
+	if grep -q mem /sys/power/state; then
+		SUSPEND_MODULE="kernel"
+		do_suspend() { echo -n "mem" >/sys/power/state; }
+	elif [ -c /dev/pmu ] && pm-pmu --check; then
+		SUSPEND_MODULE="kernel"
+		do_suspend() { pm-pmu --suspend; }
+	fi
+fi
+
+if [ -z "$HIBERNATE_MODULE" ] && \
+	[ -f /sys/power/disk ] && \
+	grep -q disk /sys/power/state; then
+	HIBERNATE_MODULE="kernel"
+	do_hibernate()
+	{
+		[ -n "${HIBERNATE_MODE}" ] && \
+		grep -qw "${HIBERNATE_MODE}" /sys/power/disk && \
+		echo -n "${HIBERNATE_MODE}" > /sys/power/disk
+		echo -n "disk" > /sys/power/state
+	}
+fi

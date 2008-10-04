@@ -1,38 +1,4 @@
 #!/bin/sh
 
-check_suspend()
-{
-	[ -c /dev/pmu ] || grep -q mem /sys/power/state
-}
-
-do_suspend()
-{
-	if [ -c /dev/pmu ]; then
-		pm-pmu --suspend
-	else
-		echo -n "mem" > /sys/power/state
-	fi
-}
-
-check_hibernate()
-{
-	[ -f /sys/power/disk ] && grep -q disk /sys/power/state
-}
-
-do_hibernate()
-{
-	[ -n "${HIBERNATE_MODE}" ] && \
-	grep -qw "${HIBERNATE_MODE}" /sys/power/disk && \
-	echo -n "${HIBERNATE_MODE}" > /sys/power/disk
-	echo -n "disk" > /sys/power/state
-}
-
-check_suspend_hybrid()
-{
-	return 1
-}
-
-do_suspend_hybrid()
-{
-	return 1
-}
+# this file is a stub -- pm-functions will always fall back to kernel methods
+# if nothing else is available.
