@@ -235,7 +235,7 @@ get_parameters() {
 # check to see if a single parameter exists
 has_parameter()
 {
-	for p in $PARAMETERS; do
+	for p in $(get_parameters); do
 		[ "$p" = "$1" ] && return 0
 	done
 	return 1

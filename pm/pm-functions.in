@@ -79,8 +79,8 @@ done
 
 . "${PM_FUNCTIONS}"
 
-if [ "$(id -u)" = "0" ] && command_exists dmidecode; then
-    export CHASSIS_TYPE="$(dmidecode -s chassis-type)"
+if [ "$(id -u)" = "0" ] && command_exists hal-get-property; then
+    export CHASSIS_TYPE="$(hal-get-property --udi /org/freedesktop/Hal/devices/computer --key system.chassis.type)"
 else
     export CHASSIS_TYPE=Unknown
 fi

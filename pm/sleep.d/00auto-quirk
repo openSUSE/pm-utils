@@ -20,7 +20,7 @@ do_save_quirks()
 	video_vendor=$($hgp system.hardware.primary_video.vendor --hex)
 	video_card=$($hgp system.hardware.primary_video.product --hex)
 	(
-	exec >"/tmp/pm-utils-created.fdi"
+	exec >"/etc/hal/fdi/information/99local-pm-utils-quirks.fdi"
 	echo '<?xml version="1.0" encoding="ISO-8859-1"?> <!-- -*- SGML -*- -->'
 	echo '<!-- Created by pm-utils -->'
 	echo '<deviceinfo version="0.2">'
@@ -43,7 +43,7 @@ do_save_quirks()
 	echo "  </device>"
 	echo "</deviceinfo>"
 	)
-	echo "FDI file created as /tmp/pm-utils-created.fdi"
+	echo "FDI file created as /etc/hal/fdi/information/99local-pm-utils-quirks.fdi"
 }
 	
 maybe_add_quirks()
