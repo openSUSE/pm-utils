@@ -170,11 +170,26 @@
       <command>pm-suspend-hybrid</command> commands you can select which
       quirks should be used.
     </para>
-
+    <para>
+	    If <command>pm-suspend</command>, <command>pm-hibernate</command>,
+	    or <command>pm-suspend-hybrid</command> is invoked without any
+	    commandline parameters, they will try to grab the correct quirks
+	    from HAL if it is installed.
+    </para>
     <variablelist>
       <!-- Use the variablelist.term.separator and the
 	   variablelist.term.break.after parameters to
 	   control the term elements. -->
+      <varlistentry>
+	<term><option>--auto-quirks</option></term>
+	<listitem>
+          <para>
+            This option will try to grab the correct quirks for this system
+	    from HAL.  If HAL is not present on the system and this parameter
+	    is passed, suspending or hibernating the system will fail.
+          </para>
+        </listitem>
+      </varlistentry>
       <varlistentry>
 	<term><option>--quirk-dpms-on</option></term>
 	<listitem>
@@ -278,6 +293,23 @@
           </para>
         </listitem>
       </varlistentry>
+       <varlistentry>
+        <term><option>--save-quirks-as-fdi</option></term>
+        <listitem>
+          <para>
+		  Save the quirks passed to <command>pm-suspend</command> or 
+		  <command>pm-suspend-hybrid</command> as an .fdi file that 
+		  is specific to this system.  The file will be saved in 
+		  <filename>/etc/hal/fdi/information/99local-pm-utils-quirks.fdi</filename>.
+		  This parameter will only save the actual quirks that were 
+		  used to sucessfully suspend/resume a system -- if you are 
+		  running proprietary video drivers or kernel modesetting 
+		  video drivers, you will generate a potentially incorrect 
+		  .fdi file.
+          </para>
+        </listitem>
+      </varlistentry>
+
     </variablelist>
   </refsect1>
 
