@@ -166,6 +166,8 @@ resume_video()
 	quirk "${QUIRK_RADEON_OFF}" && 		radeon_on
 	quirk "${QUIRK_DPMS_ON}" && 		vbe dpms on
 	quirk "${QUIRK_RESET_BRIGHTNESS}" && 	reset_brightness
+	# always reset acpi_video_flag -- makes quirk testing more reliable.
+	sysctl -w kernel.acpi_video_flags=0
 	return 0  # avoid spurious hook exit failure message.
 }
 
