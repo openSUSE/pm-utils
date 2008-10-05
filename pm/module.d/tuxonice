@@ -13,7 +13,7 @@ done
 
 if [ -z "$HIBERNATE_MODULE" -a -n "$TUXONICE_LOC" ] && \
 	[ -f "${TUXONICE_LOC}/do_hibernate" ]; then
-	HIBERNATE_METHOD="tuxonice"
+	HIBERNATE_MODULE="tuxonice"
 	do_hibernate()
 	{
 		echo 5 > "${TUXONICE_LOC}/powerdown_method"
@@ -24,7 +24,7 @@ fi
 if [ -z "$SUSPEND_HYBRID_MODULE" -a -n "$TUXONICE_LOC" ] && \
 	grep -q mem /sys/power/state && \
 	[ -f "${TUXONICE_LOC}/do_hibernate" ]; then
-	SUSPEND_HYBRID_METHOD="tuxonice"
+	SUSPEND_HYBRID_MODULE="tuxonice"
 	do_suspend_hybrid()
 	{
 		echo 3 >"${TUXONICE_LOC}/powerdown_method"

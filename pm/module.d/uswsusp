@@ -52,10 +52,10 @@ uswsusp_help()
 	echo "  --quirk-none"
 }
 
-if [ -z "$SUSPEND_METHOD" ] && command_exists s2ram && \
+if [ -z "$SUSPEND_MODULE" ] && command_exists s2ram && \
 	( grep -q mem /sys/power/state || \
 		( [ -c /dev/pmu ] && pm-pmu --check; ); ); then
-	SUSPEND_METHOD="uswsusp"
+	SUSPEND_MODULE="uswsusp"
 	do_suspend()
 	{
 		uswsusp_get_quirks
@@ -67,23 +67,23 @@ if [ -z "$SUSPEND_METHOD" ] && command_exists s2ram && \
 	fi
 fi
 
-if [ -z "$HIBERNATE_METHOD" ] && \
+if [ -z "$HIBERNATE_MODULE" ] && \
 	[ -f /sys/power/disk ] && \
 	grep -q disk /sys/power/state && \
 	[ -c /dev/snapshot ] &&
 	command_exists s2disk; then
-	HIBERNATE_METHOD="uswsusp"
+	HIBERNATE_MODULE="uswsusp"
 	do_hibernate()
 	{
 		s2disk
 	}
 fi
 
-if [ -z "$SUSPEND_HYBRID_METHOD" ] && 
+if [ -z "$SUSPEND_HYBRID_MODULE" ] && 
 	grep -q mem /sys/power/state && \
 	command_exists s2both && \
 	check_hibernate; then
-	SUSPEND_HYBRID_METHOD="uswsusp"
+	SUSPEND_HYBRID_MODULE="uswsusp"
 	do_suspend_hybrid()
 	{
 		uswsusp_get_quirks
