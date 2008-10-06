@@ -64,6 +64,7 @@ maybe_add_quirks()
 
 maybe_save_quirks()
 {
+	inhibited && return 0
 	has_parameter --store-quirks-as-fdi && do_save_quirks
 	return 0
 }
