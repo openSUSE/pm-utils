@@ -294,7 +294,7 @@
         </listitem>
       </varlistentry>
        <varlistentry>
-        <term><option>--save-quirks-as-fdi</option></term>
+        <term><option>--store-quirks-as-fdi</option></term>
         <listitem>
           <para>
 		  Save the quirks passed to <command>pm-suspend</command> or 
