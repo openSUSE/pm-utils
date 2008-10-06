@@ -7,7 +7,7 @@ do_add_quirks()
 	add_parameters $(lshal | \
 	awk -F '[. ]' \
 		'/  power_management.quirk.[0-9a-z_]+ = true/ \
-			{gsub(/_/, "-", $5); printf("--quirk-%s", $5)}')
+			{gsub(/_/, "-", $5); printf("--quirk-%s ", $5)}')
 }
 
 do_save_quirks()
