@@ -6,7 +6,7 @@ do_add_quirks()
 {
 	add_parameters $(lshal | \
 	awk -F '[. ]' \
-		'/  power_management.quirk.[a-z_]+ = true/ \
+		'/  power_management.quirk.[0-9a-z_]+ = true/ \
 			{gsub(/_/, "-", $5); printf("--quirk-%s", $5)}')
 }
 
@@ -64,6 +64,7 @@ maybe_add_quirks()
 
 maybe_save_quirks()
 {
+	inhibited && return 0
 	has_parameter --store-quirks-as-fdi && do_save_quirks
 	return 0
 }
