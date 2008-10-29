@@ -240,3 +240,9 @@ has_parameter()
 	done
 	return 1
 }
+
+# Like regular dbus-send, but returns $NA if the command fails for any reason.
+dbus_send ()
+{
+	command dbus-send "$@" 2>/dev/null || return $NA
+}

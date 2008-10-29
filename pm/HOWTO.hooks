@@ -115,3 +115,6 @@ the hook. This will make the following convenience functions available:
 	hibernate the system after this function is called.
 13: inhibited
 	Test to see if inhibit has been called.
+14: dbus_send
+	Just like regular dbus-send, but return $NA if the command fails for
+	any reason.

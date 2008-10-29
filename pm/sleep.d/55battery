@@ -7,7 +7,7 @@
 resume_batteries()
 {
 	for x in $(hal-find-by-capability --capability battery 2>/dev/null); do
-		dbus-send --system --reply-timeout=2000 \
+		dbus_send --system --reply-timeout=2000 \
 			--dest=org.freedesktop.Hal "$x" \
 			org.freedesktop.Hal.Device.Rescan "string:$x"
 	done

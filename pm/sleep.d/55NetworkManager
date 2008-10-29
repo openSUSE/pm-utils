@@ -8,12 +8,10 @@
 
 . "${PM_FUNCTIONS}"
 
-command_exists dbus-send || exit $NA
-
 suspend_nm()
 {
 	# Tell NetworkManager to shut down networking
-	dbus-send --system                         \
+	dbus_send --system                         \
 		--dest=org.freedesktop.NetworkManager  \
 		/org/freedesktop/NetworkManager        \
 		org.freedesktop.NetworkManager.sleep
@@ -22,7 +20,7 @@ suspend_nm()
 resume_nm()
 {
 	# Wake up NetworkManager and make it do a new connection
-	dbus-send --system                        \
+	dbus_send --system                        \
 		--dest=org.freedesktop.NetworkManager \
 		/org/freedesktop/NetworkManager       \
 		org.freedesktop.NetworkManager.wake
