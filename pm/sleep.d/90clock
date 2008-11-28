@@ -15,6 +15,8 @@ resume_clock()
 	/sbin/hwclock --hctosys >/dev/null 2>&1 0<&1
 }
 
+[ "$NEED_CLOCK_SYNC" ] || exit $NA
+
 case "$1" in
 	hibernate|suspend) suspend_clock ;;
 	thaw|resume) resume_clock ;;

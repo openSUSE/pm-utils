@@ -486,7 +486,20 @@
             will be surrounded by [square brackets].
           </para>
 	</listitem>
+	</varlistentry>
+	<varlistentry>
+        <term><envar>NEED_CLOCK_SYNC</envar></term>
+        <listitem>
+		<para>
+			If your system clock drifts across a suspend/resume or
+			hiberante/thaw cycle, you should set this to true.
+			This will cause pm-utils to synchronize the system clock
+			whenever we go through a sleep/wake cycle at the expense of 
+			making suspend/resume take longer.
+          </para>
+	</listitem>
       </varlistentry>
+
     </variablelist>
   </refsect1>
 
