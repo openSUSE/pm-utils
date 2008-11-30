@@ -75,6 +75,19 @@ At or before 50, you can assume that all services are still enabled.
 
 At or before 75, you can assume that all modules are still loaded.
 
+SUSPEND FAST PATH
+
+When suspending the system to memory, most of the time is used to synchronize
+the disks and perform the actual sleep process in kernel space.
+On modern systems, these steps generally only take 1 - 3 seconds.  Since
+just about every laptop user wants their system to sleep and wake up as fast
+as possible, you should minimize the amount of work done during suspend and
+during resume before we switch vts back to the original vt. 
+
+If you have something to do that will take lots of time, try to run it during
+resume after the 90chvt hook runs -- that will minimize the impact we have on
+resume time.
+
 CONVENIENCE FUNCTIONS
 
 If your hook is a shell script that supports POSIX/SuS compatible syntax, you
