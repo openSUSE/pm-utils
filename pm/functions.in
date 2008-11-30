@@ -129,14 +129,13 @@ modreload()
 if ! command_exists service; then
 	service()
 	{
-		if [ -x "/etc/init.d/$1" ]; then
-			svc="$1"
-			shift
-			"/etc/init.d/$svc" "$@"
-		else
-			log "${1}: unrecognized service"
-			return 1
-		fi
+	    for svc in "/etc/init.d/$1" "/etc/rc.d/rc.$1"; do #lsb, then slack
+		[ -x "$svc" ] && { shift; "$svc" "$@"; return $?; }
+            done
+            # this only happens if we did not find the service
+            log "${1}: unrecognized service"
+            return 1
+	    
 	}
 fi
 
