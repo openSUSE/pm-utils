@@ -7,7 +7,6 @@ sleep_SCRIPTS =			\
 	01grub			\
 	49bluetooth		\
 	50ntpd			\
-	55battery		\
 	55NetworkManager	\
 	65alsa			\
 	75modules		\
