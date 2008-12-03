@@ -1,12 +1,16 @@
 #!/bin/sh
 
-# disable processing of 99video
+# disable processing of 90chvt and 99video.
+# s2ram and s2disk handle all this stuff internally.
 uswsusp_hooks()
 {
 	disablehook 90chvt "disabled by uswsusp"
 	disablehook 99video "disabled by uswsusp"
 }
 
+# Since we disabled 99video, we need to take responsibility for proper
+# quirk handling.  s2ram handles all common video quirks internally,
+# so all we have to do is translate the HAL standard options to s2ram options.
 uswsusp_get_quirks()
 {
 	OPTS=""
@@ -30,28 +34,37 @@ uswsusp_get_quirks()
 	done
 	[ $ACPI_SLEEP -ne 0 ] && OPTS="$OPTS --acpi_sleep $ACPI_SLEEP"
 	# if we were told to ignore quirks, do so.
+	# This is arguably not the best way to do things, but...
 	[ "$QUIRK_NONE" = "true" ] && OPTS=""
 }
 
+# Since we disabled 99video, we also need to handle displaying
+# help info for the quirks we handle.
 uswsusp_help()
 {
 	echo  # first echo makes it look nicer.
-	echo "Video quirk handler options:"
+	echo "s2ram video quirk handler options:"
 	echo
-	echo "  --quirk-dpms-on"
-	echo "  --quirk-dpms-suspend"
 	echo "  --quirk-radeon-off"
-	echo "  --quirk-reset-brightness"
 	echo "  --quirk-s3-bios"
 	echo "  --quirk-s3-mode"
 	echo "  --quirk-vbe-post"
 	echo "  --quirk-vbemode-restore"
 	echo "  --quirk-vbestate-restore"
-	echo "  --quirk-vga-mode3"
 	echo "  --quirk-save-pci"
 	echo "  --quirk-none"
 }
 
+# This idiom is used for all sleep methods.  Only declare the actual
+# do_ method if:
+# 1: some other sleep module has not already done so, and
+# 2: this sleep method can actually work on this system.
+#
+# For suspend, if SUSPEND_MODULE is set then something else has already
+# implemented do_suspend.  We could just check to see of do_suspend was
+# already declared using command_exists, but using a dedicated environment
+# variable makes it easier to debug when we have to know what sleep module
+# ended up claiming ownership of a given sleep method.
 if [ -z "$SUSPEND_MODULE" ] && command_exists s2ram && \
 	( grep -q mem /sys/power/state || \
 		( [ -c /dev/pmu ] && pm-pmu --check; ); ); then

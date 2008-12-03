@@ -5,6 +5,9 @@ sysconfdir=@sysconfdir@
 
 pm_libdir=${libdir}/pm-utils
 pm_sysconfdir=${sysconfdir}/pm
+pm_sleephooks=${pm_libdir}/sleep.d
+pm_powerhooks=${pm_libdir)/power.d
+pm_sleepmodules=${pm_libdir}/module.d
 
 Name: pm-utils
 Description: Power management scripts for suspend and hibernate

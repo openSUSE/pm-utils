@@ -3,38 +3,39 @@ How to write a sleep module:
 OVERVIEW:
 Sleep modules are POSIX-compatible shell scripts designed to be sourced by
 the pm-utils machinery in order to check that the machine supports a sleep
-method and to actually enter that method.  
+method and to actually enter that method. Sleep modules can be stacked, which
+means that some care must be taken to write a sleep module.  The basic rules 
+are as follows:
+
+1: Check to see if someone else has already implemented your sleep method.
+   If they have, you should do nothing.
+
+2: Check to see if your sleep method is applicable to this system.  If it
+   is not, you should do nothing.
+
+3: If no other module has claimed your sleep method and this system is capable
+   of performing your sleep method, then go ahead and define the function that
+   implements your sleep method.
+
+As an example of how to do things, take a look at pm/module.d/uswsusp, which
+implements all three sleep methods and shows how to use the module helper 
+functions add_before_hooks and add_module_help.
+ 
 Currently, three sleep methods are supported:
 
 SUSPEND:
 	Suspend (also known as suspend-to-ram) is the sleep mode equivalent
 to ACPI S3 -- state is saved in system memory, and all other hardware is either
-powered off or in power-saving mode.  If your sleep module supports suspend,
-it MUST define 2 functions:
+powered off or in power-saving mode.  
 
-* check_suspend, which checks to see that the system provides a suspend-to-ram
-  mechanism, returns 0 if it does, and 1 if it does not.
-
-* do_suspend, which performs just the task of putting the system in suspend.
+Your sleep module must implement do_suspend if you support suspend to ram.
 
 HIBERNATE:
 	Hibernate (also know as suspend-to-disk) is the sleep mode equivalent
 to ACPI S4 -- the system state is saved to permanent media (like a hard drive),
-and the system is iether in a very low-power use mode or completly powered off.
-If your sleep module supports hibernate, it MUST define 2 functions:
+and the system is either in a very low-power use mode or completly powered off.
 
-* check_hibernate, which checks to see if the system provides a suspend-to-disk
-  mechanism, and returns 0 if it does, and 1 if it does not.
-
-* do_hibernate, which performs just the task of putting the system in hibernate.
-
-Hibernate can optionally provide a third function:
-* hibernate_might_work, which should return 0 if the minimum prerequisites
-  for a sucessful hibernate/thaw cycle are met (ensuring that there is an
-  active swap device, etc), and 1 otherwise.  If your system provides this
-  method, your do_hibernate function SHOULD check it and:
-  * emit an error message, and
-  * return without hibernating the system.
+Your sleep module must implement do_hibernate if you support suspend to disk.
 
 SUSPEND_HYBRID:
 	suspend_hybrid is a blend of suspend and hibernate.  It performs all
@@ -45,24 +46,4 @@ of suspend with the assurance that your state is saved to the hard drive if
 you run out of power.  If your sleep module supports suspend_hybrid, it MUST
 define 2 functions:
 
-* check_suspend_hybrid, which checks to see that the system provides hybrid
-  suspend functionality, and returns 0 if it dies and 1 if it does not.
-
-* do_suspend_hybrid, which just performs the task of putting the system into
-  suspend_hybrid sleep.
-
-do_suspend_hybrid SHOULD utilize hibernate_might_work if it is present.
-
-OTHER STUFF:
-
-If you define a function named "before_hook", that function will be executed
-just before the sleep/resume hooks are executed.  If you need to disable a hook,
-this is the place to do it.
-
-If you define a function named "sleep_method_help", that function will be 
-executed whenever any of the pm-utils scripts is called with the "--help"
-option. If the behaviour of your sleep method can be changes by command-line
-parameters passed to pm-action or by a configuration file setting, you
-SHOULD define a sleep_method_help function and that function SHOULD explain
-how the command-line paramaters and configuration file settings can change its
-behaviour. 
+Your sleep module must implement do_suspend_hybrid if you support hybrid suspend.

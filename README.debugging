@@ -21,6 +21,12 @@ End-user customization and debugging:
   environment variable to have that module removed when the system
   suspends and reloaded when the system wakes up.
 
+* If your clock drifts across a sleep/wake cycle, you can use 
+  NEED_CLOCK_SYNC="true" to force pm-utils to synchronize clocks.
+  This is a change in the default behaviour of pm-utils -- 1.2.2.1 and earlier
+  always synchronized clocks, but doing so is slow and most hardware stays in
+  sync without assistance.
+
 * To find out what parameters can be passed to pm-suspend and friends, run them
   with '--help' as the first parameter as root.  This will print out the 
   options that it supports and which hooks or modules handle those options.

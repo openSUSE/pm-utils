@@ -1,68 +1,67 @@
-There have been many changes to pm-utils since the release of 0.99.4. 
+Major changes since the 1.1 series:
 
-Major changes include:
+* Our pkg-config support now includes variables that directly map to where
+  the various hooks should be installed.  This should make it easier for
+  other packages to install hooks in a portable fashion.
 
-* All the scripts that make up pm-utils have been rewritten to conform
-  to POSIX and the Single Unix Specification.  Any remaining bashisms
-  or GNUisms are bugs.  If you encounter a script that is not POSIX 
-  and SuS compliant, please file a bug against pm-utils at bugs.freedesktop.org
+* 90clock no longer runs by default.  It added over a second to suspend,
+  and the vast majority of hardware does not need it to keep the clocks
+  in sync.  If a user needs this hook, they can set the NEED_CLOCK_SYNC
+  environment variable.
 
-* There have been several changes to the way hooks are detected and
-  invoked. If you have a custom-written hook that breaks upon
-  installation of this package, you may have to perform some minor
-  fixups to make it work again.  All the hooks that are supplied with 
-  pm-utils have been updated to take full advantage of these changes,
-  so use them as examples. For more detailed information, see
-  pm/HOWTO.hooks.
+  If pm-utils@lists.freedesktop.org does not get any reports of systems
+  that require this hook to keep their clocks synced, it will be removed
+  in a future release.
 
-* pm-utils now has a modular sleep backend. There are currently
-  plugins for the default kernel sleep methods, the uswsusp tools
-  (s2ram/s2disk/s2both), and rudimentary support for tuxonice. You can
-  switch between the sleep modules by setting the SLEEP_MODULE
-  environment variable to the desired sleep module.  If you want to
-  write a sleep module, see pm/HOWTO.modules.
+* 50ntpd has been removed.  It was very ad-hoc to begin with, and there
+  has never been a guarantee that restarting ntpd would force it to resync
+  the clocks, or that the system would even find a network after coming out
+  of suspend.  The ntpd daemon itself is robust in the face of interfaces
+  going away and reappearing, so there is no reason to restart it on account
+  of the network interfaces changing -- ntpd will keep the clock updated over
+  any available interface according to its own schedule.
 
-* pm-utils has a greatly expanded set of debugging features:
-  - If the environment variable PM_DEBUG is set to true, pm-suspend.log 
-    will contain a full trace of all the actions taken by pm-utils.
-  - The HOOK_BLACKLIST environment variable allows you to disable a
-    hook without having to modify it.
-  - The ADD_PARAMETERS and DROP_PARAMETERS environment variables allow
-    you to modify the parameters passed by calling programs (such as HAL).
-  - More complete logging, including logging the commandline
-    parameters, which hooks ran and did not run (and the reasons why),
-    and logging the status codes of executed hooks.
+  If you just want to update the time whenever the network comes back without
+  running ntpd continually, utilize NetworkManager dispatch scripts (or your
+  network infrastructure equivalent) to do so whenever the Internet comes up.
 
-* pm-utils has pkg-config support.  This makes it much easier for
-  other programs to rely on pm-utils for all their suspend/resume
-  quirk handling needs.
+* 65alsa has been removed. According to the ALSA dev team, all drivers that
+  have power management support will save and restore their state correctly
+  across a suspend or hibernate, and drivers that don't have power management
+  support need to have their state saved, then unloaded before suspend, 
+  reloaded on wakeup, and then have their state restored.
 
-In addition to these major changes, there have been a whole slew of
-minor changes and bugfixes.  Most of the pm-utils related bugs that
-the distributions have encountered have been fixed in this
-release. Please see the ChangeLog for more details.
+  The best way to take care of this would be to use the standard pm-utils 
+  mechanisms for loading and unloading modules, and then arrange for modprobe
+  and/or udev to save and restore alsa state when unloading or loading alsa
+  modules.
 
-There have also been major changes in the pm-utils project:
+* 55battery has been removed.  This hook was in place to work around a HAL
+  issue with rescanning battery status on resume, but HAL implemented a fix
+  for this issue in 2006.  
 
-* Richard Hughes assumed maintainership of the project after a long
-  period of inactivity by Peter Jones. Richard then transitioned the
-  project from using CVS to using git as the version control system,
-  and opened the floor to several new contributors.
+* We always set the acpi video flags to the values indicated by HAL.  If HAL
+  does not indicate that a specific set of acpi video flags are needed, we
+  always set it to 0.  As a consequence, the acpi video flags passed to the
+  kernel at boot time are ignored. If you rely on this functionality and HAL
+  does not have the appropriate quirks for your system, we strongly recommend
+  that you create a .fdi file that has the appropriate quirks for your system
+  by passing the appropriate quirks to pm-suspend along with the 
+  --save-quirks-as-fdi parameter.  This will create a .fdi file that you can
+  then use locally (after restarting HAL) and submit for inclusion to hal-info
+  so that other users with your hardware config can benifit from your actions.
 
-* Victor Lowther rewrote all the scripts to be POSIX compliant, added
-  the modular sleep backends, added the new debugging features, and
-  did lots of code cleanups and bug fixes. If you find a bug, it is
-  probably his fault.  Since he now maintains pm-utils, he is in a great
-  position to fix it.
+* Sleep backends are now stackable, and pm-utils will always fall back to
+  kernel methods if nothing else will work on any given system.
+  See pm/HOWTO.modules for more information.
 
-* Michael Biebl improved the PMU support and caught most of the bugs
-  that Victor did not catch. 
+* pm-utils now knows how to get the quirks from HAL, and includes functionality
+  to save user-passed quirks in a .fdi file.  This makes it easier for users
+  to generate and share quirks, and it makes debugging suspend/resume problems
+  easier.
 
-* Till Maas improved the locking code through clever use of noclobber.
+* We now have a recommended hook ordering convention.  See pm/HOWTO.hooks for
+  more information.  All pm-utils supplied hooks have been renamed to conform
+  to this hook ordering.
 
-* Dan Nicholson cleaned up our use of autotools, and added pkg-config
-  support.
-
-* pm-utils now uses git as it source-control repository. You can
-  browse the code at http://cgit.freedesktop.org/pm-utils/
 
