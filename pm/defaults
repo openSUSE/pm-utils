@@ -47,3 +47,6 @@
 # If you want to ignore commandline parameters, add them here.
 # DROP_PARAMETERS=""
 
+# If you need to synchronize the system clock across a suspend/resume or
+# hibernate/thaw cycle, set this variable.
+# NEED_CLOCK_SYNC="true"
