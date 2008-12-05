@@ -6,9 +6,7 @@ sleep_SCRIPTS =			\
 	00powersave		\
 	01grub			\
 	49bluetooth		\
-	50ntpd			\
 	55NetworkManager	\
-	65alsa			\
 	75modules		\
 	90chvt			\
 	90clock			\
