@@ -95,6 +95,24 @@ log()
 	printf "$fmt" "$*"
 }
 
+if [ "$PM_PROFILE" = "true" ]; then
+	profile() {
+		local t1 t2 status msg elapsed
+		msg="$1"
+		shift
+		t1="$(date '+%s.%N')"
+		"$@"
+		status=$?
+		t2="$(date '+%s.%N')"
+		elapsed="$(printf "%s %s - p q" "$t2" "$t1" |dc)"
+		log "$msg: $(printf "%.3f" $elapsed) ($t2 - $t1)"
+		return $status
+	}
+
+else
+	profile() { shift; "$@"; }
+fi
+
 add_before_hooks() {
 	[ -z "$BEFORE_HOOKS" ] && BEFORE_HOOKS="$*" || \
 		BEFORE_HOOKS="$BEFORE_HOOKS $*"
