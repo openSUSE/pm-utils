@@ -95,7 +95,9 @@ log()
 	printf "$fmt" "$*"
 }
 
-if [ "$PM_PROFILE" = "true" ]; then
+profiling() { [ "$PM_PROFILE" = "true" ]; }
+
+if profiling; then
 	profile() {
 		local t1 t2 status msg elapsed
 		msg="$1"
@@ -190,6 +192,20 @@ hook_ok()
 	return 0
 }
 
+_run_hook() {
+	# $1 = hook to run
+	# rest of args passed to hook unchanged.
+	log -n "$*:"
+	hook_ok "$1" && "$@"
+	hook_exit_status $? && LAST_HOOK="${1##*/}" || inhibit
+}
+
+if profiling; then
+	run_hook() { profile "$1:" _run_hook "$@"; }
+else
+	run_hook() { _run_hook "$@"; }
+fi
+
 # Run all applicable hooks, logging success and failure as we go.
 run_hooks() {
 	# $1 = type of hook to find.  
@@ -225,11 +241,7 @@ run_hooks() {
 		elif [ -f "$phooks/$base" ]; then
 			hook="$phooks/$base"
 		fi
-		log -n "${hook} $2: "
-		hook_ok "$hook" && "${hook}" $2 
-		# if the hook exited with an unknown exit code inhibit,
-		# otherwise record this as the last hook that ran.
-		hook_exit_status $? && LAST_HOOK="$base" || inhibit
+		run_hook "$hook" $2
 		IFS="${nifs}"
 	done
 	IFS="${oifs}"
