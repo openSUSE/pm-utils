@@ -9,7 +9,7 @@ do_add_quirks()
 		'/  power_management.quirk.[0-9a-z_]+ = true/ \
 			{gsub(/_/, "-", $5); printf("--quirk-%s ", $5)}')"
 	echo "Adding quirks from HAL: $quirks"
-	add_parameters "$quirks"
+	add_parameters $quirks
 }
 
 do_save_quirks()
