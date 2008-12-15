@@ -89,12 +89,7 @@
       <command>&dhpackage;</command> can be used to set your system into
       low power mode.
     </para>
-    <para>
-      One of the features that is enabled by <command>pm-powersave</command>
-      is laptop-mode, which allows the Linux kernel to spin down the hard 
-      drive for longer periods of time.
-    </para>
-  </refsect1>
+      </refsect1>
 
   <refsect1 id="options">
     <title>OPTIONS</title>
@@ -159,9 +154,5 @@
         <manvolnum>8</manvolnum>
       </citerefentry>
     </para>
-    <para>
-      To learn more about Laptop Mode read 
-      <filename>/usr/src/linux/Documentation/laptop-mode.txt</filename>.
-    </para>
-  </refsect1>
+      </refsect1>
 </refentry>
