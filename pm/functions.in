@@ -92,7 +92,7 @@ modunload()
 			RET=$?
 		else
 			# modules depend on this one.  try to remove them first.
-			MODS="${USED%%*,}"
+			MODS=",${USED%,}"
 			while [ -n "${MODS}" ]; do
 				# try to unload the last one first
 				MOD="${MODS##*,}"
