@@ -141,7 +141,8 @@ fi
 
 stopservice()
 {
-	if service "$1" status 2>/dev/null | grep -c -q running; then
+	if service "$1" status 2>/dev/null | grep -q -e running -e started
+	then
 		touch "${STORAGEDIR}/service:$1"
 		service "$1" stop
 	fi
