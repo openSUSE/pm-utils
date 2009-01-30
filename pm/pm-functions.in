@@ -80,7 +80,7 @@ done
 . "${PM_FUNCTIONS}"
 
 if command_exists hal-get-property; then
-    export CHASSIS_TYPE="$(hal-get-property --udi /org/freedesktop/Hal/devices/computer --key system.chassis.type)"
+    export CHASSIS_TYPE="$(hal-get-property --udi /org/freedesktop/Hal/devices/computer --key system.chassis.type 2>/dev/null || echo Unknown)"
 else
     export CHASSIS_TYPE=Unknown
 fi
