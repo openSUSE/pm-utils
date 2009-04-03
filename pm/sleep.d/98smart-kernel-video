@@ -26,7 +26,7 @@ remove_all_video_quirks()
 	--quirk-pci-save
 }
 
-# Test to see if the kernel has a video driver that is smart enough to 
+# Test to see if the kernel has a video driver that is smart enough to
 # handle quirks without external assistance. If it is, remove the quirks.
 have_kms()
 {
@@ -34,11 +34,12 @@ have_kms()
     # attempt to run any quirks
     [ -d /sys/class/drm/card0/device/graphics/fb0 ] || return 1
     remove_all_video_quirks
+    add_parameter --quirk-no-chvt
 }
 
 have_nvidia()
 {
-    # despite the bad rep the nvidia driver has, it is miles better than 
+    # despite the bad rep the nvidia driver has, it is miles better than
     # any other video driver when it comes to handling power managment and
     # suspend/resume in a quirk-free manner.
     [ -d /sys/module/nvidia ] || return 1
@@ -57,7 +58,7 @@ have_smart_intel()
     # currently, intel kernel modesetting is not quite smart enough
     # we still need acpi s3 kernel modesetting hooks, so don't remove those
     # options if they were passed.
-    [ -d /sys/module/i915 ] || return 1    
+    [ -d /sys/module/i915 ] || return 1
     local kernel_rev="$(uname -r |awk -F '[_-]' '{print $1}')"
     [ "$kernel_rev" \> "2.6.26" -o "$kernel_rev" = "2.6.26" ] || return 1
     remove_parameters --quirk-dpms-on \
