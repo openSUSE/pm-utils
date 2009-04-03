@@ -9,56 +9,55 @@
 
 . "${PM_FUNCTIONS}"
 
+remove_all_video_quirks()
+{
+    remove_parameters --quirk-dpms-on \
+    	--quirk-dpms-suspend \
+	--quirk-s3-mode \
+    	--quirk-s3-bios \
+	--quirk-vbe-post \
+	--quirk-vbe-post \
+	--quirk-vga-mode3 \
+	--quirk-vbemode-restore \
+	--quirk-vbestate-restore \
+	--quirk-reset-brightness \
+	--quirk-radeon-off \
+	--quirk-no-fb \
+	--quirk-pci-save
+}
 
 # Test to see if the kernel has a video driver that is smart enough to 
 # handle quirks without external assistance. If it is, remove the quirks.
-smart_kernel_nvidia()
+have_kms()
+{
+    # if we are running with a KMS-enabled video driver, we should not
+    # attempt to run any quirks
+    [ -d /sys/class/drm/card0/device/graphics/fb0 ] || return 1
+    remove_all_video_quirks
+}
+
+have_nvidia()
 {
     # despite the bad rep the nvidia driver has, it is miles better than 
     # any other video driver when it comes to handling power managment and
     # suspend/resume in a quirk-free manner.
     [ -d /sys/module/nvidia ] || return 1
-    remove_parameters --quirk-dpms-on \
-    	--quirk-dpms-suspend \
-	--quirk-s3-mode \
-    	--quirk-s3-bios \
-	--quirk-vbe-post \
-	--quirk-vbe-post \
-	--quirk-vga-mode3 \
-	--quirk-vbemode-restore \
-	--quirk-vbestate-restore \
-	--quirk-reset-brightness \
-	--quirk-radeon-off \
-	--quirk-no-fb \
-	--quirk-pci-save
+    remove_all_video_quirks
 }
 
-smart_kernel_fglrx()
+have_fglrx()
 {
     # the ATI driver is pretty good about it, too.
     [ -d /sys/module/fglrx ] || return 1
-    remove_parameters --quirk-dpms-on \
-    	--quirk-dpms-suspend \
-	--quirk-s3-mode \
-    	--quirk-s3-bios \
-	--quirk-vbe-post \
-	--quirk-vbe-post \
-	--quirk-vga-mode3 \
-	--quirk-vbemode-restore \
-	--quirk-vbestate-restore \
-	--quirk-reset-brightness \
-	--quirk-radeon-off \
-	--quirk-no-fb \
-	--quirk-pci-save
+    remove_all_video_quirks
 }
 
-smart_kernel_intel()
+have_smart_intel()
 {
     # currently, intel kernel modesetting is not quite smart enough
     # we still need acpi s3 kernel modesetting hooks, so don't remove those
     # options if they were passed.
-    [ -d /sys/module/i915 ] || return 1
-    
+    [ -d /sys/module/i915 ] || return 1    
     local kernel_rev="$(uname -r |awk -F '[_-]' '{print $1}')"
     [ "$kernel_rev" \> "2.6.26" -o "$kernel_rev" = "2.6.26" ] || return 1
     remove_parameters --quirk-dpms-on \
@@ -76,8 +75,7 @@ smart_kernel_intel()
 
 smart_kernel_video() 
 {
-        smart_kernel_nvidia || smart_kernel_fglrx || smart_kernel_intel || \
-	return $NA
+    have_kms || have_nvidia || have_fglrx || have_smart_intel || return $NA
 }
 
 case $1 in
