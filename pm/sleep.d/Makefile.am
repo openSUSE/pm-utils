@@ -8,7 +8,6 @@ sleep_SCRIPTS =			\
 	49bluetooth		\
 	55NetworkManager	\
 	75modules		\
-	90chvt			\
 	90clock			\
 	94cpufreq		\
 	95led			\

@@ -28,6 +28,7 @@ for opt in $PM_CMDLINE; do
 		vga-mode3) 	   QUIRK_VGA_MODE_3="true" ;;
 		no-fb) 		   QUIRK_NOFB="true" ;;
 		pci-save) 	   QUIRK_PCI_SAVE="true" ;;
+	        no-chvt)           QUIRK_NO_CHVT="true" ;;
 		none) 		   QUIRK_NONE="true" ;;
 		*) continue ;;
 	esac
@@ -80,6 +81,20 @@ resume_fbcon()
 		[ -f $con ] || continue
 		echo 0 >"${con}"
 	done
+}
+
+maybe_chvt()
+{
+    [ "$QUIRK_NO_CHVT" = "true" ] && return
+    fgconsole |savestate console
+    chvt 63
+}
+
+maybe_deallocvt()
+{
+    state_exists console || return
+    chvt $(restorestate console)
+    deallocvt 63
 }
 
 # Some tiny helper functions for quirk handling
@@ -187,17 +202,18 @@ help() {
 }
 
 case "$1" in
-	suspend) suspend_video ;;
-	hibernate)
+	suspend) maybe_chvt; suspend_video ;;
+	hibernate) maybe_chvt
 		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
 			suspend_video
 		fi
 		;;
-	resume) resume_video ;;
+	resume) resume_video; maybe_deallocvt;;
 	thaw)
 		if [ "${HIBERNATE_RESUME_POST_VIDEO}" = "yes" ]; then
 			resume_video
 		fi
+		maybe_deallocvt
 		;;
 	help) help ;;
 esac

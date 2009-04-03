@@ -4,7 +4,6 @@
 # s2ram and s2disk handle all this stuff internally.
 uswsusp_hooks()
 {
-	disablehook 90chvt "disabled by uswsusp"
 	disablehook 99video "disabled by uswsusp"
 }
 
