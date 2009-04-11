@@ -1,7 +1,7 @@
 #!/bin/sh
 
 path_mc="/sys/devices/system/cpu/sched_mc_power_savings"
-path_smp="/sys/devices/system/cpu/sched_smp_power_savings"
+path_smt="/sys/devices/system/cpu/sched_smt_power_savings"
 val=0
 
 case "$1" in
@@ -24,8 +24,8 @@ esac
 if [ -w "$path_mc" ] ; then
 	echo $val > $path_mc
 fi
-if [ -w "$path_smp" ] ; then
-	echo $val > $path_smp
+if [ -w "$path_smt" ] ; then
+	echo $val > $path_smt
 fi
 
 exit 0
