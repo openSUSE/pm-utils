@@ -34,7 +34,7 @@ have_kms()
     # attempt to run any quirks
     [ -d /sys/class/drm/card0/device/graphics/fb0 ] || return 1
     remove_all_video_quirks
-    add_parameter --quirk-no-chvt
+    add_parameters --quirk-no-chvt
 }
 
 have_nvidia()
