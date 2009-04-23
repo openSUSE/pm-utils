@@ -302,7 +302,7 @@
 		  is specific to this system.  The file will be saved in 
 		  <filename>/etc/hal/fdi/information/99local-pm-utils-quirks.fdi</filename>.
 		  This parameter will only save the actual quirks that were 
-		  used to sucessfully suspend/resume a system -- if you are 
+		  used to successfully suspend/resume a system -- if you are 
 		  running proprietary video drivers or kernel modesetting 
 		  video drivers, you will generate a potentially incorrect 
 		  .fdi file.
@@ -492,7 +492,7 @@
         <listitem>
 		<para>
 			If your system clock drifts across a suspend/resume or
-			hiberante/thaw cycle, you should set this to true.
+			hibernate/thaw cycle, you should set this to true.
 			This will cause pm-utils to synchronize the system clock
 			whenever we go through a sleep/wake cycle at the expense of 
 			making suspend/resume take longer.

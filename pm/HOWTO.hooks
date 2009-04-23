@@ -43,7 +43,7 @@ In normal operation, hooks should only return either 0 or 254 as exit codes.
 Any other return code is interpreted by the pm-utils machinery as a signal 
 from the hook that it should abort whatever it is doing. When running sleep.d
 hooks, that means that pm-utils stops running hooks, aborts the suspend/resume
-process, calls any hooks that ran sucessfully prior to this one with the 
+process, calls any hooks that ran successfully prior to this one with the 
 appropriate wakeup options, and exits with a non-zero exit code. When running
 power.d hooks, any hooks after this one will be skipped.
 
