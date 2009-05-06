@@ -89,7 +89,7 @@ fi
 # We do it this way because 'echo -n' is not posix.
 log()
 {
-	[ $LOGGING ] || return 0;
+	is_set "$LOGGING" || return 0;
 	local fmt='%s\n'
 	[ "$1" = "-n" ] && { fmt='%s'; shift; }
 	printf "$fmt" "$*"
