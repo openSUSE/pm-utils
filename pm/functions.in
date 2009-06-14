@@ -8,8 +8,9 @@
 is_set()
 {
     case ${1-UNSET} in
-	[Tt][Rr][Uu][Ee]|[Yy][Ee][Ss]|1|'') return 0;;
-	*) return 1;;
+	true|yes|TRUE|YES|on|ON|1'') return 0;;
+	false|FALSE|no|NO|off|OFF|0|UNSET) return 1;;
+	*) return 2;;
     esac
 }
 
