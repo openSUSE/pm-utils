@@ -1,7 +1,6 @@
 #!/bin/sh
 # Synchronize system time with hardware time.
-# TODO: Do modern kernels handle this correctly?  If so, we should detect that
-#       and skip this hook.
+# Modern kernels handle this correctly so we skip this hook by default.
 
 . "${PM_FUNCTIONS}"
 
