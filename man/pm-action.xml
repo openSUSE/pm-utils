@@ -325,7 +325,7 @@
 	    of pm-utils. If a global configuration variable is set, the 
 	    value set to will be appended to the previous value.
 	    If any other variable is set, it will be ignored. 
-	    The syntax is simply: VAR_NAME = value.
+	    The syntax is simply: VAR_NAME=value.
 	    See the
 	    CONFIGURATION VARIABLES section for valid variables defined
 	    by pm-utils. External packages can define others, see
