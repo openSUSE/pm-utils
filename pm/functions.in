@@ -28,7 +28,7 @@ spin_lock()
 	# $2 = optional timeout
 	local elapsed=0
 	while ! try_lock $1; do
-		[ "x$2" != "x" ] && [ $(( $elapsed = $2 )) -ne 0 ] && return 1
+		[ "x$2" != "x" ] && [ $(( $elapsed == $2 )) -ne 0 ] && return 1
 		elapsed=$(($elapsed + 1))
 		sleep 1;
 	done
