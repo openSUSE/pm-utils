@@ -164,7 +164,7 @@
   <refsect1 id="options">
     <title>OPTIONS</title>
     <para>
-      Om most hardware putting the video card in the suspend state and 
+      On most hardware putting the video card in the suspend state and
       recovering from it needs some special quirk handling.
       With the --quirk-* options of the <command>pm-suspend</command> and
       <command>pm-suspend-hybrid</command> commands you can select which
