@@ -92,7 +92,7 @@ maybe_chvt()
 
 maybe_deallocvt()
 {
-    state_exists console || return
+    state_exists console || return 0
     chvt $(restorestate console)
     deallocvt 63
 }
