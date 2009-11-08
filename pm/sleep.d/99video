@@ -85,7 +85,7 @@ resume_fbcon()
 
 maybe_chvt()
 {
-    [ "$QUIRK_NO_CHVT" = "true" ] && return
+    is_set "$QUIRK_NO_CHVT" && return
     fgconsole |savestate console
     chvt 63
 }
@@ -98,7 +98,7 @@ maybe_deallocvt()
 }
 
 # Some tiny helper functions for quirk handling
-quirk() { [ "$1" = "true" ] && [ -z $QUIRK_NONE ]; }
+quirk() { is_set "$1" && [ -z $QUIRK_NONE ]; }
 
 # save/restore vbe state
 vbe_savestate() { vbe vbestate save |savestate vbestate; }
@@ -204,13 +204,13 @@ help() {
 case "$1" in
 	suspend) maybe_chvt; suspend_video ;;
 	hibernate) maybe_chvt
-		if [ "$HIBERNATE_RESUME_POST_VIDEO" = "yes" ]; then
+		if is_set "$HIBERNATE_RESUME_POST_VIDEO"; then
 			suspend_video
 		fi
 		;;
 	resume) resume_video; maybe_deallocvt;;
 	thaw)
-		if [ "${HIBERNATE_RESUME_POST_VIDEO}" = "yes" ]; then
+		if is_set "${HIBERNATE_RESUME_POST_VIDEO}"; then
 			resume_video
 		fi
 		maybe_deallocvt
