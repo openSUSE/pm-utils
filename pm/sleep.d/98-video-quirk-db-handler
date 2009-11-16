@@ -10,7 +10,6 @@ shopt -s extglob
 . "${PM_FUNCTIONS}"
 
 [[ $PM_DEBUG ]] && { 
-    exec 2>/var/log/vtrace.log
     export PS4='${BASH_SOURCE}@${LINENO}(${FUNCNAME[0]}): ';
     set -x
 }
@@ -24,7 +23,6 @@ end_comment='-->'
 in_comment=0
 in_match=0
 QUIRKS=""
-QUIRKDIR="/usr/share/video-quirks"
 
 # Some quirklist manipulation functions
 
@@ -430,16 +428,16 @@ maybe_update_native() {
     # recreate the corresponding native ones and delete the cached
     # quirks.
     local x=0 f lf 
-    mkdir -p "$QUIRKDIR"
+    mkdir -p "$PM_QUIRKDB"
     for f in /etc/hal/fdi/information/99local-pm-utils-quirks.fdi \
 	/usr/share/hal/fdi/information/10freedesktop/2[10]-video-quirk*.fdi;
     do
-	lf="$QUIRKDIR/${f##*/}"
+	lf="$PM_QUIRKDB/${f##*/}"
 	lf="${lf%.*}.quirkdb"
 	[[ -f $f ]] || continue
 	[[ $f -nt $lf ]] || continue 
 	translate_xml < "$f" > "$lf"
-	rm "$QUIRKDIR/last_known_working.quirkdb" >/dev/null 2>&1
+	rm "$PM_QUIRKDB/last_known_working.quirkdb" >/dev/null 2>&1
     done
 }
 
@@ -448,7 +446,7 @@ maybe_update_native() {
 # but right now we don't.
 write_last_known_working() ( 
     local matcher quirk
-    exec >"$QUIRKDIR/last_known_working.quirkdb"
+    exec >"$PM_QUIRKDB/last_known_working.quirkdb"
     for prop in system.firmware.version system.firmware.vendor \
 	system.firmware.release_date system.hardware.vendor \
 	system.hardware.product system.hardware.version \
@@ -493,7 +491,6 @@ done
 
 case $1 in
     suspend|hibernate)
-	has_parameter --auto-quirks || exit $NA
        # Aaand.... GO
        # Using kernel modesetting?  No quirks, and do not change vts.
        if using_kms; then
@@ -512,9 +509,9 @@ case $1 in
        # Go ahead and get our quirks -- we will handle non-KMS Intel drivers
        # later.
 	   maybe_update_native
-	   if ! find_native "$QUIRKDIR/last_known_working.quirkdb" >/dev/null; then
-	       rm "$QUIRKDIR/last_known_working.quirkdb" >/dev/null 2>&1
-	       for f in "$QUIRKDIR"/*
+	   if ! find_native "$PM_QUIRKDB/last_known_working.quirkdb" >/dev/null; then
+	       rm "$PM_QUIRKDB/last_known_working.quirkdb" >/dev/null 2>&1
+	       for f in "$PM_QUIRKDB"/*
 	       do
 		   QUIRKS=$(find_native "$f") && break
 	       done
@@ -558,7 +555,7 @@ case $1 in
     thaw|resume)
 	if state_exists video_quirks; then
 	    QUIRKS=$(restorestate video_quirks);
-	    write_last_known_working ;;
+	    write_last_known_working
 	fi
 	;;
 esac
