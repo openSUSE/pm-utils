@@ -3,6 +3,8 @@
 # Stefan Seyfried, SUSE Linux Products GmbH, 2006
 # mostly taken from the powersave project
 
+. "${PM_FUNCTIONS}"
+
 #############################################################
 # triggers the ACPI fan(s) after resume. Since ACPI drivers
 # have no suspend support, this is sometimes necessary.
@@ -29,6 +31,8 @@ case $1 in
 	thaw|resume)
 		kick-fan
 		;;
+        *) exit $NA
+           ;;
 esac
 
 exit 0

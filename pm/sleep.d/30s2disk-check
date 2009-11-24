@@ -3,6 +3,8 @@
 # Stefan Seyfried, SUSE Linux Products GmbH, 2006
 # mostly taken from the powersave project
 
+. "${PM_FUNCTIONS}"
+
 # sanity check the environment if resume will be possible after hibernate
 checkhibernate()
 {
@@ -101,7 +103,7 @@ case $1 in
 		fi
 		;;
 	*)
-		exit 0
+		exit $NA
 		;;
 esac
 

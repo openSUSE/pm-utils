@@ -1,19 +1,19 @@
 #!/bin/bash
 
+. "${PM_FUNCTIONS}"
+
+command_exists /sbin/pccardctl || exit $NA
+
 case "$1" in
  	hibernate|suspend)
-		if [ -x "/sbin/pccardctl" ]; then
-			echo "ejecting PCMCIA cards..."
-			/sbin/pccardctl eject
-		fi
+		    echo "ejecting PCMCIA cards..."
+		    /sbin/pccardctl eject
 		;;
 	thaw|resume)
-		if [ -x "/sbin/pccardctl" ]; then
-			echo "inserting PCMCIA cards..."
-			/sbin/pccardctl insert
-		fi
+		    echo "inserting PCMCIA cards..."
+		    /sbin/pccardctl insert
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
 

@@ -4,7 +4,7 @@
 
 . "${PM_FUNCTIONS}"
 
-[ - x /usr/sbin/ndiswrapper ] || return $NA
+command_exists /usr/sbin/ndiswrapper || return $NA
 
 case "$1" in
     resume|thaw)

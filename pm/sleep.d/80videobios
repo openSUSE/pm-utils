@@ -3,6 +3,8 @@
 # Stefan Seyfried, SUSE Linux Products GmbH, 2006
 # mostly taken from the powersave project
 
+. "${PM_FUNCTIONS}"
+
 #############################################################################
 # if the system is configured for 855resolution, we first patch the BIOS
 # to avoid that the X server crashes after switching back to X
@@ -27,6 +29,8 @@ case $1 in
 			patch-bios
 		fi
 		;;
+        *) exit $NA
+           ;;
 esac
 
 exit 0

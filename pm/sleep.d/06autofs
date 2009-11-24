@@ -1,15 +1,17 @@
 #!/bin/bash
 
-. /usr/lib/pm-utils/functions
+. "${PM_FUNCTIONS}"
+
+command_exists rcautofs || exit $NA
 
 case "$1" in
 	hibernate|suspend)
-		stopservice autofs
+		rcautofs stop
 		;;
 	thaw|resume)
-		restartservice autofs
+		rcautofs restart
 		;;
-	*)
+	*) exit $NA
 		;;
 esac
 

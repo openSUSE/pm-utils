@@ -10,9 +10,11 @@
 # Use rtcwake to wake the computer from sleep or hibernate
 # as configured in /etc/pm/config.d/rtcwake.config
 
+. "${PM_FUNCTIONS}"
+
 rtcwake_cmd="/usr/sbin/rtcwake";
 
-[ -f $rtcwake_cmd ] || exit $NA
+command_exists $rtcwake_cmd || exit $NA
 
 rtcwake_config_file="/etc/pm/config.d/rtcwake.config"
 
