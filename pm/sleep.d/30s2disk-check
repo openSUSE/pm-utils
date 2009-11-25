@@ -47,7 +47,7 @@ checkhibernate()
 		return 1
 	fi
 
-	if [ "$HIBERNATE" = "kernel" ]; then
+	if [ "$HIBERNATE_MODULE" = "kernel" ]; then
 		echo "  using kernel suspend method"
 		read DEV < /sys/power/resume
 		if [ "$DEV" = "0:0" ]; then
@@ -73,7 +73,7 @@ checkhibernate()
 		fi
 	fi
 
-	if [ "$HIBERNATE" = "userspace" ]; then
+	if [ "$HIBERNATE_MODULE" = "uswsusp" ]; then
 		echo "  using userspace suspend method"
 		rm -f $S2DISK_CONF
 		echo "  setting resume device to $RESUME"
@@ -109,11 +109,11 @@ esac
 
 [ -e /etc/pm/config.d/$1 ] && . /etc/pm/config.d/$1
 
-if [ -z "$HIBERNATE" ]; then
+if [ -z "$HIBERNATE_MODULE" ]; then
 	if [ -x /usr/sbin/s2disk -a -c /dev/snapshot ]; then
-		HIBERNATE="userspace"
+		HIBERNATE_MODULE="uswsusp"
 	else
-		HIBERNATE="kernel"
+		HIBERNATE_MODULE="kernel"
 	fi
 fi
 
