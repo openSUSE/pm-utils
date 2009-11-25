@@ -89,7 +89,8 @@
     <para>
       The intended purpose of <command>&dhpackage;</command> is to
       find out which power management modes are supported by the 
-      system. hald(8) will call it to do just that.
+      system. hald(8) will call it to do just that. (Note that DeviceKit-power
+      does not use this.)
     </para>
   </refsect1>
 
@@ -159,6 +160,10 @@
     <title>SEE ALSO</title>
     <!-- In alpabetical order. -->
     <para>
+      <citerefentry>
+	<refentrytitle>DeviceKit-power</refentrytitle>
+	<manvolnum>7</manvolnum>
+      </citerefentry>,
       <citerefentry>
 	<refentrytitle>hald</refentrytitle>
 	<manvolnum>8</manvolnum>
