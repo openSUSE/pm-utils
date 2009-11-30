@@ -14,30 +14,30 @@ shopt -s extglob
     set -x
 }
 
-QUIRKS=""
+possible_video_parameters=" --quirk-dpms-on
+	   --quirk-dpms-suspend
+	   --quirk-s3-mode
+	   --quirk-s3-bios
+	   --quirk-vbe-post
+	   --quirk-vbe-post
+	   --quirk-vga-mode3
+	   --quirk-vbemode-restore
+	   --quirk-vbestate-restore
+	   --quirk-reset-brightness
+	   --quirk-radeon-off
+	   --quirk-no-fb
+	   --quirk-pci-save"
 
-# Some quirklist manipulation functions
+]video_parameters() {
 
-has_quirk() {
-    local quirk
-    for quirk in $QUIRKS; do
-	[[ $quirk = $1 ]] && return 0
+
+has_video_parameters() {
+    local p params=$(get_parameters)
+    [[ $params ]] || return 1
+    for p in $params; do
+	[[ $possible_video_parameters = *$p* ]] && return
     done
     return 1
-}
-
-remove_quirk() {
-    local new_quirks quirk
-    local new_quirks=""
-    for quirk in $QUIRKS; do
-	[[ $quirk = $1 ]] || new_quirks="$quirk $new_quirks"
-    done
-    QUIRKS="$new_quirks"
-}
-
-add_quirk() {
-    has_quirk "$1" && return
-    QUIRKS="$QUIRKS $1"
 }
 
 # video specific helper functions.
@@ -294,18 +294,14 @@ _find_native() {
 		fi
 		;;
 	    endmatch)
-		[[ $found ]] && {
-		    echo $QUIRKS; return 0
-		} 
-		return 1
-		;;
+		[[ $found ]] && return 0 || return 1 ;;
 	    addquirk) [[ $1 = ignore ]] && continue
 		found=true
-		add_quirk "$key"
+		add_parameters "$key"
 		;;
 	    delquirk) [[ $1 = ignore ]]&& continue
 		found=true
-		remove_quirk "$key"
+		remove_parameters "$key"
 		;;
 	esac
     done
@@ -383,7 +379,6 @@ case $1 in
        else
        # Go ahead and get our quirks -- we will handle non-KMS Intel drivers
        # later.
-	   maybe_update_native
 	   if ! find_native "$PM_QUIRKDB/last_known_working.quirkdb" >/dev/null; then
 	       rm "$PM_QUIRKDB/last_known_working.quirkdb" >/dev/null 2>&1
 	       for f in "$PM_QUIRKDB"/*
@@ -411,19 +406,7 @@ case $1 in
 	   fi
        fi
        [[ $QUIRKS ]] || $QUIRKS="--quirk-none"
-       remove_parameters --quirk-dpms-on \
-	   --quirk-dpms-suspend \
-	   --quirk-s3-mode \
-	   --quirk-s3-bios \
-	   --quirk-vbe-post \
-	   --quirk-vbe-post \
-	   --quirk-vga-mode3 \
-	   --quirk-vbemode-restore \
-	   --quirk-vbestate-restore \
-	   --quirk-reset-brightness \
-	   --quirk-radeon-off \
-	   --quirk-no-fb \
-	   --quirk-pci-save
+       remove_parameters
        add_parameters $QUIRKS
        savestate video_quirks "$QUIRKS"
        ;;
