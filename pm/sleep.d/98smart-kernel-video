@@ -32,7 +32,7 @@ have_kms()
 {
     # if we are running with a KMS-enabled video driver, we should not
     # attempt to run any quirks
-    grep -q -E '(noveau|drm)fb' /proc/fb || return 1
+    grep -q -E '(nouveau|drm)fb' /proc/fb || return 1
     remove_all_video_quirks
     add_parameters --quirk-no-chvt
 }
