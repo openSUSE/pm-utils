@@ -1,4 +1,14 @@
 #!/bin/bash
+# This command imports the native HAL video quirks into the pm-utils native
+# format. It knows just enough about the video quirk .fdi files to translate
+# them into a format that bash can more easily parse.
+
+# While we are at it, replace the .fdi ad-hoc pattern matching language with
+# extended regular expressions where we can.
+
+# If anyone wants fo rewrite this in a language that actually understands 
+# XML, feel free.
+
 . "@PM-UTILS-LIBDIR@/pm-functions"
 
 begin_match='<match key="([a-z._]+)" ([a-z_]+)="([^"]+)">'

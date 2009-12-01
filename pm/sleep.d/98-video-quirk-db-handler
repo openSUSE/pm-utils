@@ -14,7 +14,7 @@ shopt -s extglob
     set -x
 }
 
-possible_video_parameters=" --quirk-dpms-on
+possible_video_quirks=" --quirk-dpms-on
 	   --quirk-dpms-suspend
 	   --quirk-s3-mode
 	   --quirk-s3-bios
@@ -28,14 +28,26 @@ possible_video_parameters=" --quirk-dpms-on
 	   --quirk-no-fb
 	   --quirk-pci-save"
 
-]video_parameters() {
-
+possible_system_properties="system.firmware.version 
+        system.firmware.vendor
+	system.firmware.release_date
+        system.hardware.vendor
+	system.hardware.product 
+        system.hardware.version
+	system.board.product 
+        system.board.version 
+        system.board.vendor
+	system.hardware.primary_video.vendor
+	system.hardware.primary_video.product
+	system.hardware.primary_video.driver
+	system.hardware.primary_video.using_kms
+	system.kernel.version"
 
 has_video_parameters() {
     local p params=$(get_parameters)
     [[ $params ]] || return 1
     for p in $params; do
-	[[ $possible_video_parameters = *$p* ]] && return
+	[[ $possible_video_quirks = *$p* ]] && return
     done
     return 1
 }
@@ -130,11 +142,6 @@ dmidecodeget() {
 	system.board.product) _dmidecodeget baseboard-product-name;;
 	system.board.version) _dmidecodeget baseboard-version;;
 	system.board.vendor) _dmidecodeget baseboard-manufacturer;;
-	system.hardware.primary_video.vendor) videoget vendor ;;
-	system.hardware.primary_video.product) videoget device ;;
-	system.hardware.primary_video.driver) videoget driver ;;
-	system.hardware.primary_video.using_kms) videoget using_kms ;;
-	system.kernel.version) RES=$(uname -r);;
 	*) return 1
     esac
 }
@@ -152,54 +159,43 @@ halget() {
 	system.board.product) RES=$($hgp "$1") ;;
 	system.board.version) RES=$($hgp "$1") ;;
 	system.board.vendor) RES=$($hgp "$1") ;;
-	system.hardware.primary_video.vendor) RES=$($hgp "$1") ;;
-	system.hardware.primary_video.product) RES=$($hgp "$1") ;;
-	system.hardware.primary_video.driver) videoget driver ;;
-	system.hardware.primary_video.using_kms) videoget using_kms ;;
-	system.kernel.version) RES=$($hgp "$1") ;;
 	*) return 1
     esac
 }
 
-# Get a value using either sysfs, HAL, or dmidecode in that order.
-
-_getprop() {
-    local f
-    for f in dmisysget halget dmidecodeget; do
-	"$f" "$1" || continue
-	[[ $RES ]] || continue
-	RES="${RES##+( )}"
-	RES="${RES%%+( )}"
-	return
-    done
-    echo "Don't know how to get $1!" >&2
+canonicalize_dmivar() {
+    [[ $1 =~ ^[a-z.-]+$ && $possible_system_properties = *$1* ]] || return 1
+    echo "${1//[-.]/_}"
 }
 
-# We may end up calling this function lots of times, and the results
-# for any given parameter will never change on any given run.  
-# Use some stupid shell memoization tricks to speed things up.
+# Precache the DMI and other information we will need as shell variables.
+# This will make things easier when we start running for real.
+precache_dmivars() {
+    local p q f
+    for q in $possible_system_properties; do
+	p=$(canonicalize_dmivar $q) || return 1
+	RES=""
+	for f in dmisysget halget dmidecodeget; do
+	    "$f" "$q" && break || continue 2
+	done
+	RES="${RES##+( )}"
+	RES="${RES%%+( )}"
+	read "$p" <<<$RES
+    done
+    RES=""
+}
 
-# This should be scrapped and rewritten to be nicer -- we precache everything
-# anyways, so getprop does not have to be so ornate.  A task for later.
-
+# Use bash variable indirection to set RES to the actual parameter
+# we are looking for. Sanity check the variable we were passed to
+# keep things sane.
 getprop() {
     RES=""
-    if [[ $1 =~ ^[a-z.]+$ ]]; then
-        # memoization for great performance win
-	p="${1//./_}"
-	if [[ ${!p} ]]; then
-	    # we already know the answer.
-	    RES="${!p}"
-	    return
-	else
-	    # Remember the answer for future use
-	    _getprop "$1"
-	    read "$p" <<<$RES
-	fi
-    else
-	# We cannot memoize our answer.  Expect things to slow down.
-	_getprop "$1"
+    local p
+    if ! p=$(canonicalize_dmivar $1); then
+	echo "Unable to obtain DMI information for $1" >&2
+	exit 1
     fi
+    RES="${!p}"
 }
 
 # test to see if the parameter passed is a decimal or hexidecimal number
@@ -251,18 +247,15 @@ numeric_compare_eq_list() {
 # Helper function for nVidia g80 gpus.  They require extra special handling 
 # when not using the nVidia binary driver.
 have_nvidia_g80() {
-    getprop system.hardware.primary_video.vendor
-    numeric_compare_eq $RES 0x10de || return
-    getprop system.hardware.primary_video.product
-    numeric_compare_eq_list $RES '0x190;0x191;0x192;0x193;0x194;0x195;0x196;0x197;0x198;0x199;0x19a;0x19b;0x19c;0x19d;0x19e;0x19f;0x400;0x401;0x402;0x403;0x404;0x405;0x406;0x407;0x408;0x409;0x40a;0x40b;0x40c;0x40d;0x40e;0x40f;0x420;0x421;0x422;0x423;0x424;0x425;0x426;0x427;0x428;0x429;0x42a;0x42b;0x42c;0x42d;0x42e;0x42f' || return
+    numeric_compare_eq $system_hardware_primary_video_vendor 0x10de || return
+    numeric_compare_eq_list $system_hardware_primary_video_product \
+	'0x190;0x191;0x192;0x193;0x194;0x195;0x196;0x197;0x198;0x199;0x19a;0x19b;0x19c;0x19d;0x19e;0x19f;0x400;0x401;0x402;0x403;0x404;0x405;0x406;0x407;0x408;0x409;0x40a;0x40b;0x40c;0x40d;0x40e;0x40f;0x420;0x421;0x422;0x423;0x424;0x425;0x426;0x427;0x428;0x429;0x42a;0x42b;0x42c;0x42d;0x42e;0x42f' || return
 }
 
 # Helper function for recent Intel framebuffer drivers.
 have_smart_intel() {
-    getprop system.kernel.version
-    local kernel_rev=$RES
-    getprop system.hardware.primary_video.driver
-    local driver=$RES
+    local kernel_rev=$system_kernel_revision
+    local driver=$system_hardware_primary_video_driver
     # currently, intel kernel modesetting is not quite smart enough
     # we still need acpi s3 kernel modesetting hooks, so don't remove those
     # options if they were passed.
@@ -308,13 +301,13 @@ _find_native() {
 }
 
 find_native() (
+    [[ -f $1 ]] || return 1
     exec <"$1"
     _find_native work
 )
 
-# This assumes we will actually suspend/resume correctly with whatever
-# set of quirks we found.  We should actually check that was the case 
-# but right now we don't.
+# If we resumed, write out the quirks we used as our last known
+# working ones for this hardware, kernel, driver, and KMS setting.
 write_last_known_working() ( 
     local matcher quirk
     exec >"$PM_QUIRKDB/last_known_working.quirkdb"
@@ -348,45 +341,47 @@ write_last_known_working() (
 )
 
 # cache all the properties we will need.
-for prop in system.firmware.version system.firmware.vendor \
-    system.firmware.release_date system.hardware.vendor \
-    system.hardware.product system.hardware.version \
-    system.board.product system.board.version system.board.vendor \
-    system.hardware.primary_video.vendor \
-    system.hardware.primary_video.product \
-    system.hardware.primary_video.driver \
-    system.hardware.primary_video.using_kms \
-    system.kernel.version; do
-    getprop $prop
-done
+precache_dmivars
 
 case $1 in
     suspend|hibernate)
-       # Aaand.... GO
-       # Using kernel modesetting?  No quirks, and do not change vts.
-       if using_kms; then
-	   QUIRKS="--quirk-no-chvt"
-       # How about an nvidia binary driver?
-       elif using_nvidia; then
-	   QUIRKS="--quirk-no-chvt"
-       # Or maybe the fglrx drivers?  They probably don't have to change vts in 
-       # userspace, but I don't know of anyone who has tested it.
-       elif using_fglrx; then
-	   QUIRKS="--quirk-none"
-       # nVidia G80 GPUs require special handling when not using nvidia
-       elif have_nvidia_g80; then
-	   QUIRKS="--quirk-vbe-post"
-       else
-       # Go ahead and get our quirks -- we will handle non-KMS Intel drivers
-       # later.
-	   if ! find_native "$PM_QUIRKDB/last_known_working.quirkdb" >/dev/null; then
-	       rm "$PM_QUIRKDB/last_known_working.quirkdb" >/dev/null 2>&1
-	       for f in "$PM_QUIRKDB"/*
+        # Aaand.... GO
+	# This logic can also be expressed using entries in the quirkdb,
+	# but I am too lazy to do that until a final quirk database is 
+	# formalized.
+	if using_kms; then
+            # Using kernel modesetting?  No quirks, and do not change vts.
+	    remove_parameters $possible_video_quirks
+	    add_parameters --quirk-no-chvt
+	elif using_nvidia; then
+            # Ditto for nVidia binary drivers
+	    remove_parameters $possible_video_quirks
+	    add_parameters --quirk-no-chvt
+	elif using_fglrx; then
+	    # fglrx may or may not have to change vts, reports one
+	    # way or the other welcome.
+	    remove_parameters $possible_video_quirks
+	    add_parameters --quirk-none
+	elif have_nvidia_g80; then
+            # nVidia G80 GPUs require special handling when not using nvidia
+	    # binary drivers.  I do not know if noveau requires help or not.
+	    remove_parameters $possible_video_quirks
+	    add_parameters --quirk-vbe-post
+	else
+	    # Go ahead and get our quirks.  
+	    if ! QUIRKS=$(find_native "$PM_LKW_QUIRKS"); then
+		# Our known working quirks from the last run are either
+		# nonexistent or invalid.  Either way, start over.
+	       rm "$PM_LKW_QUIRKS" >/dev/null 2>&1
+	       for f in "$PM_QUIRKDB"/*.quirkdb
 	       do
 		   QUIRKS=$(find_native "$f") && break
 	       done
 	   fi
 	   if have_smart_intel; then
+	       # Intel without KMS does not require most quirks, no matter
+	       # what the quirks database says.  The only ones that seem to 
+	       # matter are the --quirk-s3 ones, so remove everything else.
 	       remove_quirk --quirk-dpms-on
 	       remove_quirk --quirk-dpms-suspend 
 	       remove_quirk --quirk-vbe-post
@@ -399,16 +394,16 @@ case $1 in
 	       remove_quirk --quirk-no-fb
 	       remove_quirk --quirk-pci-save
 	   else
-           # fallback quirks if nothing else was defined.  
+               # fallback quirks if nothing else was defined.  
 	       [[ -z $QUIRKS ]] && QUIRKS="--quirk-vbe-post --quirk-dpms-on 
 			    --quirk-dpms-suspend --quirk-vbestate-restore
 			    --quirk-vbemode-restore --quirk-vga-mode-3"
 	   fi
+	   [[ $QUIRKS ]] || $QUIRKS="--quirk-none"
+	   remove_parameters $possible_video_quirks
+	   add_parameters $QUIRKS
+	   savestate video_quirks "$QUIRKS"
        fi
-       [[ $QUIRKS ]] || $QUIRKS="--quirk-none"
-       remove_parameters
-       add_parameters $QUIRKS
-       savestate video_quirks "$QUIRKS"
        ;;
     thaw|resume)
 	if state_exists video_quirks; then
