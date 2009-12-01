@@ -306,6 +306,7 @@ find_native() (
 # working ones for this hardware, kernel, driver, and KMS setting.
 write_last_known_working() ( 
     local matcher quirk
+    precache_dmivars
     exec >"$PM_LKW_QUIRKS"
     for prop in system.firmware.version system.firmware.vendor \
 	system.firmware.release_date system.hardware.vendor \
