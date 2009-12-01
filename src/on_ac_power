@@ -30,6 +30,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+# prefer DeviceKit-power if available
+if s=`dbus-send --system --print-reply --dest=org.freedesktop.DeviceKit.Power /org/freedesktop/DeviceKit/Power org.freedesktop.DBus.Properties.Get string:org.freedesktop.DeviceKit.Power string:OnBattery`; then
+    if echo "$s" | grep -q 'boolean false'; then
+	exit 0
+    else
+	exit 1
+    fi
+fi
+
 # Check for AC/DC/etc adapters
 ac_adapters="$(hal-find-by-capability --capability ac_adapter)"
 
