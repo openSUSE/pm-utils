@@ -1,9 +1,5 @@
 #!/bin/bash
 # Prototype video quirk database handler that does not rely on HAL.
-# It knows just enough about the video quirk .fdi files to translate them
-# into a format that bash can more easily parse.
-# While we are at it, replace the .fdi ad-hoc pattern matching language with
-# extended regular expressions where we can.
 
 shopt -s extglob
 
@@ -310,7 +306,7 @@ find_native() (
 # working ones for this hardware, kernel, driver, and KMS setting.
 write_last_known_working() ( 
     local matcher quirk
-    exec >"$PM_QUIRKDB/last_known_working.quirkdb"
+    exec >"$PM_LKW_QUIRKS"
     for prop in system.firmware.version system.firmware.vendor \
 	system.firmware.release_date system.hardware.vendor \
 	system.hardware.product system.hardware.version \
@@ -340,12 +336,12 @@ write_last_known_working() (
     done
 )
 
-# cache all the properties we will need.
-precache_dmivars
-
 case $1 in
     suspend|hibernate)
         # Aaand.... GO
+	# cache all the properties we will need.
+	precache_dmivars
+
 	# This logic can also be expressed using entries in the quirkdb,
 	# but I am too lazy to do that until a final quirk database is 
 	# formalized.
@@ -368,46 +364,65 @@ case $1 in
 	    remove_parameters $possible_video_quirks
 	    add_parameters --quirk-vbe-post
 	else
-	    # Go ahead and get our quirks.  
-	    if ! QUIRKS=$(find_native "$PM_LKW_QUIRKS"); then
+	    # Go ahead and get our quirks.
+	    if has_video_parameters; then
+		# command line video parameters override everything.
+		# Honor them by doing nothing.
+		:
+	    elif [[ $PM_QUIRKS ]]; then
+		# If we have $PM_QUIRKS. use it instead of the quirk database
+		add_parameters $PM_QUIRKS
+		# If we were not passed any quirks on the command line,
+		# get them from the database.
+	    elif QUIRKS=$(find_native "$PM_LKW_QUIRKS"); then
+		# Known working quirks from our last run are still valid.
+		# Use them.
+		add_parameters $QUIRKS
+	    else
 		# Our known working quirks from the last run are either
 		# nonexistent or invalid.  Either way, start over.
-	       rm "$PM_LKW_QUIRKS" >/dev/null 2>&1
-	       for f in "$PM_QUIRKDB"/*.quirkdb
-	       do
-		   QUIRKS=$(find_native "$f") && break
-	       done
-	   fi
-	   if have_smart_intel; then
+		rm "$PM_LKW_QUIRKS" >/dev/null 2>&1
+		for f in "$PM_QUIRKDB"/*.quirkdb
+		do
+		    QUIRKS=$(find_native "$f") && break
+		done
+		# some default quirks if we did not get any.
+		[[ -z $QUIRKS ]] && QUIRKS="--quirk-vbe-post 
+                                        --quirk-dpms-on --quirk-dpms-suspend 
+                                        --quirk-vbestate-restore
+			                --quirk-vbemode-restore 
+                                        --quirk-vga-mode-3"
+		add_parameters $QUIRKS
+		savestate video_quirks "$QUIRKS"
+	    fi
+	    if have_smart_intel; then
 	       # Intel without KMS does not require most quirks, no matter
-	       # what the quirks database says.  The only ones that seem to 
+	       # what anything else says.  The only ones that seem to 
 	       # matter are the --quirk-s3 ones, so remove everything else.
-	       remove_quirk --quirk-dpms-on
-	       remove_quirk --quirk-dpms-suspend 
-	       remove_quirk --quirk-vbe-post
-	       remove_quirk --quirk-vbe-post
-	       remove_quirk --quirk-vga-mode3
-	       remove_quirk --quirk-vbemode-restore
-	       remove_quirk --quirk-vbestate-restore
-	       remove_quirk --quirk-reset-brightness
-	       remove_quirk --quirk-radeon-off
-	       remove_quirk --quirk-no-fb
-	       remove_quirk --quirk-pci-save
-	   else
-               # fallback quirks if nothing else was defined.  
-	       [[ -z $QUIRKS ]] && QUIRKS="--quirk-vbe-post --quirk-dpms-on 
-			    --quirk-dpms-suspend --quirk-vbestate-restore
-			    --quirk-vbemode-restore --quirk-vga-mode-3"
-	   fi
-	   [[ $QUIRKS ]] || $QUIRKS="--quirk-none"
-	   remove_parameters $possible_video_quirks
-	   add_parameters $QUIRKS
-	   savestate video_quirks "$QUIRKS"
-       fi
-       ;;
+		remove_parameters --quirk-dpms-on \
+		    --quirk-dpms-suspend \
+		    --quirk-vbe-post \
+		    --quirk-vbe-post \
+		    --quirk-vga-mode3 \
+		    --quirk-vbemode-restore \
+		    --quirk-vbestate-restore \
+		    --quirk-reset-brightness \
+		    --quirk-radeon-off \
+		    --quirk-no-fb \
+		    --quirk-pci-save
+	    fi
+	fi
+	;;
     thaw|resume)
 	if state_exists video_quirks; then
 	    QUIRKS=$(restorestate video_quirks);
+	    write_last_known_working
+	elif has_parameter --store-quirks-as-lkw; then
+	    for x in $(get_paremeters); do
+		for y in $possible_video_quirks; do
+		    [[ $x = $y ]] && QUIRKS=" $QUIRKS $x"
+		done
+	    done
 	    write_last_known_working
 	fi
 	;;
