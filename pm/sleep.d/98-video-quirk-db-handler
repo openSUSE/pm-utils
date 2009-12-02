@@ -57,7 +57,7 @@ using_nvidia() {  [[ -d /sys/module/nvidia ]]; }
 using_fglrx() { [[ -d /sys/module/fglrx ]]; }
 
 # OK, what about a driver that is using kernel modesetting?
-using_kms() { grep -q -E '(noveau|drm)fb' /proc/fb; }
+using_kms() { grep -q -E '(nouveau|drm)fb' /proc/fb; }
 
 # Get some video related values when HAL has not gotten them for us, or 
 # HAL is not available.
