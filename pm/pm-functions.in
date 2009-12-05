@@ -52,6 +52,10 @@ SUSPEND_MODULE=""
 HIBERNATE_MODULE=""
 SUSPEND_HYBRID_MODULE=""
 
+# variables to handle hibernate after suspend support
+PM_HIBERNATE_DELAY=900  # 15 minutes
+PM_RTC=/sys/class/rtc/rtc0
+
 # when loading configuration files, allow stash-specific ones
 # to override the pm-utils global ones.
 [ -f "${PM_UTILS_LIBDIR}"/defaults ] && . "${PM_UTILS_LIBDIR}"/defaults
@@ -270,4 +274,28 @@ if [ -z "$HIBERNATE_MODULE" ] && \
 		echo -n "${HIBERNATE_MODE}" > /sys/power/disk
 		echo -n "disk" > /sys/power/state
 	}
+fi
+
+# since the kernel does not directly support hybrid sleep, we do
+# something else -- suspend and schedule an alarm to go into
+# hibernate if we have slept long enough.
+# Only do this if we do not need to do any special video hackery on resume
+# from hibernate, though.
+if [ -z "$SUSPEND_HYBRID_MODULE" -a -w "$PM_RTC/wakealarm" ] && \
+    check_suspend && check_hibernate && ! is_set $HIBERNATE_RESUME_POST_VIDEO; \
+    then
+    SUSPEND_HYBRID_MODULE="kernel"
+    do_suspend_hybrid() {
+	WAKETIME=$(( $(cat "$PM_RTC/since_epoch") + PM_HIBERNATE_DELAY))
+	echo >"$PM_RTC/wakealarm"
+	echo $WAKETIME > "$PM_RTC/wakealarm"
+	do_suspend
+	NOW=$(cat "$PM_RTC/since_epoch")
+	if [ "$NOW" -ge "$WAKETIME" -a "$NOW" -lt $((WAKETIME + 30)) ];  then
+	    log "Woken by RTC alarm, hibernating."
+	    do_hibernate
+	else
+	    echo > "$PM_RTC/wakealarm"
+	fi
+    }
 fi
