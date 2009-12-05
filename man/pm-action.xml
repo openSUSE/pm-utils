@@ -503,6 +503,13 @@
 
     </variablelist>
   </refsect1>
+  <refsect1 id="debugging">
+    <title>DEBUGGING</title>
+    <para>
+      Debugging suspend/resume can be a tricky process, and is covered in
+      more detail in <file>/usr/share/doc/pm-utils/README.debugging</file>.
+    </para>
+  </refsect1>
 
   <refsect1 id="bugs">
     <title>BUGS</title>
