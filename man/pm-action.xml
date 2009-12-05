@@ -164,7 +164,7 @@
   <refsect1 id="options">
     <title>OPTIONS</title>
     <para>
-      On most hardware putting the video card in the suspend state and
+      On some hardware putting the video card in the suspend state and
       recovering from it needs some special quirk handling.
       With the --quirk-* options of the <command>pm-suspend</command> and
       <command>pm-suspend-hybrid</command> commands you can select which
@@ -180,16 +180,6 @@
       <!-- Use the variablelist.term.separator and the
 	   variablelist.term.break.after parameters to
 	   control the term elements. -->
-      <varlistentry>
-	<term><option>--auto-quirks</option></term>
-	<listitem>
-          <para>
-            This option will try to grab the correct quirks for this system
-	    from HAL.  If HAL is not present on the system and this parameter
-	    is passed, suspending or hibernating the system will fail.
-          </para>
-        </listitem>
-      </varlistentry>
       <varlistentry>
 	<term><option>--quirk-dpms-on</option></term>
 	<listitem>
@@ -294,18 +284,19 @@
         </listitem>
       </varlistentry>
        <varlistentry>
-        <term><option>--store-quirks-as-fdi</option></term>
+        <term><option>--store-quirks-as-lkw</option></term>
         <listitem>
           <para>
-		  Save the quirks passed to <command>pm-suspend</command> or 
-		  <command>pm-suspend-hybrid</command> as an .fdi file that 
+		  Save the quirks the video adaptor required by 
+		  <command>pm-suspend</command> or 
+		  <command>pm-suspend-hybrid</command> as an .quirkdb file that 
 		  is specific to this system.  The file will be saved in 
-		  <filename>/etc/hal/fdi/information/99local-pm-utils-quirks.fdi</filename>.
+		  <filename>/etc/pm/last_known_working.quirkdb</filename>.
 		  This parameter will only save the actual quirks that were 
-		  used to successfully suspend/resume a system -- if you are 
-		  running proprietary video drivers or kernel modesetting 
-		  video drivers, you will generate a potentially incorrect 
-		  .fdi file.
+		  used to successfully suspend/resume a system, and will be 
+		  specific to the exact configuration of that sustem, including
+		  the video hardware, video driver, and whether or not kernel
+		  modesetting was used.
           </para>
         </listitem>
       </varlistentry>
@@ -499,6 +490,16 @@
           </para>
 	</listitem>
       </varlistentry>
+	<varlistentry>
+	  <term><envar>PM_HIBERNATE_DELAY [=900]</envar></term>
+	  <listitem><para>
+	      If you are using kernel suspend/resume and invoke 
+	      <command>pm-suspend-hybrid</command>, this environment variable
+	      controls how many seconds the system will wait after going into
+	      suspend before waking back up and hibernating. By default, this
+	      is set to 900 seconds (15 minutes).
+	    </para></listitem>
+	  </varlistentry>
 
     </variablelist>
   </refsect1>
