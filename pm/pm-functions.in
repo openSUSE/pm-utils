@@ -95,6 +95,26 @@ log()
 	printf "$fmt" "$*"
 }
 
+profiling() { [ "$PM_PROFILE" = "true" ]; }
+
+if profiling; then
+	profile() {
+		local t1 t2 status msg elapsed
+		msg="$1"
+		shift
+		t1="$(date '+%s.%N')"
+		"$@"
+		status=$?
+		t2="$(date '+%s.%N')"
+		elapsed="$(printf "%s %s - p q" "$t2" "$t1" |dc)"
+		log "$msg: $(printf "%.3f" $elapsed) ($t2 - $t1)"
+		return $status
+	}
+
+else
+	profile() { shift; "$@"; }
+fi
+
 add_before_hooks() {
 	[ -z "$BEFORE_HOOKS" ] && BEFORE_HOOKS="$*" || \
 		BEFORE_HOOKS="$BEFORE_HOOKS $*"
@@ -172,8 +192,22 @@ hook_ok()
 	return 0
 }
 
+_run_hook() {
+	# $1 = hook to run
+	# rest of args passed to hook unchanged.
+	log -n "$*:"
+	hook_ok "$1" && "$@"
+	hook_exit_status $? && LAST_HOOK="${1##*/}" || inhibit
+}
+
+if profiling; then
+	run_hook() { profile "$1:" _run_hook "$@"; }
+else
+	run_hook() { _run_hook "$@"; }
+fi
+
 # Run all applicable hooks, logging success and failure as we go.
-run_hooks() {
+_run_hooks() {
 	# $1 = type of hook to find.  
 	# $2 = paramaters to pass to hooks.
 	# $3 = if present and equal to "reverse", run hooks backwards.
@@ -207,17 +241,19 @@ run_hooks() {
 		elif [ -f "$phooks/$base" ]; then
 			hook="$phooks/$base"
 		fi
-		log -n "${hook} $2: "
-		hook_ok "$hook" && "${hook}" $2 
-		# if the hook exited with an unknown exit code inhibit,
-		# otherwise record this as the last hook that ran.
-		hook_exit_status $? && LAST_HOOK="$base" || inhibit
+		run_hook "$hook" $2
 		IFS="${nifs}"
 	done
 	IFS="${oifs}"
 	# return value is 1 if something was inhibited, 0 otherwise.
 	inhibited && return 1 || return 0
 }
+
+if profiling; then
+	run_hooks() { profile "$1 $2:" _run_hooks "$@"; }
+else
+	run_hooks() { _run_hooks "$@"; }
+fi
 
 # Try to reinitalize the logfile. Fail unless certian criteria are met.
 init_logfile()
