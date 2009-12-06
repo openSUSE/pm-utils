@@ -9,6 +9,15 @@
 # If anyone wants fo rewrite this in a language that actually understands 
 # XML, feel free.
 
+# If run with no arguments, it will translate the already installed .fdi
+# quirks into the native ones at their default location.
+
+# If run with one argument, it will translate the .fdi quirks located at 
+# $1 into the native ones at their default location.
+
+# if run with two arguments, it will translate the .fdi quirks located at $1
+# into the native ones at $2.
+
 . "@PM-UTILS-LIBDIR@/pm-functions"
 
 begin_match='<match key="([a-z._]+)" ([a-z_]+)="([^"]+)">'
@@ -125,9 +134,13 @@ translate_xml() {
 
 }
 
+loc="/usr/share/hal/fdi/information/10freedesktop/20-video-quirk*.fdi"
+[[ $1 && -d $1 ]] && loc="$1/20-video-quirk*.fdi"
+[[ $2 ]] && PM_QUIRKDB="$2"
+
+
 mkdir -p "$PM_QUIRKDB"
-for f in /etc/hal/fdi/information/99local-pm-utils-quirks.fdi \
-    /usr/share/hal/fdi/information/10freedesktop/20-video-quirk*.fdi;
+for f in $loc;
 do
     lf="$PM_QUIRKDB/${f##*/}"
     lf="${lf%.*}.quirkdb"
