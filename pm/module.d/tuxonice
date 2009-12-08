@@ -27,10 +27,13 @@ if [ -z "$SUSPEND_HYBRID_MODULE" -a -n "$TUXONICE_LOC" ] && \
 	SUSPEND_HYBRID_MODULE="tuxonice"
 	do_suspend_hybrid()
 	{
+	        r=0
 		echo 3 >"${TUXONICE_LOC}/powerdown_method"
 		echo anything >"${TUXONICE_LOC}/do_hibernate"
+		r=$?
 		[ -f /sys/power/tuxonice/did_suspend_to_both ] && \
 	    	[ "$(cat /sys/power/tuxonice/did_suspend_to_both)" != "1" ] && \
 	    	REVERSE="thaw"
+		return $r
 	}
 fi

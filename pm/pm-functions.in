@@ -325,13 +325,18 @@ if [ -z "$SUSPEND_HYBRID_MODULE" -a -w "$PM_RTC/wakealarm" ] && \
 	WAKETIME=$(( $(cat "$PM_RTC/since_epoch") + PM_HIBERNATE_DELAY))
 	echo >"$PM_RTC/wakealarm"
 	echo $WAKETIME > "$PM_RTC/wakealarm"
-	do_suspend
-	NOW=$(cat "$PM_RTC/since_epoch")
-	if [ "$NOW" -ge "$WAKETIME" -a "$NOW" -lt $((WAKETIME + 30)) ];  then
-	    log "Woken by RTC alarm, hibernating."
-	    do_hibernate
+	if do_suspend; then
+	    NOW=$(cat "$PM_RTC/since_epoch")
+	    if [ "$NOW" -ge "$WAKETIME" -a "$NOW" -lt $((WAKETIME + 30)) ]; then
+		log "Woken by RTC alarm, hibernating."
+		# if hibernate fails for any reason, go back to suspend.
+		do_hibernate || do_suspend
+	    else
+		echo > "$PM_RTC/wakealarm"
+	    fi
 	else
-	    echo > "$PM_RTC/wakealarm"
+	    # if we cannot suspend, just try to hibernate.
+	    do_hibernate
 	fi
     }
 fi
