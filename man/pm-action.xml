@@ -503,6 +503,17 @@
       
     </variablelist>
   </refsect1>
+
+  <refsect1 id="return values">
+    <title>RETURN VALUES</title>
+    <para>
+      Return values less than 128 mean that pm-action failed before trying to
+      put the system in the requested power saving state.  A return value
+      of 128 means that we tried to put the machine in the requested power state
+      but failed.  A return value greater than 128 means we encountered an error
+      and we also failed to enter the requested power saving state.
+    </para>
+  </refsect1>
   <refsect1 id="debugging">
     <title>DEBUGGING</title>
     <para>
