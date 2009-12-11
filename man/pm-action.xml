@@ -71,25 +71,19 @@
 
     <cmdsynopsis>
       <command>pm-hibernate</command>
-      <group choice="opt">
-	<option>--help</option>
-      </group>
+	<arg>--help</arg>
     </cmdsynopsis>
   
     <cmdsynopsis>
       <command>pm-suspend</command>
-      <group choice="opt">
-	<option>--quirk-*</option>
-	<option>--help</option>
-      </group>
+      <arg>--quirk-*</arg>
+      <arg>--help</arg>
     </cmdsynopsis>
 
     <cmdsynopsis>
       <command>pm-suspend-hybrid</command>
-      <group choice="opt">
-	<option>--quirk-*</option>
-	<option>--help</option>
-      </group>
+	<arg>--quirk-*</arg>
+	<arg>--help</arg>
     </cmdsynopsis>
 
   </refsynopsisdiv>
