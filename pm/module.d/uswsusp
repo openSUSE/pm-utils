@@ -25,7 +25,7 @@ uswsusp_get_quirks()
 			vbe-post) 	   OPTS="$OPTS --vbe_post" ;;
 			vbemode-restore)   OPTS="$OPTS --vbe_mode" ;;
 			vbestate-restore)  OPTS="$OPTS --vbe_save" ;;
-			vga-mode3) 	   ;; # no-op
+			vga-mode-3) 	   ;; # no-op
 			save-pci)          OPTS="$OPTS --pci_save" ;;
 			none) 		   QUIRK_NONE="true" ;;
 			*) continue ;;

@@ -71,25 +71,19 @@
 
     <cmdsynopsis>
       <command>pm-hibernate</command>
-      <group choice="opt">
-	<option>--help</option>
-      </group>
+	<arg>--help</arg>
     </cmdsynopsis>
   
     <cmdsynopsis>
       <command>pm-suspend</command>
-      <group choice="opt">
-	<option>--quirk-*</option>
-	<option>--help</option>
-      </group>
+      <arg>--quirk-*</arg>
+      <arg>--help</arg>
     </cmdsynopsis>
 
     <cmdsynopsis>
       <command>pm-suspend-hybrid</command>
-      <group choice="opt">
-	<option>--quirk-*</option>
-	<option>--help</option>
-      </group>
+	<arg>--quirk-*</arg>
+	<arg>--help</arg>
     </cmdsynopsis>
 
   </refsynopsisdiv>
@@ -277,7 +271,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--quirk-vga-mode3</option></term>
+        <term><option>--quirk-vga-mode-3</option></term>
         <listitem>
           <para>
             This option will try to force the video card into a standard

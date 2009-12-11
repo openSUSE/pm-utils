@@ -17,13 +17,13 @@ remove_all_video_quirks()
     	--quirk-s3-bios \
 	--quirk-vbe-post \
 	--quirk-vbe-post \
-	--quirk-vga-mode3 \
+	--quirk-vga-mode-3 \
 	--quirk-vbemode-restore \
 	--quirk-vbestate-restore \
 	--quirk-reset-brightness \
 	--quirk-radeon-off \
 	--quirk-no-fb \
-	--quirk-pci-save
+	--quirk-save-pci
 }
 
 # Test to see if the kernel has a video driver that is smart enough to
@@ -54,9 +54,30 @@ have_fglrx()
     remove_all_video_quirks
 }
 
+have_smart_intel()
+{
+    # currently, intel kernel modesetting is not quite smart enough
+    # we still need acpi s3 kernel modesetting hooks, so don't remove those
+    # options if they were passed.
+    [ -d /sys/module/i915 ] || return 1
+    local kernel_rev="$(uname -r |awk -F '[_-]' '{print $1}')"
+    [ "$kernel_rev" \> "2.6.26" -o "$kernel_rev" = "2.6.26" ] || return 1
+    remove_parameters --quirk-dpms-on \
+	--quirk-dpms-suspend \
+	--quirk-vbe-post \
+	--quirk-vbe-post \
+	--quirk-vga-mode3 \
+	--quirk-vbemode-restore \
+	--quirk-vbestate-restore \
+	--quirk-reset-brightness \
+	--quirk-radeon-off \
+	--quirk-no-fb \
+	--quirk-pci-save
+}
+
 smart_kernel_video() 
 {
-    have_kms || have_nvidia || have_fglrx || return $NA
+    have_kms || have_nvidia || have_fglrx || have_smart_intel || return $NA
 }
 
 case $1 in
