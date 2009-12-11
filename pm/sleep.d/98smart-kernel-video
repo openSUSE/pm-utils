@@ -17,7 +17,7 @@ remove_all_video_quirks()
     	--quirk-s3-bios \
 	--quirk-vbe-post \
 	--quirk-vbe-post \
-	--quirk-vga-mode3 \
+	--quirk-vga-mode-3 \
 	--quirk-vbemode-restore \
 	--quirk-vbestate-restore \
 	--quirk-reset-brightness \

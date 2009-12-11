@@ -271,7 +271,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--quirk-vga-mode3</option></term>
+        <term><option>--quirk-vga-mode-3</option></term>
         <listitem>
           <para>
             This option will try to force the video card into a standard
