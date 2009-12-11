@@ -14,11 +14,11 @@ pm_bin_SCRIPTS = pm-action
 
 bin_SCRIPTS = pm-is-supported
 
-dist_bin_SCRIPTS = on_ac_power
+dist_bin_SCRIPTS = on_ac_power import-fdi-quirkdb
 
 sbin_SCRIPTS = pm-powersave
 
-script_in_files = pm-action.in pm-is-supported.in pm-powersave.in
+script_in_files = pm-action.in pm-is-supported.in pm-powersave.in import-fdi-quirkdb.in
 
 CLEANFILES =  $(script_in_files:.in=)
 

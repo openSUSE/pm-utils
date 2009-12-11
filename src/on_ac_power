@@ -31,12 +31,13 @@
 #
 
 # prefer DeviceKit-power if available
-if s=`dbus-send --system --print-reply --dest=org.freedesktop.DeviceKit.Power /org/freedesktop/DeviceKit/Power org.freedesktop.DBus.Properties.Get string:org.freedesktop.DeviceKit.Power string:OnBattery`; then
-    if echo "$s" | grep -q 'boolean false'; then
-	exit 0
-    else
-	exit 1
-    fi
+if s="$(dbus-send --system --print-reply \
+    --dest=org.freedesktop.DeviceKit.Power \
+    /org/freedesktop/DeviceKit/Power \
+    org.freedesktop.DBus.Properties.Get \
+    string:org.freedesktop.DeviceKit.Power string:OnBattery)"; then
+    echo "$s" | grep -q 'boolean false'
+    exit $?
 fi
 
 # Check for AC/DC/etc adapters

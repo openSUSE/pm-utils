@@ -1,0 +1,46 @@
+pm-util now handles the video quirk database outside of HAL.
+
+On systems that have not made the transition away from HAL, you must run
+
+import-fdi-quirkdb
+
+as root before attempting to suspend or hibernate the system.  If your system
+no longer uses HAL, or you recieved pm-utils though your distribution, you
+already have the translated version of the quirks.
+
+pm-utils will no longer query HAL for video quirks.  Instead, it will determine
+what quirks the system requires as in the following order:
+
+1: If you are using a framebuffer with kernel modesetting, pm-utils will not
+   apply any quirks and it will not change virtual terminals before suspending
+   the system.
+
+2: If you are using the nvidia binary driver, pm-utils will not apply any quirks
+  and it will not change virtual terminals.
+
+3: If you are using the fglrx driver, pm-utils will not apply any quirks, but
+   it will change virtual terminals before suspend.
+
+4: If you have an nvidia g80 class card and are not using the nvidia binary
+   driver, it will attempt to post the card using a saved copy of the BIOS
+   on resume.  That is the only quirk which can work in that situation.
+
+5: If you passed any quirk commandline parameters, they will be used if any of
+   1 - 4 do not apply.
+
+6: If $PM_QUIRKS is set, they will be used if 1 - 5 do not apply.
+
+7: If there are quirks recorded from the last working suspend/resume,
+   and nothing else has changed (the hardware, kernel, and video driver are the
+   same), those quirks will be used.
+
+8: The quirks database will be queried, and if any quirks are found that apply
+   to this system are found they will be used.
+
+9: If no quirks are found, a selection of defaults that should work on most
+   hardware will be used.
+
+
+If the database was queried and we sucessfully resumed or --store-quirks-as-lkw
+was passed on the command line, the quirks we ended up using will be saved in 
+/etc/pm/last_known_working.quirkdb.

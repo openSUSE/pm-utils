@@ -1,30 +1,30 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
-
-
-  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
-  <!ENTITY dhfirstname "Tim">
-  <!ENTITY dhsurname   "Dijkstra">
-  <!-- dhusername could also be set to "&firstname; &surname;". -->  
-  <!ENTITY dhusername  "Tim Dijkstra">
-  <!ENTITY dhemail     "tim@famdijkstra.org">
-  <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "Apr 25, 2007">
-  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
-       allowed: see man(7), man(1) and
-       http://www.tldp.org/HOWTO/Man-Page/q2.html. -->
-  <!ENTITY dhsection   "8">
-  <!-- TITLE should be something like "User commands" or similar (see
-       http://www.tldp.org/HOWTO/Man-Page/q2.html). -->
-  <!ENTITY dhtitle     "pm-utils User Manual">
-  <!ENTITY dhucpackage "pm-action">
-  <!ENTITY dhpackage   "pm-action">
-
-  <!ENTITY debian      "<productname>Debian</productname>">
-  <!ENTITY gnu         "<acronym>GNU</acronym>">
-  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
-]>
+	  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+	  
+	  
+	  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
+	  <!ENTITY dhfirstname "Tim">
+	  <!ENTITY dhsurname   "Dijkstra">
+	  <!-- dhusername could also be set to "&firstname; &surname;". -->  
+	  <!ENTITY dhusername  "Tim Dijkstra">
+	  <!ENTITY dhemail     "tim@famdijkstra.org">
+	  <!-- Please adjust the date whenever revising the manpage. -->
+	  <!ENTITY dhdate      "Apr 25, 2007">
+	  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+	       allowed: see man(7), man(1) and
+	       http://www.tldp.org/HOWTO/Man-Page/q2.html. -->
+	  <!ENTITY dhsection   "8">
+	  <!-- TITLE should be something like "User commands" or similar (see
+	       http://www.tldp.org/HOWTO/Man-Page/q2.html). -->
+	  <!ENTITY dhtitle     "pm-utils User Manual">
+	  <!ENTITY dhucpackage "pm-action">
+	  <!ENTITY dhpackage   "pm-action">
+	  
+	  <!ENTITY debian      "<productname>Debian</productname>">
+	  <!ENTITY gnu         "<acronym>GNU</acronym>">
+	  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+	  ]>
 
 <refentry>
   <refentryinfo>
@@ -58,7 +58,7 @@
       </para>
     </legalnotice>
   </refentryinfo>
-
+  
   <refmeta>
     <refentrytitle>&dhucpackage;</refentrytitle>
     <manvolnum>&dhsection;</manvolnum>
@@ -68,26 +68,26 @@
     <refpurpose>Suspend or Hibernate your computer</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-
+    
     <cmdsynopsis>
       <command>pm-hibernate</command>
 	<arg>--help</arg>
     </cmdsynopsis>
-  
+    
     <cmdsynopsis>
       <command>pm-suspend</command>
       <arg>--quirk-*</arg>
       <arg>--help</arg>
     </cmdsynopsis>
-
+    
     <cmdsynopsis>
       <command>pm-suspend-hybrid</command>
 	<arg>--quirk-*</arg>
 	<arg>--help</arg>
     </cmdsynopsis>
-
+    
   </refsynopsisdiv>
-
+  
   <refsect1 id="description">
     <title>DESCRIPTION</title>
     <para>
@@ -152,38 +152,28 @@
 	</listitem>
       </varlistentry>
     </variablelist>
-
+    
   </refsect1>
-
+  
   <refsect1 id="options">
     <title>OPTIONS</title>
     <para>
-      On most hardware putting the video card in the suspend state and
+      On some hardware putting the video card in the suspend state and
       recovering from it needs some special quirk handling.
       With the --quirk-* options of the <command>pm-suspend</command> and
       <command>pm-suspend-hybrid</command> commands you can select which
       quirks should be used.
     </para>
     <para>
-	    If <command>pm-suspend</command>, <command>pm-hibernate</command>,
-	    or <command>pm-suspend-hybrid</command> is invoked without any
-	    commandline parameters, they will try to grab the correct quirks
-	    from HAL if it is installed.
+      If <command>pm-suspend</command>, <command>pm-hibernate</command>,
+      or <command>pm-suspend-hybrid</command> is invoked without any
+      commandline parameters, they will try to grab the correct quirks
+      from HAL if it is installed.
     </para>
     <variablelist>
       <!-- Use the variablelist.term.separator and the
 	   variablelist.term.break.after parameters to
 	   control the term elements. -->
-      <varlistentry>
-	<term><option>--auto-quirks</option></term>
-	<listitem>
-          <para>
-            This option will try to grab the correct quirks for this system
-	    from HAL.  If HAL is not present on the system and this parameter
-	    is passed, suspending or hibernating the system will fail.
-          </para>
-        </listitem>
-      </varlistentry>
       <varlistentry>
 	<term><option>--quirk-dpms-on</option></term>
 	<listitem>
@@ -287,26 +277,27 @@
           </para>
         </listitem>
       </varlistentry>
-       <varlistentry>
-        <term><option>--store-quirks-as-fdi</option></term>
+      <varlistentry>
+        <term><option>--store-quirks-as-lkw</option></term>
         <listitem>
           <para>
-		  Save the quirks passed to <command>pm-suspend</command> or 
-		  <command>pm-suspend-hybrid</command> as an .fdi file that 
-		  is specific to this system.  The file will be saved in 
-		  <filename>/etc/hal/fdi/information/99local-pm-utils-quirks.fdi</filename>.
-		  This parameter will only save the actual quirks that were 
-		  used to successfully suspend/resume a system -- if you are 
-		  running proprietary video drivers or kernel modesetting 
-		  video drivers, you will generate a potentially incorrect 
-		  .fdi file.
+	    Save the quirks the video adaptor required by 
+	    <command>pm-suspend</command> or 
+	    <command>pm-suspend-hybrid</command> as an .quirkdb file that 
+	    is specific to this system.  The file will be saved in 
+	    <filename>/etc/pm/last_known_working.quirkdb</filename>.
+	    This parameter will only save the actual quirks that were 
+	    used to successfully suspend/resume a system, and will be 
+	    specific to the exact configuration of that sustem, including
+	    the video hardware, video driver, and whether or not kernel
+	    modesetting was used.
           </para>
         </listitem>
       </varlistentry>
-
+      
     </variablelist>
   </refsect1>
-
+  
   <refsect1 id="files">
     <title>FILES</title>
     <variablelist>
@@ -343,9 +334,9 @@
 	    directory by putting a non-executable file in 
 	    /etc/pm/sleep.d, or by adding it to the HOOK_BLACKLIST 
 	    configuration variable.
-         </para>
-       </listitem>
-     </varlistentry>
+          </para>
+	</listitem>
+      </varlistentry>
       <varlistentry>
 	<term><filename>/var/log/pm-suspend.log</filename></term>
 	<listitem>
@@ -356,56 +347,56 @@
 	</listitem>
       </varlistentry>
     </variablelist>
-    </refsect1>
-    <refsect1 id="sleep_hook_ordering_convention">
-       <title>SLEEP HOOK ORDERING CONVENTION</title>
-       <variablelist>
-         <varlistentry>
-	   <term>00 - 49</term>
-	   <listitem>
-	     <para>User and most package supplied hooks.  If a hook assumes 
-		     that all of the usual services and userspace 
-		      infrastructure is still running, it should be here.
-	     </para>
-	   </listitem>
-	 </varlistentry>
-	 <varlistentry>
-	   <term>50 - 74</term>
-	   <listitem>
-	     <para> Service handling hooks.  Hooks that start or stop a 
-			 service belong in this range. At or before 50, hooks 
-			 can assume that all services are still enabled.
-             </para>
-            </listitem>
-	   </varlistentry>
-	       <varlistentry>
-	         <term>75 - 89</term>
-		 <listitem>
-		   <para> Module and non-core hardware handling.  If a hook 
-			 needs to load/unload a module, or if it needs to 
-			 place non-video hardware that would otherwise break 
-			 suspend or hibernate into a safe state, it belongs in 
-			 this range. At or before 75, hooks can assume all 
-			 modules are still loaded.
- 	           </para>
-                 </listitem>
-	       </varlistentry>
-	       <varlistentry>
-	         <term>90 - 99</term>
-		 <listitem>
-		   <para> Reserved for critical suspend hooks. </para>
-	         </listitem>
-               </varlistentry>
-             </variablelist>
   </refsect1>
-
+  <refsect1 id="sleep_hook_ordering_convention">
+    <title>SLEEP HOOK ORDERING CONVENTION</title>
+    <variablelist>
+      <varlistentry>
+	<term>00 - 49</term>
+	<listitem>
+	  <para>User and most package supplied hooks.  If a hook assumes 
+	    that all of the usual services and userspace 
+	    infrastructure is still running, it should be here.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>50 - 74</term>
+	<listitem>
+	  <para> Service handling hooks.  Hooks that start or stop a 
+	    service belong in this range. At or before 50, hooks 
+	    can assume that all services are still enabled.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>75 - 89</term>
+	<listitem>
+	  <para> Module and non-core hardware handling.  If a hook 
+	    needs to load/unload a module, or if it needs to 
+	    place non-video hardware that would otherwise break 
+	    suspend or hibernate into a safe state, it belongs in 
+	    this range. At or before 75, hooks can assume all 
+	    modules are still loaded.
+ 	  </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>90 - 99</term>
+	<listitem>
+	  <para> Reserved for critical suspend hooks. </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  
   <refsect1 id="config_vars">
     <title>CONFIGURATION VARIABLES</title>
     <para>
       Configuration variables defined by pm-utils. These can be set 
       in any file in /etc/pm/config.d
     </para>
-
+    
     <variablelist>
       <varlistentry>
         <term><envar>SLEEP_MODULE [=kernel]</envar></term>
@@ -420,7 +411,7 @@
                     The built-in kernel suspend/resume support.
 		    Use this if nothing else is supported on your system.
 		    The kernel backend is always used if nothing else is available.
-                </para>
+                  </para>
                 </listitem>
               </varlistentry>
               <varlistentry>
@@ -480,23 +471,51 @@
             will be surrounded by [square brackets].
           </para>
 	</listitem>
-	</varlistentry>
-	<varlistentry>
+      </varlistentry>
+      <varlistentry>
         <term><envar>NEED_CLOCK_SYNC</envar></term>
         <listitem>
-		<para>
-			If your system clock drifts across a suspend/resume or
-			hibernate/thaw cycle, you should set this to true.
-			This will cause pm-utils to synchronize the system clock
-			whenever we go through a sleep/wake cycle at the expense of 
-			making suspend/resume take longer.
+	  <para>
+	    If your system clock drifts across a suspend/resume or
+	    hibernate/thaw cycle, you should set this to true.
+	    This will cause pm-utils to synchronize the system clock
+	    whenever we go through a sleep/wake cycle at the expense of 
+	    making suspend/resume take longer.
           </para>
 	</listitem>
       </varlistentry>
-
+      <varlistentry>
+	<term><envar>PM_HIBERNATE_DELAY [=900]</envar></term>
+	<listitem><para>
+	    If you are using kernel suspend/resume and invoke 
+	    <command>pm-suspend-hybrid</command>, this environment variable
+	    controls how many seconds the system will wait after going into
+	    suspend before waking back up and hibernating. By default, this
+	    is set to 900 seconds (15 minutes).
+	</para></listitem>
+      </varlistentry>
+      
     </variablelist>
   </refsect1>
 
+  <refsect1 id="return values">
+    <title>RETURN VALUES</title>
+    <para>
+      Return values less than 128 mean that pm-action failed before trying to
+      put the system in the requested power saving state.  A return value
+      of 128 means that we tried to put the machine in the requested power state
+      but failed.  A return value greater than 128 means we encountered an error
+      and we also failed to enter the requested power saving state.
+    </para>
+  </refsect1>
+  <refsect1 id="debugging">
+    <title>DEBUGGING</title>
+    <para>
+      Debugging suspend/resume can be a tricky process, and is covered in
+      more detail in <filename>/usr/share/doc/pm-utils/README.debugging</filename>.
+    </para>
+  </refsect1>
+  
   <refsect1 id="bugs">
     <title>BUGS</title>
     <para>
@@ -505,7 +524,7 @@
       Select 'pm-utils' as product.
     </para>
   </refsect1>
-
+  
   <refsect1 id="see_also">
     <title>SEE ALSO</title>
     <!-- In alpabetical order. -->

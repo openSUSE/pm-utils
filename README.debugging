@@ -27,9 +27,22 @@ End-user customization and debugging:
   always synchronized clocks, but doing so is slow and most hardware stays in
   sync without assistance.
 
+* If you want to see (and log) tons of debugging output, you can use 
+  PM_DEBUG="true" to have the script log each action as it performs it.
+
+* If you want to see how long pm-utils takes to run hooks. you can use
+  PM_PROFILE="true" to log timing information on how long each hook takes
+  and how long running the hooks takes overall.
+
 * To find out what parameters can be passed to pm-suspend and friends, run them
   with '--help' as the first parameter as root.  This will print out the 
   options that it supports and which hooks or modules handle those options.
+
+* To override the usual quirk filtering (for kernel modesetting, binary drivers,
+  and exotic hardware), pass --quirk-test along with any other quirks you want
+  to try.  This make make your system crash in new and exciting ways by
+  conflicting with the kernel when suspending or resuming, but is very useful
+  for debugging.  You have been warned.
 
 Significant conceptual changes from pm-utils 0.99.x and earlier:
 
