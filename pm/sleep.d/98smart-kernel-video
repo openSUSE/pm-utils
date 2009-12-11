@@ -23,7 +23,7 @@ remove_all_video_quirks()
 	--quirk-reset-brightness \
 	--quirk-radeon-off \
 	--quirk-no-fb \
-	--quirk-pci-save
+	--quirk-save-pci
 }
 
 # Test to see if the kernel has a video driver that is smart enough to

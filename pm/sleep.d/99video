@@ -27,7 +27,7 @@ for opt in $PM_CMDLINE; do
 		vbestate-restore)  QUIRK_VBESTATE_RESTORE="true" ;;
 		vga-mode-3) 	   QUIRK_VGA_MODE_3="true" ;;
 		no-fb) 		   QUIRK_NOFB="true" ;;
-		pci-save) 	   QUIRK_PCI_SAVE="true" ;;
+		save-pci) 	   QUIRK_SAVE_PCI="true" ;;
 	        no-chvt)           QUIRK_NO_CHVT="true" ;;
 		none) 		   QUIRK_NONE="true" ;;
 		*) continue ;;
@@ -165,7 +165,7 @@ suspend_video()
 	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_savestate
 	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_savemode
 	quirk "${QUIRK_RADEON_OFF}" && 		radeon_off
-	quirk "${QUIRK_PCI_SAVE}" && 		pci_save
+	quirk "${QUIRK_SAVE_PCI}" && 		save_pci
 	quirk "${QUIRK_VGA_MODE_3}" && 		vbe vbemode set 3
 	quirk "${QUIRK_DPMS_SUSPEND}" && 	vbe dpms suspend
 	save_fbcon
@@ -173,7 +173,7 @@ suspend_video()
 resume_video()
 {
 	# We might need to do one or many of these quirks
-	quirk "${QUIRK_PCI_SAVE}" && 		pci_restore
+	quirk "${QUIRK_SAVE_PCI}" && 		restore_pci
 	quirk "${QUIRK_VBE_POST}" && 		vbe_post
 	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_restorestate
 	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_restoremode
