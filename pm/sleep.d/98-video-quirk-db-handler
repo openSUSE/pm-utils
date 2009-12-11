@@ -346,7 +346,12 @@ case $1 in
 	# This logic can also be expressed using entries in the quirkdb,
 	# but I am too lazy to do that until a final quirk database is 
 	# formalized.
-	if using_kms; then
+	if has_parameter --quirk-test && has_video_parameters; then
+	    # The user is explicitly testing video parameters.
+	    # Use them without the usual filtering. This may cause the system 
+	    # to blow up, but they explicitly asked for it. 
+	    remove_parameters --quirk-test
+	elif using_kms; then
             # Using kernel modesetting?  No quirks, and do not change vts.
 	    remove_parameters $possible_video_quirks
 	    add_parameters --quirk-no-chvt
@@ -367,8 +372,8 @@ case $1 in
 	else
 	    # Go ahead and get our quirks.
 	    if has_video_parameters; then
-		# command line video parameters override everything.
-		# Honor them by doing nothing.
+	        # Parameters from the command line take precedence
+		# over the database, so do not query it.
 		:
 	    elif [[ $PM_QUIRKS ]]; then
 		# If we have $PM_QUIRKS. use it instead of the quirk database
@@ -419,7 +424,7 @@ case $1 in
 	    QUIRKS=$(restorestate video_quirks);
 	    write_last_known_working
 	elif has_parameter --store-quirks-as-lkw; then
-	    for x in $(get_paremeters); do
+	    for x in $(get_parameters); do
 		for y in $possible_video_quirks; do
 		    [[ $x = $y ]] && QUIRKS=" $QUIRKS $x"
 		done

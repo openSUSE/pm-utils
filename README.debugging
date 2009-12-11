@@ -38,6 +38,12 @@ End-user customization and debugging:
   with '--help' as the first parameter as root.  This will print out the 
   options that it supports and which hooks or modules handle those options.
 
+* To override the usual quirk filtering (for kernel modesetting, binary drivers,
+  and exotic hardware), pass --quirk-test along with any other quirks you want
+  to try.  This make make your system crash in new and exciting ways by
+  conflicting with the kernel when suspending or resuming, but is very useful
+  for debugging.  You have been warned.
+
 Significant conceptual changes from pm-utils 0.99.x and earlier:
 
 * Do not rely on the internals of hooks when configuring or customizing
