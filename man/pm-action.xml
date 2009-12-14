@@ -498,7 +498,7 @@
     </variablelist>
   </refsect1>
 
-  <refsect1 id="return values">
+  <refsect1 id="return_values">
     <title>RETURN VALUES</title>
     <para>
       Return values less than 128 mean that pm-action failed before trying to
