@@ -358,7 +358,6 @@ case $1 in
 	elif using_nvidia; then
             # Ditto for nVidia binary drivers
 	    remove_parameters $possible_video_quirks
-	    add_parameters --quirk-no-chvt
 	elif using_fglrx; then
 	    # fglrx may or may not have to change vts, reports one
 	    # way or the other welcome.
