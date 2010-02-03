@@ -300,6 +300,9 @@ find_native() (
     [[ -f $1 ]] || return 1
     exec <"$1"
     _find_native work
+     res=$?
+     get_parameters
+     return $res
 )
 
 # If we resumed, write out the quirks we used as our last known
