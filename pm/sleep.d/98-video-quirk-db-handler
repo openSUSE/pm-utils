@@ -160,7 +160,7 @@ halget() {
 }
 
 canonicalize_dmivar() {
-    [[ $1 =~ ^[a-z.-]+$ && $possible_system_properties = *$1* ]] || return 1
+    [[ $1 =~ ^[a-z._-]+$ && $possible_system_properties = *$1* ]] || return 1
     echo "${1//[-.]/_}"
 }
 
