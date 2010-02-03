@@ -204,7 +204,7 @@ isnum() {
 # $2 = the given constant (or regular expression),
 # $1 = the raw data grabbed from HAL or dmidecode or wherever
 
-regex() { [[ $1 =~ ${2/;/|} ]]; }
+regex() { [[ $1 =~ ${2//;/|} ]]; }
 
 regex_ncase() {
     local r
