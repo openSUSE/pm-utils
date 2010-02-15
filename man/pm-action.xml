@@ -191,7 +191,7 @@
           <para>
             This option forces the video hardware to turn off the screen when suspending. 
 	    Most video adapters seem to do this correctly, but some do not, which
-            wastes lits of power. If your screen is still on after successfully suspending
+            wastes lots of power. If your screen is still on after successfully suspending
 	    you may need to use this option.
           </para>
         </listitem>
