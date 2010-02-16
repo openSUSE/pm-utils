@@ -93,20 +93,28 @@ checkhibernate()
 	fi
 
 	if [ "$SLEEP_MODULE" = "uswsusp" ]; then
-		echo "  using userspace suspend method"
-		rm -f $S2DISK_CONF
-		echo "  setting resume device to $RESUME"
-		echo "resume device = $RESUME" >> $S2DISK_CONF
-		if [ -n "$IMAGE_SIZE" ]; then
-			echo "  setting image size to $IMAGE_SIZE"
-			echo "image size = $IMAGE_SIZE" >> $S2DISK_CONF
-		fi
-		# add the parameters from /etc/suspend.conf to /var/lib/s2disk.conf
-		if [ -e /etc/suspend.conf ]; then
-			echo "# parameters taken from /etc/suspend.conf:" >> $S2DISK_CONF
-			sed '/^[[:space:]]*\(#\|$\)/d;' /etc/suspend.conf >> $S2DISK_CONF
-			echo "  adding these parameters from /etc/suspend.conf:"
-			sed '/^[[:space:]]*\(#\|$\)/d;s/^/    /;' /etc/suspend.conf
+		echo "  using userspace suspend method, temp. config file $S2DISK_CONF"
+		if [ "$S2DISK_CONF" != "/etc/suspend.conf" ]; then
+			rm -f $S2DISK_CONF
+			echo "  setting resume device to $RESUME"
+			echo "resume device = $RESUME" >> $S2DISK_CONF
+			if [ -n "$IMAGE_SIZE" ]; then
+				echo "  setting image size to $IMAGE_SIZE"
+				echo "image size = $IMAGE_SIZE" >> $S2DISK_CONF
+			fi
+			# add the parameters from /etc/suspend.conf to /var/lib/s2disk.conf
+			if [ -e /etc/suspend.conf ]; then
+				echo "# parameters taken from /etc/suspend.conf:" >> $S2DISK_CONF
+				sed '/^[[:space:]]*\(#\|$\)/d;' /etc/suspend.conf >> $S2DISK_CONF
+				echo "  adding these parameters from /etc/suspend.conf:"
+				sed '/^[[:space:]]*\(#\|$\)/d;s/^/    /;' /etc/suspend.conf
+			fi
+		else
+			# don't overwrite the user's config file, but warn about the issue
+			echo "WARNING: S2DISK_CONF is set to /etc/suspend.conf"
+			echo "    Disabling automatic generation of config file."
+			echo "    This is most likely a configuration error and will cause problems"
+			echo "    unless you configure /etc/suspend.conf completely on your own!"
 		fi
 	fi
 	return 0
