@@ -10,7 +10,7 @@ sleep_SCRIPTS =			\
 	90clock			\
 	94cpufreq		\
 	95led			\
-	98-video-quirk-db-handler \
+	98video-quirk-db-handler \
 	99video
 
 EXTRA_DIST=$(sleep_SCRIPTS)

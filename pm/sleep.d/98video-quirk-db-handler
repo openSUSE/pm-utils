@@ -160,7 +160,7 @@ halget() {
 }
 
 canonicalize_dmivar() {
-    [[ $1 =~ ^[a-z.-]+$ && $possible_system_properties = *$1* ]] || return 1
+    [[ $1 =~ ^[a-z._-]+$ && $possible_system_properties = *$1* ]] || return 1
     echo "${1//[-.]/_}"
 }
 
@@ -204,7 +204,7 @@ isnum() {
 # $2 = the given constant (or regular expression),
 # $1 = the raw data grabbed from HAL or dmidecode or wherever
 
-regex() { [[ $1 =~ $2 ]]; }
+regex() { [[ $1 =~ ${2//;/|} ]]; }
 
 regex_ncase() {
     local r
@@ -300,6 +300,9 @@ find_native() (
     [[ -f $1 ]] || return 1
     exec <"$1"
     _find_native work
+     res=$?
+     get_parameters
+     return $res
 )
 
 # If we resumed, write out the quirks we used as our last known
