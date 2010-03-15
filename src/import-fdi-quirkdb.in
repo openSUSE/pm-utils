@@ -19,11 +19,12 @@
 # into the native ones at $2.
 
 . "@PM-UTILS-LIBDIR@/pm-functions"
+shopt -s extglob
 
-begin_match='<match key="([a-z._]+)" ([a-z_]+)="([^"]+)">'
+begin_match='<match key *= *"([a-z._]+)" ([a-z_]+) *= *"([^"]+)">'
 end_match='</match>'
-merge='<merge key="([^"]+)" type="bool">true</merge>'
-remove='<remove key="([^"]+)"></remove>'
+merge='<merge key *= *"([^"]+)" type *= *"bool">true</merge>'
+remove='<remove key *= *"([^"]+)"></remove>'
 begin_comment='<!--'
 end_comment='-->'
 in_comment=0
@@ -53,10 +54,10 @@ escape_match() {
     lit="${lit//\\/\\\\}"
     lit="${lit//./\\.}"
     lit="${lit//^/\\^}"
-    lit="${lit//[/\\\[}"
-    lit="${lit//]/\\\]}"
-    lit="${lit//(/\\\(}"
-    lit="${lit//)/\\\)}"
+    lit="${lit//[/\\[}"
+    lit="${lit//]/\\]}"
+    lit="${lit//\(/\\(}"
+    lit="${lit//)/\\)}"
     lit="${lit//\*/\\\*}"
     lit="${lit//\+/\\\+}"
     lit="${lit//\?/\\\?}"
@@ -64,20 +65,17 @@ escape_match() {
     lit="${lit//\}/\\\}}"
     lit="${lit//\|/\\\|}"
     lit="${lit//\$/\\\$}"
-    # nuke leading and trailing spaces, they just confuse things.
-    lit="${lit%%+( )}"
-    lit="${lit##+( )}"
     # second, handle the various comparison cases, munging them into
     # extended regular expressions that bash understands.
     case $1 in
 	string) lit="^${lit}\$" ;;
 	int|uint64) fun=numeric_compare_eq ;;
-	string_outof) lit="${lit%;}"; lit="^(${lit//@(*( );*( ))/|})\$" ;;
+	string_outof) lit="${lit%;}"; lit="^(${lit//;/|})\$" ;;
 	int_outof) fun=numeric_compare_eq_list ;;
 	contains) ;;
-	contains_outof) lit="${lit%;}"; lit="${lit//@(*( );*( ))/|}" ;;
+	contains_outof) lit="${lit%;}"; lit="${lit//;/|}" ;;
 	prefix) lit="^${lit}" ;;
-	prefix_outof) lit="${lit%;}"; lit="^(${lit//@(*( );*( ))/|})" ;;
+	prefix_outof) lit="${lit%;}"; lit="^(${lit//;/|})" ;;
 	suffix) lit="${lit}\$" ;;
 	contains_ncase) fun=regex_ncase ;;
 	contains_not) fun=regex_inverse ;;
