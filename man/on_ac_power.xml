@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 
   <!ENTITY date        "<date>05 June, 2006</date>">
   <!ENTITY package     "on_ac_power">
