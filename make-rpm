@@ -1,0 +1,22 @@
+#!/bin/sh
+[[ -d .git ]] || { echo "Not at root of pm-utils repository, dying horribly"; exit 1; }
+cp .git/HEAD .git/HEAD.mkrpm
+cp .git/index .git/index.mkrpm
+git rev-parse --verify rpm || exit 1
+
+export PM_UTILS_DIR="$(pwd)"
+export TIMESTAMP="$(git log --pretty=format:"%ct" |head -1)"
+export GITREV="$(git log --pretty=format:"%t" |head -1)"
+git checkout -b __rpm_throwaway_branch
+git merge rpm
+
+sed -e "s,[@]TIMESTAMP[@],$TIMESTAMP,g" \
+    -e "s,[@]GITREV[@],$GITREV,g" <pm-utils.spec.in >pm-utils.spec
+
+rpmbuild -bb pm-utils.spec
+mv -f .git/HEAD.mkrpm .git/HEAD
+mv -f .git/index.mkrpm .git/index
+git checkout HEAD
+git branch -D __rpm_throwaway_branch
+
+
