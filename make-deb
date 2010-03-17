@@ -12,7 +12,7 @@ autoreconf --install && \
 ./configure && \
 dpkg-buildpackage && echo "pm-utils .deb file created in parent directory." || \
     echo "Something went wrong creating .deb."
-cp .git/HEAD.mkdeb .git/HEAD
-cp .git/index.mkdeb .git/index
+mv -f .git/HEAD.mkdeb .git/HEAD
+mv -f .git/index.mkdeb .git/index
 git checkout HEAD
 git branch -D __debian_throwaway_branch
