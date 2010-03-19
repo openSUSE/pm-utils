@@ -38,6 +38,8 @@ trap remove_powersave_lock 0
 mkdir -p "${STORAGEDIR}"
 rm -f "${INHIBIT}"
 
+load_hook_blacklist
+
 if [ "$1" = "true" -o "$1" = "false" ] ; then
 	init_logfile "${PM_LOGFILE}"
 	run_hooks power "$1"
