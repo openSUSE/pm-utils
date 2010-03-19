@@ -1,0 +1,90 @@
+Name: pm-utils
+Summary: Power management utilities and scripts for Fedora
+License: GPLv2
+Version: @TIMESTAMP@
+Release: @GITREV@
+Group: System Environment/Base
+URL: http://pm-utils.freedesktop.org
+# for chvt
+Requires: kbd
+Requires: radeontool
+# for hd apm settings
+Requires: hdparm
+%ifarch %{ix86} x86_64
+Requires: vbetool
+%endif
+BuildRequires: xmlto
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+
+%description
+The pm-utils package contains utilities and scripts useful for tasks related
+to power management.
+
+%package devel
+Summary: Files for development using %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+# for /usr/share/pkgconfig
+Requires:       pkgconfig
+
+%description devel
+This package contains the pkg-config files for development
+when building programs that use %{name}.
+
+%prep
+pushd "$PM_UTILS_DIR"
+./autogen.sh
+popd
+
+%build
+pushd "$PM_UTILS_DIR"
+%configure
+make
+popd
+
+
+%install
+pushd "$PM_UTILS_DIR"
+export DESTDIR="$RPM_BUILD_ROOT"
+make install
+
+install -D -m 0600 /dev/null $RPM_BUILD_ROOT%{_localstatedir}/log/pm-suspend.log
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/run/pm-utils/{locks,storage}
+popd
+
+%clean
+rm -rf "$RPM_BUILD_ROOT"
+
+%files
+%defattr(-,root,root,-)
+%{_sysconfdir}/pm/
+%dir %{_libdir}/pm-utils/
+%{_libdir}/pm-utils/bin/
+%{_libdir}/pm-utils/defaults
+%{_libdir}/pm-utils/functions
+%{_libdir}/pm-utils/pm-functions
+%{_libdir}/pm-utils/power.d/
+%{_libdir}/pm-utils/sleep.d/
+%{_libdir}/pm-utils/module.d
+%{_bindir}/on_ac_power
+%{_bindir}/pm-is-supported
+%{_sbindir}/pm-hibernate
+%{_sbindir}/pm-powersave
+%{_sbindir}/pm-suspend
+%{_sbindir}/pm-suspend-hybrid
+%{_mandir}/man1/*.1.gz
+%{_mandir}/man8/*.8.gz
+%{_localstatedir}/run/pm-utils/
+%dir %{_datadir}/doc/pm-utils
+%doc %{_datadir}/doc/pm-utils/*
+
+# no logrotate needed, because only one run of pm-utils is stored
+# in the logfile
+%ghost %verify(not md5 size mtime) %{_localstatedir}/log/pm-suspend.log
+
+
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/pkgconfig/pm-utils.pc
