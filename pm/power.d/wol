@@ -3,18 +3,21 @@
 # Script to set the wake on lan state
 #
 # Copyright (C) 2009 Holger Macht <hmacht@suse.de>
+# Copyright (C) 2010 Michal Vyskocil <mvyskocil@suse.cz> - HAL removal
 #
 # This file is released under the GPLv2.
 #
 
 . /usr/lib/pm-utils/functions
 
-[ -z "$WOL" ] && exit 0
+[ -z "$WOL" ] && exit $NA
 
 function set_wol() {
-for I in `hal-find-by-capability --capability wake_on_lan`; do
-	IFACE=`hal-get-property --udi $I --key net.interface`
-	ethtool -s $IFACE wol $1
+for IFACE in `ls -1 /sys/class/net/`; do
+    if ! /sbin/ethtool $IFACE | grep -q 'Supports Wake-on:'; then
+        continue
+    fi
+    /sbin/ethtool -s $IFACE wol $1
 done
 }
 
@@ -28,4 +31,3 @@ case "$1" in
 		set_wol $WOL
 		;;
 esac
-
