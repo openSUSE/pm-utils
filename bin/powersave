@@ -3,16 +3,84 @@
 # legacy script for the old powersave command line client
 #
 # Copyright (C) 2008 Holger Macht <hmacht@suse.de>
+# Copyright (C) 2010 Michal Vyskocil <mvyskocil@suse.cz> - port to upower
 #
 # This file is released under the GPLv2.
 #
 
 HAL_COMPUTER_PATH="/org/freedesktop/Hal/devices/computer"
 
+########### upower helper functions ################
+
+# call the method from org.freedesktop.UPower interface
+function upower_call_method() {
+    local _method
+    _method=${1}
+
+    [ -z "${_method}" ] && return 1
+
+    dbus-send --print-reply \
+        --system \
+        --dest=org.freedesktop.UPower \
+        /org/freedesktop/UPower \
+        "${_method}"
+}
+
+# get a property of an UPower device
+function upower_device_get_property() {
+    local _device _property
+    _device=${1}
+    _property=${2}
+
+    [ -z "${_device}" -o -z "${_property}" ] && return 1
+
+    dbus-send --print-reply \
+        --system \
+        --dest=org.freedesktop.UPower \
+        "${_device}" \
+        org.freedesktop.DBus.Properties.Get \
+        string:`echo "${_device}" | tr '/' '.'` ${_property}
+}
+
+function upower_available() {
+    upower_device_get_property /org/freedesktop/UPower string:DaemonVersion &>/dev/null
+}
+
+# print all devices are power supply && batteries
+function upower_enumerate_batteries() {
+    for DEVICE in `upower_call_method org.freedesktop.UPower.EnumerateDevices | grep 'object path' | sed 's@.*"\(.*\)"@\1@'`; do
+        # we don't want to print informations about batteries included in some external components
+        if upower_device_get_property "${DEVICE}" string:PowerSupply | grep -q "false$"; then
+            continue
+        fi
+        # type 2 is battery
+        if upower_device_get_property "${DEVICE}" String:Type >2/dev/null | grep -q "2$"; then
+            echo "${DEVICE}"
+        fi
+    done
+}
+
+# print the ac_adapter found on system
+# Note: it prints the first match, as it expects only one per machine
+function upower_find_ac_adapter() {
+    for DEVICE in $(upower_call_method org.freedesktop.UPower.EnumerateDevices); do
+        # type 1 is Line Power
+        if upower_device_get_property "${DEVICE}" string:Type >2/dev/null | grep -q "1$"; then
+            echo "${DEVICE}"
+            break
+        fi
+    done
+}
+
 function hal_standby {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.SystemPowerManagement.Standby
+}
+
+function upower_standby() {
+    echo "ERROR: standby is not exported by UPower" 2>/dev/stderr
+    return 1
 }
 
 function hal_suspend_to_ram {
@@ -21,10 +89,18 @@ function hal_suspend_to_ram {
 	org.freedesktop.Hal.Device.SystemPowerManagement.Suspend int32:0
 }
 
+function upower_suspend_to_ram() {
+    upower_call_method org.freedesktop.UPower.Suspend
+}
+
 function hal_suspend_to_disk {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.SystemPowerManagement.Hibernate
+}
+
+function upower_suspend_to_disk() {
+    upower_call_method org.freedesktop.UPower.Hibernate
 }
 
 function hal_battery_info {
@@ -57,6 +133,38 @@ function hal_battery_info {
     done
 }
 
+function upower_battery_info {
+    C=1
+    for BATTERY in `upower_enumerate_batteries`; do
+
+        SEC=`upower_device_get_property "${BATTERY}" TimeToEmpty`
+        if [ $SEC -ne 0 ]; then
+            let MIN=SEC/60
+        else
+            MIN=0
+        fi
+
+	PERC=`upower_device_get_property "${BATTERY}" Percentage`
+
+        case `upower_device_get_property "${BATTERY}" State` in
+            1) STATE="Charging" ;;
+            2) STATE="Discharging" ;;
+            3) STATE="Empty" ;;
+            4) STATE="Fully charged" ;;
+            5) STATE="Pending charge" ;;
+            6) STATE="Pending discharge" ;;
+            *) STATE="Unknown"  ;;
+        esac
+
+	echo "Battery$C:"
+	echo -e "\t Remaining percent: $PERC"
+	echo -e "\t Remaining minutes: $MIN"
+	echo -e "\t Charging state: $STATE"
+
+	let C=C+1
+    done
+}
+
 function hal_ac_status_info {
     UDI=`hal-find-by-capability --capability ac_adapter`
     if [ -z "$UDI" ]; then
@@ -69,6 +177,19 @@ function hal_ac_status_info {
 	echo "OFFLINE"
     else
 	echo "ONLINE"
+    fi
+}
+
+function upower_ac_status_info() {
+    UDI=`upower_find_ac_adapter`
+    if [ -z "$UDI" ]; then
+     	echo "No AC adapter found"
+	return
+    fi
+    if upower_device_get_property "${UDI}" string:Online 2>/dev/null | grep -q 'false$'; then
+        echo "OFFLINE"
+    else
+        echo "ONLINE"
     fi
 }
 
@@ -99,6 +220,11 @@ function hal_performance_speed {
 	string:performance > /dev/null
 }
 
+function upower_performance_speed() {
+    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
+    return 1
+}
+
 function hal_powersave_speed {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
@@ -106,11 +232,21 @@ function hal_powersave_speed {
 	string:powersave > /dev/null
 }
 
+function upower_powersave_speed() {
+    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
+    return 1
+}
+
 function hal_dynamic_speed {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.CPUFreq.SetCPUFreqGovernor \
 	string:ondemand > /dev/null
+}
+
+function upower_dynamic_speed() {
+    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
+    return 1
 }
 
 function hal_cpufreq_state_info {
@@ -131,6 +267,11 @@ function hal_cpufreq_state_info {
 	powersave) echo POWERSAVE ;;
 	*) echo "Unknown policy" ;;
     esac
+}
+
+function upower_cpufreq_state_info() {
+    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
+    return 1
 }
 
 function usage {
@@ -173,7 +314,12 @@ if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
 
-SYSTEM="hal"
+if upower_available; then
+    SYSTEM="upower"
+else
+    SYSTEM="hal"
+fi
+echo "INFO: using SYSTEM $SYSTEM"
 
 while true ; do
     case "$1" in
