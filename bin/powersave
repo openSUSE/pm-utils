@@ -1,0 +1,195 @@
+#!/bin/bash
+#
+# legacy script for the old powersave command line client
+#
+# Copyright (C) 2008 Holger Macht <hmacht@suse.de>
+#
+# This file is released under the GPLv2.
+#
+
+HAL_COMPUTER_PATH="/org/freedesktop/Hal/devices/computer"
+
+function standby {
+    dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+	$HAL_COMPUTER_PATH \
+	org.freedesktop.Hal.Device.SystemPowerManagement.Standby
+}
+
+function suspend_to_ram {
+    dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+	$HAL_COMPUTER_PATH \
+	org.freedesktop.Hal.Device.SystemPowerManagement.Suspend int32:0
+}
+
+function suspend_to_disk {
+    dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+	$HAL_COMPUTER_PATH \
+	org.freedesktop.Hal.Device.SystemPowerManagement.Hibernate
+}
+
+function battery_info {
+    C=1
+    for I in `hal-find-by-capability --capability battery`; do
+
+	SEC=`hal-get-property --udi $I --key battery.remaining_time`
+	MIN=`echo $(($SEC / 60)) minutes`
+
+	PERC=`hal-get-property --udi $I --key battery.charge_level.percentage`
+	STATE_C=`hal-get-property --udi $I --key battery.rechargeable.is_charging`
+	STATE_D=`hal-get-property --udi $I --key battery.rechargeable.is_discharging`
+
+	if [ "$STATE_C" = "$STATE_D" ]; then
+	    STATE="undefined"
+	else
+	    if [ "$STATE_C" = "true" ]; then
+		STATE="charging"
+	    else
+		STATE="discharging"
+	    fi
+	fi
+
+	echo "Battery$C:"
+	echo -e "\t Remaining percent: $PERC"
+	echo -e "\t Remaining minutes: $MIN"
+	echo -e "\t Charging state: $STATE"
+
+	let C=C+1
+    done
+}
+
+function ac_status_info {
+    UDI=`hal-find-by-capability --capability ac_adapter`
+    if [ -z "$UDI" ]; then
+     	echo "No AC adapter found"
+	return
+    fi
+    AC=`hal-get-property --udi $UDI --key ac_adapter.present`
+
+    if [ "$AC" = "false" ]; then
+	echo "OFFLINE"
+    else
+	echo "ONLINE"
+    fi
+}
+
+function list_schemes {
+    for I in /etc/pm-profiler/*; do
+	[ -d $I ] && echo `basename $I`
+    done
+}
+
+function show_scheme_description {
+    . /etc/pm-profiler/$1/config
+    echo $NAME:
+    echo $DESCRIPTION
+}
+
+function set_active_scheme {
+    if [ "$UID" != "0" ]; then
+	echo "You must be root to enable a profile"
+	exit 1
+    fi
+    /usr/lib/pm-profiler/enable-profile $1
+}
+
+function performance_speed {
+    dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+	$HAL_COMPUTER_PATH \
+	org.freedesktop.Hal.Device.CPUFreq.SetCPUFreqGovernor \
+	string:performance > /dev/null
+}
+
+function powersave_speed {
+    dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+	$HAL_COMPUTER_PATH \
+	org.freedesktop.Hal.Device.CPUFreq.SetCPUFreqGovernor \
+	string:powersave > /dev/null
+}
+
+function dynamic_speed {
+    dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+	$HAL_COMPUTER_PATH \
+	org.freedesktop.Hal.Device.CPUFreq.SetCPUFreqGovernor \
+	string:ondemand > /dev/null
+}
+
+function cpufreq_state_info {
+    HAVE_CPUFREQ=`hal-find-by-capability --capability cpufreq_control`
+    if [ -z "$HAVE_CPUFREQ" ]; then
+     	echo "CPU Frequency scaling not supported"
+	return
+    fi
+
+    GOVERNOR="`dbus-send --system --print-reply --dest=org.freedesktop.Hal \
+	$HAL_COMPUTER_PATH \
+	org.freedesktop.Hal.Device.CPUFreq.GetCPUFreqGovernor `"
+    GOVERNOR="`echo $GOVERNOR | sed -e 's/.* string "\(.*\)"/\1/'`"
+
+    case "$GOVERNOR" in
+	ondemand|conservative) echo DYNAMIC ;;
+	performance) echo PERFORMANCE ;;
+	powersave) echo POWERSAVE ;;
+	*) echo "Unknown policy" ;;
+    esac
+}
+
+function usage {
+    echo
+    echo -e "ATTENTION:\tThis is a legacy tool to provide basic functionality of the obsolete"
+    echo -e "\t\tpowersave daemon. It will vanish in future."
+    echo
+    echo "Usage: powersave [OPTIONS]"
+    echo
+    echo " Suspend/Standby:"
+    echo -e "\t -U, --suspend-to-disk\t\t set machine into suspend-to-disk (ACPI S4/APM suspend)"
+    echo -e "\t -u, --suspend-to-ram\t\t set machine into suspend-to-ram  (ACPI S3/APM suspend)"
+    echo -e "\t -m, --standby\t\t\t set machine into standby         (ACPI S1/APM standby)"
+    echo
+    echo " Print information:"
+    echo -e "\t -b, --battery-info\t\t general battery info"
+    echo -e "\t -a, --ac-status-info\t\t power supply info (AC/Battery)"
+    echo
+    echo " Profiles:"
+    echo -e "\t -x, --list-schemes\t\t show all available schemes/profiles"
+    echo -e "\t -X, --show-scheme-description\t show scheme description"
+    echo -e "\t -e <x>, --set-active-scheme <x> switch currently active scheme/profile"
+    echo
+    echo " CPUFreq modes:"
+    echo -e "\t -f, --performance-speed\t set cpufreq to performance mode"
+    echo -e "\t -l, --powersave-speed\t\t set cpufreq to powersave mode"
+    echo -e "\t -A, --dynamic-speed\t\t set cpufreq to dynamic mode"
+    echo -e "\t -c, --cpufreq-state-info\t print out the current cpufreq policy"
+    echo
+}
+
+
+TEMP=`getopt -o muUbe:ahxX:flAc --long suspend-to-ram,suspend-to-disk,set-active-scheme:,\
+battery-info,ac-status-info,help,list-schemes,show-scheme-description:,performance-speed,powersave-speed,\
+dynamic-speed,cpufreq-state-info,standby \
+    -n 'example.bash' -- "$@"`
+
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+   
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+while true ; do
+    case "$1" in
+	-m|--standby) standby ; shift ;;
+        -u|--suspend-to-ram) suspend_to_ram; shift ;;
+        -U|--suspend-to-disk) suspend_to_disk; shift ;;
+	-b|--battery-info) battery_info ; shift ;;
+	-a|--ac-status-info) ac_status_info ; shift ;;
+	-x|--list-schemes) list_schemes ; shift ;;
+	-X|--show-scheme-description) show_scheme_description $2 ; shift 2 ;;
+	-f|--performance-speed) performance_speed ; shift ;;
+	-l|--powersave-speed) powersave_speed ; shift ;;
+	-A|--dynamic-speed) dynamic_speed ; shift ;;
+	-c|--cpufreq-state-info) cpufreq_state_info ; shift ;;
+        -e|--set-active-scheme) set_active_scheme $2 ; shift 2 ;;
+	-h|--help) usage ; shift ;;
+        --) shift ; break ;;
+        *) echo "Internal error!" ; exit 1 ;;
+    esac
+done
+
