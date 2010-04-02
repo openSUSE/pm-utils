@@ -9,25 +9,25 @@
 
 HAL_COMPUTER_PATH="/org/freedesktop/Hal/devices/computer"
 
-function standby {
+function hal_standby {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.SystemPowerManagement.Standby
 }
 
-function suspend_to_ram {
+function hal_suspend_to_ram {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.SystemPowerManagement.Suspend int32:0
 }
 
-function suspend_to_disk {
+function hal_suspend_to_disk {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.SystemPowerManagement.Hibernate
 }
 
-function battery_info {
+function hal_battery_info {
     C=1
     for I in `hal-find-by-capability --capability battery`; do
 
@@ -57,7 +57,7 @@ function battery_info {
     done
 }
 
-function ac_status_info {
+function hal_ac_status_info {
     UDI=`hal-find-by-capability --capability ac_adapter`
     if [ -z "$UDI" ]; then
      	echo "No AC adapter found"
@@ -92,28 +92,28 @@ function set_active_scheme {
     /usr/lib/pm-profiler/enable-profile $1
 }
 
-function performance_speed {
+function hal_performance_speed {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.CPUFreq.SetCPUFreqGovernor \
 	string:performance > /dev/null
 }
 
-function powersave_speed {
+function hal_powersave_speed {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.CPUFreq.SetCPUFreqGovernor \
 	string:powersave > /dev/null
 }
 
-function dynamic_speed {
+function hal_dynamic_speed {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
 	org.freedesktop.Hal.Device.CPUFreq.SetCPUFreqGovernor \
 	string:ondemand > /dev/null
 }
 
-function cpufreq_state_info {
+function hal_cpufreq_state_info {
     HAVE_CPUFREQ=`hal-find-by-capability --capability cpufreq_control`
     if [ -z "$HAVE_CPUFREQ" ]; then
      	echo "CPU Frequency scaling not supported"
@@ -173,19 +173,21 @@ if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
 
+SYSTEM="hal"
+
 while true ; do
     case "$1" in
-	-m|--standby) standby ; shift ;;
-        -u|--suspend-to-ram) suspend_to_ram; shift ;;
-        -U|--suspend-to-disk) suspend_to_disk; shift ;;
-	-b|--battery-info) battery_info ; shift ;;
-	-a|--ac-status-info) ac_status_info ; shift ;;
+	-m|--standby) ${SYSTEM}_standby ; shift ;;
+        -u|--suspend-to-ram) ${SYSTEM}_suspend_to_ram; shift ;;
+        -U|--suspend-to-disk) ${SYSTEM}_suspend_to_disk; shift ;;
+	-b|--battery-info) ${SYSTEM}_battery_info ; shift ;;
+	-a|--ac-status-info) ${SYSTEM}_ac_status_info ; shift ;;
 	-x|--list-schemes) list_schemes ; shift ;;
 	-X|--show-scheme-description) show_scheme_description $2 ; shift 2 ;;
-	-f|--performance-speed) performance_speed ; shift ;;
-	-l|--powersave-speed) powersave_speed ; shift ;;
-	-A|--dynamic-speed) dynamic_speed ; shift ;;
-	-c|--cpufreq-state-info) cpufreq_state_info ; shift ;;
+	-f|--performance-speed) ${SYSTEM}_performance_speed ; shift ;;
+	-l|--powersave-speed) ${SYSTEM}_powersave_speed ; shift ;;
+	-A|--dynamic-speed) ${SYSTEM}_dynamic_speed ; shift ;;
+	-c|--cpufreq-state-info) ${SYSTEM}_cpufreq_state_info ; shift ;;
         -e|--set-active-scheme) set_active_scheme $2 ; shift 2 ;;
 	-h|--help) usage ; shift ;;
         --) shift ; break ;;
