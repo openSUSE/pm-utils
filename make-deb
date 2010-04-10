@@ -1,18 +1,7 @@
 #!/bin/bash
-[[ -d .git ]] || { echo "Not at root of pm-utils repository, dying horribly"; exit 1; }
-cp .git/HEAD .git/HEAD.mkdeb
-cp .git/index .git/index.mkdeb
-
-git rev-parse --verify debian || exit 1
-git checkout -b __debian_throwaway_branch
-git merge debian
 
 git log  --pretty=format:"pm-utils (%ct.%h) unstable; urgency=low%n%n  * %s%n%n -- %an <%ae>  %aD%n" --no-merges >debian/changelog && \
 autoreconf --install && \
 ./configure && \
 dpkg-buildpackage && echo "pm-utils .deb file created in parent directory." || \
     echo "Something went wrong creating .deb."
-mv -f .git/HEAD.mkdeb .git/HEAD
-mv -f .git/index.mkdeb .git/index
-git checkout HEAD
-git branch -D __debian_throwaway_branch
