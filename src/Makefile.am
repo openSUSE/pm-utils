@@ -10,7 +10,7 @@ pm_pmu_SOURCES = pm-pmu.c
 
 pm_reset_swap_SOURCES = pm-reset-swap.c
 
-pm_bin_SCRIPTS = pm-action
+pm_bin_SCRIPTS = pm-action service
 
 bin_SCRIPTS = pm-is-supported
 

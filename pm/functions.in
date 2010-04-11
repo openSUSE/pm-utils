@@ -136,20 +136,8 @@ modreload()
 	done
 }
 
-# Service management is sysv dependent.
-# TODO: modularize this to make it work with other init systems.
-if ! command_exists service; then
-	service()
-	{
-	    for svc in "/etc/init.d/$1" "/etc/rc.d/rc.$1"; do #lsb, then slack
-		[ -x "$svc" ] && { shift; "$svc" "$@"; return $?; }
-            done
-            # this only happens if we did not find the service
-            log "${1}: unrecognized service"
-            return 1
-	    
-	}
-fi
+# If the service command is not provided by the OS, we will fall back to
+# ${PM_UTILS_LIBDIR)/bin/service.
 
 stopservice()
 {

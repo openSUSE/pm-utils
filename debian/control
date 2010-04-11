@@ -9,7 +9,7 @@ Standards-Version: 3.7.2
 Package: pm-utils
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, powermgmt-base
-Recommends: hal (>= 0.5.9), uswsusp, vbetool, radeontool
+Recommends: uswsusp, vbetool, radeontool
 Description: utilities and scripts for power management
  This packages provides simple shell command line tools to suspend and 
  hibernate your computer.
