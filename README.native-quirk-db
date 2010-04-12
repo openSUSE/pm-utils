@@ -5,7 +5,7 @@ On systems that have not made the transition away from HAL, you must run
 import-fdi-quirkdb
 
 as root before attempting to suspend or hibernate the system.  If your system
-no longer uses HAL, or you recieved pm-utils though your distribution, you
+no longer uses HAL, or you recieved pm-utils through your distribution, you
 already have the translated version of the quirks.
 
 pm-utils will no longer query HAL for video quirks.  Instead, it will determine
