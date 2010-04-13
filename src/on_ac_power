@@ -30,7 +30,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# prefer DeviceKit-power if available
+# prefer UPower if available
+if s="$(dbus-send --system --print-reply \
+    --dest=org.freedesktop.UPower \
+    /org/freedesktop/UPower \
+    org.freedesktop.DBus.Properties.Get \
+    string:org.freedesktop.UPower string:OnBattery)"; then
+    echo "$s" | grep -q 'boolean false'
+    exit $?
+fi
+
+# try its old name 'DeviceKit-power' too
 if s="$(dbus-send --system --print-reply \
     --dest=org.freedesktop.DeviceKit.Power \
     /org/freedesktop/DeviceKit/Power \

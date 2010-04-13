@@ -89,7 +89,7 @@
     <para>
       The intended purpose of <command>&dhpackage;</command> is to
       find out which power management modes are supported by the 
-      system. hald(8) will call it to do just that. (Note that DeviceKit-power
+      system. hald(8) will call it to do just that. (Note that UPower
       does not use this.)
     </para>
   </refsect1>
@@ -161,10 +161,6 @@
     <!-- In alpabetical order. -->
     <para>
       <citerefentry>
-	<refentrytitle>DeviceKit-power</refentrytitle>
-	<manvolnum>7</manvolnum>
-      </citerefentry>,
-      <citerefentry>
 	<refentrytitle>hald</refentrytitle>
 	<manvolnum>8</manvolnum>
       </citerefentry>,
@@ -175,6 +171,10 @@
       <citerefentry>
 	<refentrytitle>s2both</refentrytitle>
 	<manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+	<refentrytitle>UPower</refentrytitle>
+	<manvolnum>7</manvolnum>
       </citerefentry>
     </para>
   </refsect1>

@@ -104,7 +104,7 @@
       For some options external programs are needed.
     </para>
     <para>
-      These commands will usually be called by <command>DeviceKit-power</command>
+      These commands will usually be called by <command>UPower</command>
       or <command>hald</command> when triggered to do so by a program
       in a desktop session such as <command>gnome-power-manager</command>. 
       Calling them from the command line is also possible, but it is not 
