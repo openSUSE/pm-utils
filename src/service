@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Handle service invocation on distros that do not have a "service" command.
+# It handles LSB by default, and other distros that the maintainer is aware of.
+
+
 REL="/etc/slackware-release /etc/slackware-version 
      /etc/arch-release"
 
