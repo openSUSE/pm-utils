@@ -296,6 +296,9 @@ if [ -z "$SUSPEND_MODULE" ]; then
 	elif [ -c /dev/pmu ] && pm-pmu --check; then
 		SUSPEND_MODULE="kernel"
 		do_suspend() { pm-pmu --suspend; }
+	elif grep -q standby /sys/power/state; then
+		SUSPEND_MODULE="kernel"
+		do_suspend() { echo -n "standby" >/sys/power/state; }
 	fi
 fi
 
