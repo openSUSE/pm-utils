@@ -11,7 +11,7 @@ for loc in "/sys/power/tuxonice" "/sys/power/suspend2"; do
 	[ -d "${loc}" ] && { TUXONICE_LOC="${loc}"; break; }
 done
 
-if [ -n $TUXONICE_LOC ]; then
+if [ -n "$TUXONICE_LOC" ]; then
     toi_maybe_chvt() {
 	local toi_ui="$(cat "$TUXONICE_LOC/user_interface/program")"
 	local toi_ui_en="$(cat "$TUXONICE_LOC/user_interface/enabled")"

@@ -37,7 +37,7 @@ LC_COLLATE=C
 # and end users should modify these using files in /etc/pm/config.
 HIBERNATE_MODE=""
 HIBERNATE_RESUME_POST_VIDEO="no"
-SLEEP_MODULE="kernel"
+SLEEP_MODULE="auto"
 # These variables will be handled specially when we load the config file.
 SUSPEND_MODULES=""
 HOOK_BLACKLIST=""
