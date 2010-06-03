@@ -1,0 +1,31 @@
+#!/bin/sh
+
+. "${PM_FUNCTIONS}"
+
+SATA_ALPM_ENABLE=${SATA_ALPM_ENABLE:-true}
+
+help() {
+cat <<EOF
+SATA link ALPM parameters:
+
+SATA_ALPM_ENABLE = whether to use SATA ALPM on battery.
+Defaults to "true".
+
+EOF
+}
+
+set_sata_alpm() {
+    for f in /sys/class/scsi_host/host*/link_power_management_policy; do
+	[ -w "$f" ] || continue
+	echo "$1" > "$f"
+    done
+}
+
+case $1 in
+    true) [ "$SATA_ALPM_ENABLE" = true ] && set_sata_alpm min_power;;
+    false) set_sata_alpm max_performance;;
+    help) help;;
+    *) exit $NA;;
+esac
+
+exit 0
