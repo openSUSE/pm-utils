@@ -1,10 +1,29 @@
 #!/bin/sh
 
 [ -x /sbin/blockdev ] || exit $NA
-[ "$CHASSIS_TYPE" = "Portable" ] || exit $NA
 
 # more readahead = (hopefully) less hard drive activity.
 # less readahead = less trashing the page cache.
+
+DRIVE_READAHEAD_AC=${DRIVE_READAHEAD_AC:-256}
+DRIVE_READAHEAD_BAT=${DRIVE_READAHEAD_BAT:-3072}
+
+help() {
+    cat <<EOF
+Drive readahead parameters:
+
+DRIVE_READAHEAD_AC = Number of KB to speculatively read on AC.
+Defaults to 256 KB.
+
+DRIVE_READAHEAD_BAT = Number of KB to speculatively read on battery.
+Defaults to 3072 KB.
+
+The theory here is that we trade off the number of times we spin up a drive
+to read for potentially wasted cache if we end up not needing all the data we
+read.
+
+EOF
+}
 
 readahead() {
     # the intent here is to iterate through all filesystems
@@ -17,8 +36,9 @@ readahead() {
 }
 
 case $1 in
-    true) readahead 3072 ;;
-    false) readahead 256 ;;
+    true) readahead "$DRIVE_READAHEAD_BAT" ;;
+    false) readahead "$DRIVE_READAHEAD_AC" ;;
+    help) help;;
     *) exit $NA ;;
 esac
 

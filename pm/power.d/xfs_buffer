@@ -3,29 +3,65 @@
 . "${PM_FUNCTIONS}"
 
 XFS="/proc/sys/fs/xfs"
+xfsfiles="age_buffer_centisecs xfssyncd_centisecs xfsbufd_centisecs"
+XFS_AGE_BUFFER=${XFS_AGE_BUFFER:-60000}
+XFS_BUFD=${XFS_BUFD:-3000}
+XFS_SYNCD=${XFS_SYNCD:-60000}
+
+help() {
+    cat <<EOF
+XFS filesystem powersaving parameters:
+
+XFS_AGE_BUFFER = How old an XFS filesystem buffer can be before it is flushed.
+Battery value defaults to 60000, or 10 minutes (600 seconds)
+
+XFS_BUFD = How often XFS will scan for dirty metadata to flush it.
+Battery value defaults to 3000, or 30 seconds.
+
+XFS_SYNCD = How often an XFS filesystem will perform other filesystem 
+maintenance, Battery value defaults to 60000, or 10 minutes.
+
+These values only affect powersave on battery, on AC power the system will use
+its defaults.
+EOF
+}
+
 [ -f $XFS/age_buffer_centisecs ] || exit $NA
-[ "$CHASSIS_TYPE" = "Portable" ] || exit $NA
+
+read_values() {
+    for f in $xfsfiles; do
+	[ -r "$XFS/$f" ] && cat "$XFS/$f" || echo 0
+    done
+}
+
+write_values() {
+    for f in $xfsfiles; do
+	[ -w "$XFS/$f" ] && echo $1 > "$XFS/$f"
+	shift
+    done
+}
 
 # Why does XFS have its own parameters instead of just using the
 # VM subsystem ones?  Only SGI knows...
 
 xfs_ac() {
-    # don't buffer so much, flush data out regularly.
-    echo 1500 >$XFS/age_buffer_centisecs
-    echo 3000 >$XFS/xfssyncd_centisecs
-    echo 100  >$XFS/xfsbufd_centisecs
+    if state_exists xfs_buffer_default; then
+	write_values $(restorestate xfs_buffer_default)
+    else
+	write_values 1500 3000 100
+    fi
 }
 
 xfs_battery() {
-    # buffer lots
-    echo 60000 >$XFS/age_buffer_centisecs
-    echo 60000 >$XFS/xfssyncd_centisecs
-    echo 3000  >$XFS/xfsbufd_centisecs
+    state_exists xfs_buffer_default || \
+	read_values |savestate xfs_buffer_default
+    write_values "$XFS_AGE_BUFFER" "$XFS_BUFD" "$XFS_SYNCD"
 }
 
 case $1 in
     true) xfs_battery ;;
     false) xfs_ac ;;
+    help) help;;
     *) exit $NA ;;
 esac
 

@@ -1,34 +1,75 @@
 #!/bin/sh
 
+. "${PM_FUNCTIONS}"
+
 VM="/proc/sys/vm"
+vmfiles="laptop_mode dirty_ratio dirty_background_ratio 
+         dirty_writeback_centisecs"
+
+LAPTOP_MODE=${LAPTOP_MODE:-5}
+LAPTOP_DIRTY_RATIO=${LAPTOP_DIRTY_RATIO:-60}
+LAPTOP_DIRTY_BG_RATIO=${LAPTOP_DIRTY_BG_RATIO:-40}
+LAPTOP_DIRTY_WRITEBACK=${LAPTOP_DIRTY_WRITEBACK:-60000}
+
+help() {
+    cat <<EOF
+Laptop mode VM tuning parameters:
+
+LAPTOP_MODE = value for laptop_mode on battery.
+Defaults to 1, which enables laptop mode.
+
+LAPTOP_DIRTY_RATIO = the ratio of dirty memory to all memory that 
+processes start doing their own writeout.  Defaults to 60.
+
+LAPTOP_DIRTY_BG_RATIO = The ratio of dirty memory to all memory that 
+pdflush will wake up and start writing to disk.  Defaults to 40.
+
+LAPTOP_DIRTY_WRITEBACK = The number of centiseconds between periodic
+wakeups of the pdflush daemons.  Defaults to 60000 (10 minutes).
+
+These only take place on battery.  This hook will revert to the kernel
+default values on AC power.
+
+EOF
+}
 
 [ -w $VM/laptop_mode -a -w $VM/dirty_ratio ] || exit $NA
 
-# only actually enable on laptops for now.
-[ "$CHASSIS_TYPE" = "Portable" ] || exit $NA
+read_values() {
+    for f in $vmfiles; do
+	[ -r "$VM/$f" ] && cat "$VM/$f" || echo 0
+    done
+}
+
+write_values() {
+    for f in $vmfiles; do
+	[ -w "$VM/$f" ] && echo $1 > "$VM/$f"
+	shift
+    done
+}
 
 laptop_mode_ac() {
     # disable laptop mode, set vm parameters back to sane defaults
-    echo 0 >$VM/laptop_mode
-    echo 5 >$VM/dirty_background_ratio
-    echo 2999 >$VM/dirty_expire_centisecs
-    echo 10 >$VM/dirty_ratio
-    echo 499 >$VM/dirty_writeback_centisecs
+    if state_exists laptop_mode_default; then
+	write_values $(restorestate laptop_mode_default)
+    else
+	write_values 0 10 5 500
+    fi	
 }
 
 laptop_mode_battery() {
     # enable laptop mode, set vm parameters to buffer as many writes as 
     # possible.
-    echo 1 >$VM/laptop_mode
-    echo 1 >$VM/dirty_background_ratio
-    echo 60000 >$VM/dirty_expire_centisecs
-    echo 85 >$VM/dirty_ratio
-    echo 60000 >$VM/dirty_writeback_centisecs
+    state_exists laptop_mode_default || \
+	read_values | savestate laptop_mode_default
+    write_values "$LAPTOP_MODE" "$LAPTOP_DIRTY_RATIO" \
+	"$LAPTOP_DIRTY_BG_RATIO" "$LAPTOP_DIRTY_WRITEBACK"
 }
 
 case $1 in
     true) laptop_mode_battery ;;
     false) laptop_mode_ac ;;
+    help) help;;
     *) exit $NA ;;
 esac
 

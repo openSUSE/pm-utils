@@ -4,15 +4,27 @@
 # once the driver has been inactive for a second.
 # This hook should work with at least the ac97 and hda codecs.
 
+INTEL_AUDIO_POWERSAVE=${INTEL_AUDIO_POWERSAVE:-true}
+
+help() {
+cat <<EOF
+Intel Audio powersave parameters:
+INTEL_AUDIO_POWERSAVE = controls whether we will try to save power on battery.
+Defaults to true.
+
+EOF
+}
+
 audio_powersave() {
     for dev in /sys/module/snd_*_codec/parameters/power_save; do
-	[ -w $dev ] && echo $1 > $dev
+	[ -w $dev ] && [ "$INTEL_AUDIO_POWERSAVE" = "true" ] && echo $1 > $dev
     done
 }
 
 case $1 in
     true) audio_powersave 1 ;;
     false) audio_powersave 0 ;;
+    help) help;;
     *) exit $NA
 esac
 
