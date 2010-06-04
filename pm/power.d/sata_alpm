@@ -6,8 +6,15 @@ SATA_ALPM_ENABLE=${SATA_ALPM_ENABLE:-true}
 
 help() {
 cat <<EOF
-SATA link ALPM parameters:
+$0: SATA link power management
 
+This hook tries to save power by allowing SATA controllers to
+reduce power usage when the SATA subsystem is otherwise idle.
+
+This adds a little bit of latency to drive accesses in
+exchange for moderate power savings if you are not using the drive.
+
+This hook has 1 parameter:
 SATA_ALPM_ENABLE = whether to use SATA ALPM on battery.
 Defaults to "true".
 

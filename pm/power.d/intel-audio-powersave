@@ -8,7 +8,10 @@ INTEL_AUDIO_POWERSAVE=${INTEL_AUDIO_POWERSAVE:-true}
 
 help() {
 cat <<EOF
-Intel Audio powersave parameters:
+--------
+$0: Intel Audio powersave parameters.
+
+This hook has 1 tuneable parameter. 
 INTEL_AUDIO_POWERSAVE = controls whether we will try to save power on battery.
 Defaults to true.
 

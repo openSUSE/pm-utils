@@ -13,22 +13,36 @@ LAPTOP_DIRTY_WRITEBACK=${LAPTOP_DIRTY_WRITEBACK:-60000}
 
 help() {
     cat <<EOF
-Laptop mode VM tuning parameters:
+--------
+$0: Laptop mode tuning parameters.
+This hook controls how agressive the system is at trying to avoid
+writing to disk.  The longer the disk is idle, the more power you can save.
 
+This hook is only active on battery power, and it restores these values
+to kernel defaults when on AC power.
+
+It has 4 tuneable parameters: 
 LAPTOP_MODE = value for laptop_mode on battery.
-Defaults to 1, which enables laptop mode.
+Defaults to 5, which enables laptop mode and forces the system to wait 
+5 seconds whenever something asks to write to disk to flush out as much
+data as we can.
 
 LAPTOP_DIRTY_RATIO = the ratio of dirty memory to all memory that 
-processes start doing their own writeout.  Defaults to 60.
+processes start doing their own writeout.  
+Defaults to 60, which means that the kernel will not start forcing process
+to write out file information that has been changed but not saved until 60%
+of usable system memory is filled with dirty information.
 
 LAPTOP_DIRTY_BG_RATIO = The ratio of dirty memory to all memory that 
-pdflush will wake up and start writing to disk.  Defaults to 40.
+pdflush will wake up and start writing to disk.  
+Defaults to 40, which means that the kernel will wake up a helper process
+to try and write out dirty memory once 40% of usable system memory is dirty.
 
 LAPTOP_DIRTY_WRITEBACK = The number of centiseconds between periodic
-wakeups of the pdflush daemons.  Defaults to 60000 (10 minutes).
+wakeups of the pdflush daemons.  
+Defaults to 60000 (10 minutes), which menas that the kernel will flush dirty
+memory every 10 minutes if dirty memory never hits 40% of system memory.
 
-These only take place on battery.  This hook will revert to the kernel
-default values on AC power.
 
 EOF
 }

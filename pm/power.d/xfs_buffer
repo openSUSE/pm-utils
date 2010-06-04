@@ -10,19 +10,23 @@ XFS_SYNCD=${XFS_SYNCD:-60000}
 
 help() {
     cat <<EOF
-XFS filesystem powersaving parameters:
+--------
+$0: XFS filesystem buffer control hook.
 
+This hook tries to save power by tuning any XFS filesystems to delay writing
+dirty metadata.  It only takes effect on battery, when the system switches
+to AC power it will restore the kernel defaults.
+
+This hook has 3 parameters:
 XFS_AGE_BUFFER = How old an XFS filesystem buffer can be before it is flushed.
-Battery value defaults to 60000, or 10 minutes (600 seconds)
+Defaults to 60000, or 10 minutes (600 seconds)
 
 XFS_BUFD = How often XFS will scan for dirty metadata to flush it.
-Battery value defaults to 3000, or 30 seconds.
+Defaults to 3000, or 30 seconds.
 
 XFS_SYNCD = How often an XFS filesystem will perform other filesystem 
-maintenance, Battery value defaults to 60000, or 10 minutes.
+Defaults to 60000, or 10 minutes.
 
-These values only affect powersave on battery, on AC power the system will use
-its defaults.
 EOF
 }
 

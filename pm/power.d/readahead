@@ -10,17 +10,18 @@ DRIVE_READAHEAD_BAT=${DRIVE_READAHEAD_BAT:-3072}
 
 help() {
     cat <<EOF
-Drive readahead parameters:
+--------
+$0: Control drive readahead.
 
+This hook tries to trade off the number of times we spin up a drive
+to read for potentially wasted cache.
+
+Drive readahead parameters:
 DRIVE_READAHEAD_AC = Number of KB to speculatively read on AC.
 Defaults to 256 KB.
 
 DRIVE_READAHEAD_BAT = Number of KB to speculatively read on battery.
 Defaults to 3072 KB.
-
-The theory here is that we trade off the number of times we spin up a drive
-to read for potentially wasted cache if we end up not needing all the data we
-read.
 
 EOF
 }
