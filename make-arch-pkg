@@ -1,4 +1,4 @@
 #!/bin/sh
 
 git clean -f -x -d
-makepkg && pacman -U pm-utils-git-*.pkg.*
+makepkg && sudo pacman -U pm-utils-git-*.pkg.*

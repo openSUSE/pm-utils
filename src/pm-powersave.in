@@ -31,27 +31,44 @@ remove_powersave_lock() {
     release_lock "${STASHNAME}.lock"
 }
 
+help() {
+    cat <<EOF
+$0: Valid options are:
+false or ac = turn powersaving features off.
+true or battery = turn powersaving features on.
+help = get detailed help.
+
+EOF
+if [ "$1" = "--help" ]; then
+    cat <<EOF
+The rest of this help message displays the variables
+that can be used to tune the powersave hooks.  
+You can change these variables using pm-utils config files.
+(see the pm-utils README for more information)
+
+EOF
+else
+    echo "You can get more detailed information by running pm-powersave --help"
+fi
+}
+
+lock_and_load() {
 # take the powersave lock.
 # ensure it gets released no matter how we exit.
-try_lock "${STASHNAME}.lock" || exit 1
-trap remove_powersave_lock 0
-mkdir -p "${STORAGEDIR}"
-rm -f "${INHIBIT}"
-
-load_hook_blacklist
-
-if [ "$1" = "true" -o "$1" = "false" ] ; then
-	init_logfile "${PM_LOGFILE}"
-	run_hooks power "$1"
-elif [ ! "$1" ]; then
-    # no arg?  Guess!
+    try_lock "${STASHNAME}.lock" || exit 1
+    trap remove_powersave_lock 0
+    mkdir -p "${STORAGEDIR}"
+    rm -f "${INHIBIT}"
+    
+    load_hook_blacklist
+    
     init_logfile "${PM_LOGFILE}"
-    if on_ac_power; then
-	run_hooks power false;
-    else
-	run_hooks power true;
-    fi
-else
-    echo "Argument needs to be true or false" >&2
-    exit 1
-fi
+}
+
+case $1 in
+    true|battery) lock_and_load && run_hooks power true;;
+    false|ac) lock_and_load && run_hooks power false;;
+    --help) help && run_hooks power help;;
+    '') lock_and_load; on_ac_power && run_hooks power false || run_hooks power true;;
+    *) help && exit 1;;
+esac
