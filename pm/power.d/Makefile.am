@@ -8,7 +8,10 @@ power_SCRIPTS =			\
 	readahead		\
 	intel-audio-powersave	\
 	wireless 		\
-	journal-commit
+	journal-commit		\
+	disable_wol		\
+	pcie_aspm		\
+	sata_alpm
 
 EXTRA_DIST=$(power_SCRIPTS)
 
