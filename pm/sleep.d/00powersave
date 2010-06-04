@@ -5,7 +5,7 @@
 command_exists pm-powersave || exit $NA
 
 case $1 in
-#    suspend|hibernate) pm-powersave false ;;
+    suspend|hibernate) pm-powersave false ;;
     resume|thaw)       pm-powersave ;;
     *) exit $NA ;;
 esac

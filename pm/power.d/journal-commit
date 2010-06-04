@@ -35,6 +35,8 @@ handle_ext3()
 	remount_fs $1 "commit=${2}"
 }
 
+handle_ext4() { handle_ext3 "$@"; }
+
 handle_filesystems()
 {
 	# $1 = new journal commit time in seconds
