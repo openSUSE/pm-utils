@@ -1,0 +1,24 @@
+#!/bin/sh
+
+. "${PM_FUNCTIONS}"
+
+command_exists ethtool || exit $NA
+
+set_wol_status() {
+    for d in "/sys/class/net/"*; do
+	[ -f "$d/wireless" ] && continue
+	[ -h "$d/device/driver" ] || continue
+	case $1 in
+	    disable) ethtool -s "${d##*/}" wol d;;
+	    enable) ethtool -s "${d##*/}" wol g;;
+	esac
+    done
+}
+
+case $1 in
+    true) set_wol_status disable;;
+    false) set_wol_status enable;;
+    *) exit $NA;;
+esac
+
+exit 0
