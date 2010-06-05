@@ -18,7 +18,7 @@ dist_bin_SCRIPTS = on_ac_power import-fdi-quirkdb
 
 sbin_SCRIPTS = pm-powersave
 
-script_in_files = pm-action.in pm-is-supported.in pm-powersave.in import-fdi-quirkdb.in
+script_in_files = pm-action.in pm-is-supported.in pm-powersave.in import-fdi-quirkdb.in service
 
 CLEANFILES =  $(script_in_files:.in=)
 
