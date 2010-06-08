@@ -7,8 +7,8 @@
 # load and thus conserving power
 
 sched_powersave() {
-    for pool in mc smp ht; do
-	dev="$/sys/devices/system/cpu/sched_${pool}_power_savings"
+    for pool in mc smp smt; do
+	dev="/sys/devices/system/cpu/sched_${pool}_power_savings"
 	[ -w "$dev" ] || continue
 	echo $1 > "$dev"
     done
