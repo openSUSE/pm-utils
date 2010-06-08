@@ -19,7 +19,7 @@ EOF
 }
 
 audio_powersave() {
-    for dev in /sys/module/snd_*_codec/parameters/power_save; do
+    for dev in /sys/module/snd_*/parameters/power_save; do
 	[ -w $dev ] && [ "$INTEL_AUDIO_POWERSAVE" = "true" ] && echo $1 > $dev
     done
 }
