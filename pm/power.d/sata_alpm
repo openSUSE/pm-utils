@@ -22,6 +22,10 @@ EOF
 }
 
 set_sata_alpm() {
+    # see kernel commit 6013efd8860bf15c1f86f365332642cfe557152f
+    kv="$(uname -r)"
+    [ "$kv" ] || exit $NA  #for paranoia's sake
+    [ "${kv%-*}" \< "2.6.33" ] && exit $NA  # avoid fs corruption
     for f in /sys/class/scsi_host/host*/link_power_management_policy; do
 	[ -w "$f" ] || continue
 	echo "$1" > "$f"
