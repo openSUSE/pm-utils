@@ -6,7 +6,7 @@ arch=('i686' 'x86_64')
 url="http://pm-utils.freedesktop.org"
 license=('GPL')
 conflicts=('pm-utils')
-provides=('pm-utils')
+provides=('pm-utils=9999')
 depends=('bash' 'procps' 'vbetool' 'pm-quirks')
 optdepends=('upower')
 makedepends=('xmlto' 'docbook-xml' 'docbook-xsl' 'git')
