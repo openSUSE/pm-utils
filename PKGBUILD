@@ -5,7 +5,7 @@ pkgdesc="Utilities and scripts for suspend and hibernate power management"
 arch=('i686' 'x86_64')
 url="http://pm-utils.freedesktop.org"
 license=('GPL')
-conflicts=('pm-utils')
+conflicts=('pm-utils' 'laptop-mode-tools')
 provides=('pm-utils=9999')
 depends=('bash' 'procps' 'vbetool' 'pm-quirks')
 optdepends=('upower')
