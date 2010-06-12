@@ -1,3 +1,23 @@
+Major changes since the 1.3 series:
+
+* The pm-utils git tree includes infrastructure to build .deb packages,
+  .rpm packages. and Arch Linux .tar packages.  These are not intended
+  to replace distro packaging, and are not included in the release tarballs.
+
+* We include some basic power management hooks. The individual hooks can
+  conflict with the ones provided by the laptop-mode-tools scripts, so you
+  should either just remove laptop-mode-tools entirely or pick and choose
+  between which package should handle what powersaving functionality.
+
+Major changes since the 1.2 series:
+ 
+* We no longer rely on HAL at all for video quirks. 
+
+* The pm-utils project has taken over maintenance of the video quirk database.
+  Most systems coming out no longer rely on quirks, due to KMS enabled drivers
+  for most common chipsets along with the two major binary video drivers
+  handling any needed suspend/resume handling themselves.
+
 Major changes since the 1.1 series:
 
 * Our pkg-config support now includes variables that directly map to where
