@@ -64,20 +64,24 @@ harddrive_ac () {
     for dev in $DRIVE_LIST; do
 	# disable write caching, do not spin down the drive, disable APM 
 	# and acoustic management, and sync everything to drive.
+	printf "Disabling hard drive power management for %s..." "$dev"
 	hdparm -W $DRIVE_WRITE_CACHE_AC \
 	    -S $DRIVE_SPINDOWN_VALUE_AC \
 	    -B $DRIVE_POWER_MGMT_AC \
-	    -M $DRIVE_ACOUSTIC_MGMT_AC $dev
+	    -M $DRIVE_ACOUSTIC_MGMT_AC $dev >/dev/null 2>&1 \
+	    && echo Done. || echo Failed.
     done
 }
 
 harddrive_battery() {
     for dev in $DRIVE_LIST; do
 	# disable write caching, enable acoustic management
+	printf "Enabling power management for %s..." "$dev"
 	hdparm -W $DRIVE_WRITE_CACHE_BAT \
 	    -S $DRIVE_SPINDOWN_VALUE_BAT \
 	    -B $DRIVE_POWER_MGMT_BAT \
-	    -M $DRIVE_ACOUSTIC_MGMT_BAT -F $dev
+	    -M $DRIVE_ACOUSTIC_MGMT_BAT -F $dev >/dev/null 2>&1 \
+	    && echo Done. || echo Failed.
     done
 }
 

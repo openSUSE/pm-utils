@@ -43,7 +43,6 @@ wakeups of the pdflush daemons.
 Defaults to 60000 (10 minutes), which menas that the kernel will flush dirty
 memory every 10 minutes if dirty memory never hits 40% of system memory.
 
-
 EOF
 }
 
@@ -69,6 +68,7 @@ laptop_mode_ac() {
     else
 	write_values 0 10 5 500
     fi	
+    echo "Laptop mode disabled."
 }
 
 laptop_mode_battery() {
@@ -78,6 +78,7 @@ laptop_mode_battery() {
 	read_values | savestate laptop_mode_default
     write_values "$LAPTOP_MODE" "$LAPTOP_DIRTY_RATIO" \
 	"$LAPTOP_DIRTY_BG_RATIO" "$LAPTOP_DIRTY_WRITEBACK"
+    echo "Laptop mode enabled."
 }
 
 case $1 in

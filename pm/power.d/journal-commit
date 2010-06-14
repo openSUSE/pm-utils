@@ -43,7 +43,9 @@ handle_filesystems()
 	while read DEV MOUNT FSTYPE REST; 
 	do
 		command_exists "handle_${FSTYPE}" || continue
-		"handle_${FSTYPE}" $MOUNT $1
+		printf "Setting journal commit time for %s to %d..." \
+		    "$MOUNT" "$1"
+		"handle_${FSTYPE}" $MOUNT $1 && echo Done. || echo Failed.
 	done < /proc/mounts
 }
 

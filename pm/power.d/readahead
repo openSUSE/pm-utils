@@ -32,7 +32,8 @@ readahead() {
     # More sophistication in figuring out what exactly is a local block device
     # would be welcome.
     for dev in $(awk '/^\/dev\// {print $1}'</etc/mtab); do
-	/sbin/blockdev --setfra $1 "$dev"
+	printf "Setting readahead for %s to %d..." "$dev" "$1"
+	/sbin/blockdev --setfra $1 "$dev" && echo Done. || echo Failed.
     done
 }
 

@@ -30,14 +30,18 @@ stop_polling() {
     [ "$disks" ] || exit $NA
     savestate hal_polling_disks "$disks"
     for c in $disks; do
-	hal-disable-polling --device "$c"
+	printf "Disabling HAL polling of %s..." "$c"
+	hal-disable-polling --device "$c" >/dev/null 2>&1 \
+	    && echo Done. || echo Failed.
     done
 }
 
 restart_polling() {
     state_exists hal_polling_disks || exit $NA
     for disk in $(restorestate hal_polling_disks); do
-	hal-disable-polling --enable-polling --device "$disk"
+	printf "Reenabling HAL polling of %s..." "$disk"
+	hal-disable-polling --enable-polling --device "$disk" && echo Done || \
+	    echo Failed.
     done
 }
 

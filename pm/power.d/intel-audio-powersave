@@ -19,8 +19,11 @@ EOF
 }
 
 audio_powersave() {
+    [ "$INTEL_AUDIO_POWERSAVE" = "true" ] || exit $NA
     for dev in /sys/module/snd_*/parameters/power_save; do
-	[ -w $dev ] && [ "$INTEL_AUDIO_POWERSAVE" = "true" ] && echo $1 > $dev
+	[ -w "$dev/parameters/power_save" ] || continue
+	printf "Setting power savings for $s to %d..." "$dev##*/" "$1"
+	echo $1 > "$dev/parameters/power_save" && echo Done. || echo Failed.
     done
 }
 
