@@ -40,7 +40,7 @@ End-user customization and debugging:
 
 * To override the usual quirk filtering (for kernel modesetting, binary drivers,
   and exotic hardware), pass --quirk-test along with any other quirks you want
-  to try.  This make make your system crash in new and exciting ways by
+  to try.  This may make your system crash in new and exciting ways by
   conflicting with the kernel when suspending or resuming, but is very useful
   for debugging.  You have been warned.
 
@@ -57,4 +57,7 @@ Significant conceptual changes from pm-utils 0.99.x and earlier:
 
 * All scripts created and maintained by the pm-utils are POSIX/SuS compliant.
   Any modification or new script should be POSIX compliant and work as intended
-  using dash and posh before you submit a patch upstream.  
+  using dash and posh before you submit a patch upstream. The sole exception is
+  the video quirk database handler, which would be a couple of orders of 
+  magnitude slower when written in POSIX sh, due to how heavily it relies on 
+  bash native regular expression support.
