@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. "${PM_FUNCTIONS}"
+
 # See if we have the usual wireless tools.
 # Do not just fail because not all cards require these.
 which iwpriv >/dev/null 2>&1 && have_iwpriv="true"
@@ -18,7 +20,7 @@ get_wireless_params() {
     # Skip if not a wireless card.
     [ -d "/sys/class/net/$1/wireless" ] || return 1
     # Also don't do anything if the device is disabled
-    [ "$(cat /sys/class/net/$1/device/enabled)" = "1" ] || return 1
+    [ "$(cat /sys/class/net/$1/device/enable)" = "1" ] || return 1
     driver="$(readlink "/sys/class/net/$1/device/driver")"
     driver=${driver##*/}
     case $driver in
@@ -52,10 +54,19 @@ get_wireless_params() {
 
 wireless_powersave() {
     for dev in /sys/class/net/*; do
-        get_wireless_params "${dev##*/}" "$1"
-	[ "$have_iwconfig" = true -a "$iwconfig" ] && iwconfig $iwconfig
-        [ "$have_iwpriv" = true -a "$iwpriv" ] && iwpriv $iwpriv
-        [ "$iwlevel" ] && echo "$iwlevel" > "$dev/device/power_level"
+        get_wireless_params "${dev##*/}" "$1" || continue
+	ret=0
+	printf "Turning powersave for %s %s..." "${dev##*/}" "$1"
+	if [ "$have_iwconfig" = true -a "$iwconfig" ]; then
+	    iwconfig "${dev##*/}" $iwconfig || ret=1
+	fi
+        if [ "$have_iwpriv" = true -a "$iwpriv" ]; then
+	    iwpriv "${dev##*/}" $iwpriv || ret=1
+	fi
+        if [ "$iwlevel" ]; then
+	    echo "$iwlevel" > "$dev/device/power_level" || ret=1
+	fi
+	[ "$ret" -eq 0 ] && echo Done. || echo Failed.
     done
 }
 
