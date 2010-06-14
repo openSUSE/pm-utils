@@ -8,14 +8,6 @@
   it has to do that on its own.  A simple parameter-parsing engine
   might come in handy.
 
-* Currently, we really only handle suspend/resume.  The
-  powermanagement system should use some maintenance. Should we also
-  handle other powermanagement-related tasks?  
-
-* Beef up the abstraction layer between the hooks and the pm-utils
-  core infrastructure.  We should work on making that API stable
-  enough that...
-
 * pm-utils to become the default low-level userspace power management handling
   infrastructure for the majority of Linux (and mabye other
   unixalikes) distributions.  The core pm-utils infrastructure is
