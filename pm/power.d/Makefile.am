@@ -11,7 +11,8 @@ power_SCRIPTS =			\
 	journal-commit		\
 	disable_wol		\
 	pcie_aspm		\
-	sata_alpm
+	sata_alpm		\
+	hal-cd-polling
 
 EXTRA_DIST=$(power_SCRIPTS)
 
