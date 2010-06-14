@@ -50,11 +50,11 @@ function upower_available() {
 function upower_enumerate_batteries() {
     for DEVICE in `upower_call_method org.freedesktop.UPower.EnumerateDevices | grep 'object path' | sed 's@.*"\(.*\)"@\1@'`; do
         # we don't want to print informations about batteries included in some external components
-        if upower_device_get_property "${DEVICE}" string:PowerSupply | grep -q "false$"; then
+        if upower_device_get_property "${DEVICE}" string:PowerSupply 2>/dev/null | grep -q "false$"; then
             continue
         fi
         # type 2 is battery
-        if upower_device_get_property "${DEVICE}" String:Type >2/dev/null | grep -q "2$"; then
+        if upower_device_get_property "${DEVICE}" String:Type 2>/dev/null | grep -q "2$"; then
             echo "${DEVICE}"
         fi
     done
