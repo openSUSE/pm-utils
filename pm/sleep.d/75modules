@@ -7,7 +7,8 @@ suspend_modules()
 {
 	[ -z "$SUSPEND_MODULES" ] && return $NA
 	for x in $SUSPEND_MODULES ; do
-		modunload $x
+	        printf "Unloading kernel module %s..." "$x"
+		modunload $x && echo Done. || echo Failed.
 	done
 	return 0
 }
@@ -15,6 +16,7 @@ suspend_modules()
 resume_modules()
 {
 	modreload
+	echo "Reloaded unloaded modules."
 }
 
 case "$1" in

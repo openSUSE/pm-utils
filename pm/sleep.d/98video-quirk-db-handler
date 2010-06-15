@@ -354,38 +354,45 @@ case $1 in
 	    # Use them without the usual filtering. This may cause the system 
 	    # to blow up, but they explicitly asked for it. 
 	    remove_parameters --quirk-test
+	    echo "Quirk testing mode enabled." 
 	elif using_kms; then
             # Using kernel modesetting?  No quirks, and do not change vts.
 	    remove_parameters $possible_video_quirks
 	    add_parameters --quirk-no-chvt
+	    echo "Kernel modesetting video driver detected, not using quirks."
 	elif using_nvidia; then
             # Ditto for nVidia binary drivers
 	    remove_parameters $possible_video_quirks
+	    echo "nVidia binary video drive detected, not using quirks."
 	elif using_fglrx; then
 	    # fglrx may or may not have to change vts, reports one
 	    # way or the other welcome.
 	    remove_parameters $possible_video_quirks
 	    add_parameters --quirk-none
+	    echo "ATI Catalyst driver detected, not using quirks."
 	elif have_nvidia_g80; then
             # nVidia G80 GPUs require special handling when not using nvidia
 	    # binary drivers.  I do not know if noveau requires help or not.
 	    remove_parameters $possible_video_quirks
 	    add_parameters --quirk-vbe-post
+	    echo "nVidia g80 series card detected."
 	else
 	    # Go ahead and get our quirks.
 	    if has_video_parameters; then
 	        # Parameters from the command line take precedence
 		# over the database, so do not query it.
-		:
+		echo "Using quirks passed as parameters."
 	    elif [[ $PM_QUIRKS ]]; then
 		# If we have $PM_QUIRKS. use it instead of the quirk database
 		add_parameters $PM_QUIRKS
+		echo "Using PM_QUIRKS environment variable for quirks."
 		# If we were not passed any quirks on the command line,
 		# get them from the database.
 	    elif QUIRKS=$(find_native "$PM_LKW_QUIRKS"); then
 		# Known working quirks from our last run are still valid.
 		# Use them.
 		add_parameters $QUIRKS
+		echo "Using last known working set of quirks."
 	    else
 		# Our known working quirks from the last run are either
 		# nonexistent or invalid.  Either way, start over.
@@ -395,11 +402,14 @@ case $1 in
 		    QUIRKS=$(find_native "$f") && break
 		done
 		# some default quirks if we did not get any.
-		[[ -z $QUIRKS ]] && QUIRKS="--quirk-vbe-post 
-                                        --quirk-dpms-on --quirk-dpms-suspend 
-                                        --quirk-vbestate-restore
-			                --quirk-vbemode-restore 
-                                        --quirk-vga-mode-3"
+		if [[ -z $QUIRKS ]]; then 
+		    QUIRKS="--quirk-vbe-post --quirk-dpms-on 
+                            --quirk-dpms-suspend --quirk-vbestate-restore
+			    --quirk-vbemode-restore --quirk-vga-mode-3"
+		    echo "No quirk database entry for this system, using default."
+		else
+		    echo "Using quirks for this system from quirk database."
+		fi
 		add_parameters $QUIRKS
 		savestate video_quirks "$QUIRKS"
 	    fi
@@ -418,6 +428,7 @@ case $1 in
 		    --quirk-radeon-off \
 		    --quirk-no-fb \
 		    --quirk-save-pci
+		echo "Cleaning up quirks not needed by Intel video cards."
 	    fi
 	fi
 	;;
@@ -425,6 +436,7 @@ case $1 in
 	if state_exists video_quirks; then
 	    QUIRKS=$(restorestate video_quirks);
 	    write_last_known_working
+	    echo "Saving last known working quirks: $QUIRKS"
 	elif has_parameter --store-quirks-as-lkw; then
 	    for x in $(get_parameters); do
 		for y in $possible_video_quirks; do
@@ -432,6 +444,7 @@ case $1 in
 		done
 	    done
 	    write_last_known_working
+	    echo "Saving last known working quirks: $QUIRKS"
 	fi
 	;;
 esac

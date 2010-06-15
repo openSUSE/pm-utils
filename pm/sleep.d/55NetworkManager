@@ -11,19 +11,23 @@
 suspend_nm()
 {
 	# Tell NetworkManager to shut down networking
+        printf "Having NetworkManager put all interaces to sleep..."
 	dbus_send --system                         \
 		--dest=org.freedesktop.NetworkManager  \
 		/org/freedesktop/NetworkManager        \
-		org.freedesktop.NetworkManager.sleep
+		org.freedesktop.NetworkManager.sleep && \
+	    echo Done. || echo Failed.
 }
 
 resume_nm()
 {
 	# Wake up NetworkManager and make it do a new connection
-	dbus_send --system                        \
+	printf "Having NetworkManager wake interfaces back up..."
+        dbus_send --system                        \
 		--dest=org.freedesktop.NetworkManager \
 		/org/freedesktop/NetworkManager       \
-		org.freedesktop.NetworkManager.wake
+		org.freedesktop.NetworkManager.wake && \
+	    echo Done. || echo Failed.
 }
 
 case "$1" in
