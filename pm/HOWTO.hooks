@@ -99,7 +99,7 @@ the hook. This will make the following convenience functions available:
 2:  spin_lock
 	Wrapper around try_lock.  Second parameter is the number of seconds 
 	to wait for the lock before giving up.  If no second parameter
-	is passed, this function will wait forever.
+	is passed, this function will wait for 60 seconds.
 3:  release_lock
 	Release a previously acquired lock.  First parameter is the name of the
 	lock.
