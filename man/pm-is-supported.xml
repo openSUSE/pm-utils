@@ -104,7 +104,7 @@
 	<term><option>--suspend</option></term>
 	<listitem>
 	  <para>
-	    Is suspend supported? Suspend is a state where
+	    Test whether suspend is supported. Suspend is a state where
 	    most devices are shutdown, except for RAM. This
 	    state still draws power.
 	  </para>
@@ -114,7 +114,7 @@
 	<term><option>--hibernate</option></term>
         <listitem>
 	  <para>
-	    Is hibernate supported? During hibernate the state of the
+	    Test whether hibernate is supported. During hibernate the state of the
 	    system is saved to disk, the system is fully powered off.
 	  </para>
 	</listitem>
@@ -123,7 +123,7 @@
 	<term><option>--suspend-hybrid</option></term>
 	<listitem>
 	  <para>
-	    Is hybrid-suspend supported? Hybrid-suspend is the process
+	    Test whether hybrid-suspend is supported. Hybrid-suspend is the process
 	    where first the state of the system is saved to disk 
 	    -- just like with hibernate -- but instead of poweroff, the 
 	    system goes in suspend state, which means it can wakeup 
