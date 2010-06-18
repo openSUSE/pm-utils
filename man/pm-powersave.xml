@@ -101,7 +101,7 @@
         <term><option>true</option></term>
         <listitem>
 	  <para>
-	    Set the computer into low power mode to reduce energy consumption
+	    Put the computer into low power mode to reduce energy consumption
 	    and extend your laptop's battery life.
 	  </para>
         </listitem>
@@ -128,16 +128,16 @@
 	    When you run <command>pm-powersave</command> it combines the
 	    scripts in these two directories and executes them in sorted order.
 	    If both directories contain a script with the same name, the one in
-	    /etc/pm/power.d/ has a higher precedence and only
+	    <filename>/etc/pm/power.d/</filename> has a higher precedence and only
 	    this one will be executed.
 	  </para>
 	  <para>
-	    Therefore to disable a script from /usr/lib/pm-utils/power.d/ 
-	    simply create an empty file in /etc/pm/power.d/ with the same
-	    name and without the execute bit set.
+	    Therefore to disable a script from <filename>/usr/lib/pm-utils/power.d/</filename>
+	    simply create an empty file in <filename>/etc/pm/power.d/</filename> with the same
+	    name and without the executable bit set.
 	  </para>
         </listitem>
-      </varlistentry>    
+      </varlistentry>
     </variablelist>
   </refsect1>
 

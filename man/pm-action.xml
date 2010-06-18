@@ -144,7 +144,7 @@
 	<listitem>
 	  <para>
 	    Hybrid-suspend is the process where the system does everything it
-	    needs to hibernate, suspends instead of shutting down. This means that 
+	    needs to hibernate, but suspends instead of shutting down. This means that
 	    your computer can wake up quicker than for normal hibernation 
 	    if you do not run out of power, and you can resume even if you run out of power.
 	    s2both(8) is an hybrid-suspend implementation.
@@ -166,9 +166,9 @@
     </para>
     <para>
       If <command>pm-suspend</command>, <command>pm-hibernate</command>,
-      or <command>pm-suspend-hybrid</command> is invoked without any
+      or <command>pm-suspend-hybrid</command> are invoked without any
       commandline parameters, they will try to grab the correct quirks
-      from HAL if it is installed.
+      from the internal quirk database.
     </para>
     <variablelist>
       <!-- Use the variablelist.term.separator and the
@@ -224,7 +224,7 @@
           <para>
             This option initializes the video card into a VGA text mode, and
             then uses the BIOS to set the video mode. On some systems S3 BIOS
-            only initializes the video bios to text mode, and so both S3 BIOS
+            only initializes the video BIOS to text mode, and so both S3 BIOS
             and S3 MODE are needed.
           </para>
         </listitem>
@@ -288,7 +288,7 @@
 	    <filename>/etc/pm/last_known_working.quirkdb</filename>.
 	    This parameter will only save the actual quirks that were 
 	    used to successfully suspend/resume a system, and will be 
-	    specific to the exact configuration of that sustem, including
+	    specific to the exact configuration of that system, including
 	    the video hardware, video driver, and whether or not kernel
 	    modesetting was used.
           </para>
@@ -323,16 +323,16 @@
 	<term><filename>/usr/lib/pm-utils/sleep.d</filename></term>
 	<listitem>
 	  <para>
-	    Programs in these directories (we call them hooks) are 
+	    Programs in these directories (called hooks) are
 	    combined and executed in C sort order before suspend and 
 	    hibernate with as argument 'suspend' or 'hibernate'.
-	    Afterwards they are called  in reverse order with
+	    Afterwards they are called in reverse order with
 	    argument 'resume' and 'thaw' respectively.
 	    If both directories contain a similar named file,
-	    the one in /etc/pm/sleep.d will get preference. It
+	    the one in <filename>/etc/pm/sleep.d</filename> will get preference. It
 	    is possible to disable a hook in the distribution
 	    directory by putting a non-executable file in 
-	    /etc/pm/sleep.d, or by adding it to the HOOK_BLACKLIST 
+	    <filename>/etc/pm/sleep.d</filename>, or by adding it to the HOOK_BLACKLIST
 	    configuration variable.
           </para>
 	</listitem>
@@ -394,7 +394,7 @@
     <title>CONFIGURATION VARIABLES</title>
     <para>
       Configuration variables defined by pm-utils. These can be set 
-      in any file in /etc/pm/config.d
+      in any file in <filename>/etc/pm/config.d/</filename>.
     </para>
     
     <variablelist>
@@ -479,7 +479,7 @@
 	    If your system clock drifts across a suspend/resume or
 	    hibernate/thaw cycle, you should set this to true.
 	    This will cause pm-utils to synchronize the system clock
-	    whenever we go through a sleep/wake cycle at the expense of 
+	    whenever going through a sleep/wake cycle at the expense of
 	    making suspend/resume take longer.
           </para>
 	</listitem>
@@ -502,10 +502,10 @@
     <title>RETURN VALUES</title>
     <para>
       Return values less than 128 mean that pm-action failed before trying to
-      put the system in the requested power saving state.  A return value
-      of 128 means that we tried to put the machine in the requested power state
-      but failed.  A return value greater than 128 means we encountered an error
-      and we also failed to enter the requested power saving state.
+      put the system in the requested power saving state. A return value
+      of 128 means that pm-action tried to put the machine in the requested power state
+      but failed. A return value greater than 128 means pm-action encountered an error
+      and also failed to enter the requested power saving state.
     </para>
   </refsect1>
   <refsect1 id="debugging">
