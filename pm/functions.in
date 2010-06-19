@@ -22,13 +22,13 @@ is_set "${PM_DEBUG}" && set -x
 try_lock()
 {
 	# $1 = file to use as lockfile
-	# $2 (optional) content to write to the lockfile,
-	# extra newline will be appended
+	local lock="${LOCKDIR}/${1##*/}"
+
 	# make sure the directory where the lockfile should be exists
 	mkdir -p "${LOCKDIR}"
-	local lock="${LOCKDIR}/${1##*/}"
-	# we use noclobber to make sure there are no race conditions
-	(set -o noclobber; echo "${2}" > "${lock}") 2> /dev/null || return 1
+	touch "${lock}"
+	exec 3<"${lock}"
+	flock -x -n 3 || return 1
 	return 0
 }
 
@@ -37,13 +37,15 @@ try_lock()
 spin_lock()
 {
 	# $1 = lockfile
-	# $2 = optional timeout
-	local elapsed=0
-	while ! try_lock $1; do
-		[ "x$2" != "x" ] && [ $(( $elapsed == $2 )) -ne 0 ] && return 1
-		elapsed=$(($elapsed + 1))
-		sleep 1;
-	done
+	# $2 = optional timeout (default is 60 secs)
+	local lock="${LOCKDIR}/${1##*/}"
+	local timeout="${2:-60}"
+
+	mkdir -p "${LOCKDIR}"
+	touch "${lock}"
+	exec 3<"${lock}"
+	flock -x -w "${timeout}" 3 || return 1
+	return 0
 }
 
 # release the lock
