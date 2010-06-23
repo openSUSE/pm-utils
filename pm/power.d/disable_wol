@@ -6,7 +6,7 @@ command_exists ethtool || exit $NA
 
 set_wol_status() {
     for d in "/sys/class/net/"*; do
-	[ -f "$d/wireless" ] && continue
+	[ -e "$d/wireless" ] && continue
 	[ -h "$d/device/driver" ] || continue
 	printf "Setting Wake On Lan for %s to %s..." "${d##*/}" "$1"
 	case $1 in

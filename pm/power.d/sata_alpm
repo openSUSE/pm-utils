@@ -26,7 +26,7 @@ set_sata_alpm() {
     kv="$(uname -r)"
     [ "$kv" ] || exit $NA  #for paranoia's sake
     [ "${kv%-*}" \< "2.6.33" ] && exit $NA  # avoid fs corruption
-    for f in /sys/class/scsi_host/host*/link_power_management_policy; do
+    for f in /sys/class/scsi_host/host*; do
 	[ -w "$f/link_power_management_policy" ] || continue
 	printf "Setting SATA APLM on %s to %s..." "${f##*/}" "$1"
 	echo "$1" > "$f/link_power_management_policy" && echo Done. || \
