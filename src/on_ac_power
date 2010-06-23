@@ -30,38 +30,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# prefer UPower if available
-if s="$(dbus-send --system --print-reply \
-    --dest=org.freedesktop.UPower \
-    /org/freedesktop/UPower \
-    org.freedesktop.DBus.Properties.Get \
-    string:org.freedesktop.UPower string:OnBattery)"; then
-    echo "$s" | grep -q 'boolean false'
-    exit $?
-fi
+# If we do not have any power supplies, assume we are on AC
+ret=0
 
-# try its old name 'DeviceKit-power' too
-if s="$(dbus-send --system --print-reply \
-    --dest=org.freedesktop.DeviceKit.Power \
-    /org/freedesktop/DeviceKit/Power \
-    org.freedesktop.DBus.Properties.Get \
-    string:org.freedesktop.DeviceKit.Power string:OnBattery)"; then
-    echo "$s" | grep -q 'boolean false'
-    exit $?
-fi
-
-# Check for AC/DC/etc adapters
-ac_adapters="$(hal-find-by-capability --capability ac_adapter)"
-
-# If there are no AC adapters, it is most likely a desktop.
-# Assume online, since we have no data.
-[ -z "$ac_adapters" ] && exit 0
-
-# If any of them are online, then we're done.
-for device in $ac_adapters ; do
-	present="$(hal-get-property --udi "$device" --key ac_adapter.present)"
-	[ "$present" = "true" ] && exit 0
+# Iterate through power supplies sysfs knows about.  
+for ps in /sys/class/power_supply/*; do
+    [ -r "$ps/online" ] || continue
+    # OK, we know we have an AC adaptor. 
+    # Our default return changes to failed.
+    ret=1
+    read -r ps_status < "$ps/online"
+    [ 1 -eq "$ps_status" ] && exit 0
 done
 
-# If there are adapters, but none are online, we're not on AC.
-exit 1
+exit "$ret"
