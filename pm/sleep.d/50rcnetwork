@@ -1,6 +1,13 @@
-#!/bin/sh
+#!/bin/bash
+#
 # Prevent lease timing out for networks controlled by ifup/ifdown
 # bnc#603291
+#
+# needs bash, because /etc/sysconfig/network/scripts/functions uses stuff
+# only bash provides
+# otherwise, you'll get this in the log:
+# /usr/lib/pm-utils/sleep.d/50rcnetwork suspend suspend:/etc/sysconfig/network/scripts/functions: line 287: syntax error near unexpected token `<'
+# /etc/sysconfig/network/scripts/functions: line 287: `   done < <(LC_ALL=POSIX ip -4 address list "$1" 2>/dev/null)'
 
 . "${PM_FUNCTIONS}"
 
