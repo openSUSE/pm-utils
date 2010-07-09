@@ -65,7 +65,7 @@ function upower_enumerate_batteries() {
 function upower_find_ac_adapter() {
     for DEVICE in $(upower_call_method org.freedesktop.UPower.EnumerateDevices); do
         # type 1 is Line Power
-        if upower_device_get_property "${DEVICE}" string:Type >2/dev/null | grep -q "1$"; then
+        if upower_device_get_property "${DEVICE}" string:Type 2>/dev/null | grep -q "1$"; then
             echo "${DEVICE}"
             break
         fi
