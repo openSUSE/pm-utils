@@ -390,7 +390,7 @@ if upower_available; then
 else
     SYSTEM="hal"
 fi
-echo "INFO: using SYSTEM $SYSTEM"
+#echo "INFO: using SYSTEM $SYSTEM"
 
 while true ; do
     case "$1" in
