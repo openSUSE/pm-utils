@@ -72,6 +72,66 @@ function upower_find_ac_adapter() {
     done
 }
 
+### governors functions
+
+# set the governor on all available CPUs, like HAL
+# returns:
+#   1 - if the argument is empty
+#   2 - if you have no permission to read or write to sysfs
+function set_governor() {
+    local governor
+    governor="${1}"
+
+    if [ -z "${governor}" ]; then
+        echo "ERROR: set_governor: governor name is required" 2> /dev/stderr
+        return 1
+    fi
+
+    for CPU in /sys/devices/system/cpu/cpu[0-9]*; do
+
+        if [ ! -f $CPU/cpufreq/scaling_available_governors ]; then
+            echo "ERROR: set_governor: scaling governor is not supported on ${CPU##*/}" 2> /dev/stderr
+        fi
+
+        if [ ! -r $CPU/cpufreq/scaling_available_governors -o \
+             ! -w $CPU/cpufreq/scaling_governor ]; then
+             echo "ERROR: set_governor: you don't have rights to setup governors" 2> /dev/stderr
+            return 2
+        fi
+
+        if [[ $(< $CPU/cpufreq/scaling_available_governors) =~ $governor ]]; then
+            echo $governor > $CPU/cpufreq/scaling_governor
+        else
+            echo "ERROR: set_governor: scaling governor $governor is not available on ${CPU##*/}" 2> /dev/stderr
+            echo "use one of $(< $CPU/cpufreq/scaling_available_governors)" 2> /dev/stderr
+        fi
+    done
+    return 0
+
+}
+
+# Checks the state for all CPUs
+# return 1 if the scaling is not supported
+# print governor, or "unknown policy" if each CPU has different governor
+# XXX: This is not like HAL works, it returns only state of first CPU
+function get_governor() {
+    local foo governor
+    for CPU in /sys/devices/system/cpu/cpu[0-9]*; do
+        if [ ! -r $CPU/cpufreq/scaling_available_governors -a \
+             ! -r $CPU/cpufreq/scaling_governor ]; then
+            return 1
+        fi
+        foo=$(< $CPU/cpufreq/scaling_governor)
+        if [ -n "$governor" -a "$foo" != "$governor" ]; then
+            echo "Unknown policy"
+            return 0
+        fi
+        governor=$foo
+    done
+
+    echo "$governor"
+}
+
 function hal_standby {
     dbus-send --system --print-reply --dest=org.freedesktop.Hal \
 	$HAL_COMPUTER_PATH \
@@ -221,8 +281,7 @@ function hal_performance_speed {
 }
 
 function upower_performance_speed() {
-    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
-    return 1
+    set_governor "performance"
 }
 
 function hal_powersave_speed {
@@ -233,8 +292,7 @@ function hal_powersave_speed {
 }
 
 function upower_powersave_speed() {
-    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
-    return 1
+    set_governor "powersave"
 }
 
 function hal_dynamic_speed {
@@ -245,8 +303,7 @@ function hal_dynamic_speed {
 }
 
 function upower_dynamic_speed() {
-    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
-    return 1
+    set_governor "ondemand"
 }
 
 function hal_cpufreq_state_info {
@@ -270,8 +327,22 @@ function hal_cpufreq_state_info {
 }
 
 function upower_cpufreq_state_info() {
-    echo "ERROR: not yet implemented using upower" 2> /dev/stderr
-    return 1
+    local governor ret
+
+    governor=$(get_governor)
+    ret=$?
+
+    if [ $ret -ne 0 ]; then
+     	echo "CPU Frequency scaling not supported"
+	return ret
+    fi
+    
+    case "$governor" in
+	ondemand|conservative) echo DYNAMIC ;;
+	performance) echo PERFORMANCE ;;
+	powersave) echo POWERSAVE ;;
+	*) echo "Unknown policy" ;;
+    esac
 }
 
 function usage {
@@ -340,4 +411,3 @@ while true ; do
         *) echo "Internal error!" ; exit 1 ;;
     esac
 done
-
