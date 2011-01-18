@@ -1,0 +1,28 @@
+#!/bin/bash
+# Abort the hibernation process of there are NFS mounts
+# https://bugzilla.novell.com/show_bug.cgi?id=568132
+# Author Carlos Robinson <carlos.e.r@opensuse.org>
+
+. "${PM_FUNCTIONS}"
+
+
+function checknfsmount() {
+    [ -n "`mount | grep "type nfs" | grep -v "/proc/fs/nfsd"`" ]
+}
+
+RETVAL=0
+case "$1" in
+    hibernate|suspend)
+        if checknfsmount; then
+            MESSAGE="ERROR: active NFS mount found. Aborting $1 process."
+            command_exists logger && /bin/logger -t pm-utils -p syslog.err $MESSAGE
+            inhibit "${MESSAGE}"
+            RETVAL=1
+        fi
+        ;;
+    thaw|resume)
+        ;;
+    *)  exit $NA
+        ;;
+esac
+exit $RETVAL
