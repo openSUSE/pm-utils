@@ -338,7 +338,7 @@ function upower_cpufreq_state_info() {
 
     if [ $ret -ne 0 ]; then
      	echo "CPU Frequency scaling not supported"
-	return ret
+	return $ret
     fi
     
     case "$governor" in
