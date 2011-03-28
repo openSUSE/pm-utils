@@ -54,7 +54,7 @@ function upower_enumerate_batteries() {
             continue
         fi
         # type 2 is battery
-        if upower_device_get_property "${DEVICE}" String:Type 2>/dev/null | grep -q "2$"; then
+        if upower_device_get_property "${DEVICE}" string:Type 2>/dev/null | grep uint | grep -q "2$"; then
             echo "${DEVICE}"
         fi
     done
@@ -63,7 +63,7 @@ function upower_enumerate_batteries() {
 # print the ac_adapter found on system
 # Note: it prints the first match, as it expects only one per machine
 function upower_find_ac_adapter() {
-    for DEVICE in $(upower_call_method org.freedesktop.UPower.EnumerateDevices); do
+    for DEVICE in $(upower_call_method org.freedesktop.UPower.EnumerateDevices | grep -o '/org[A-Za-z0-9/_]*'); do
         # type 1 is Line Power
         if upower_device_get_property "${DEVICE}" string:Type 2>/dev/null | grep -q "1$"; then
             echo "${DEVICE}"
@@ -193,20 +193,24 @@ function hal_battery_info {
     done
 }
 
+function dbus-getv {
+  sed -n "s#.*[ \t]*$1[0-9]*[ \t]*##p"
+}
+
 function upower_battery_info {
     C=1
     for BATTERY in `upower_enumerate_batteries`; do
 
-        SEC=`upower_device_get_property "${BATTERY}" TimeToEmpty`
+        let SEC="`upower_device_get_property "${BATTERY}" string:TimeToEmpty | dbus-getv int`"
         if [ $SEC -ne 0 ]; then
             let MIN=SEC/60
         else
             MIN=0
         fi
 
-	PERC=`upower_device_get_property "${BATTERY}" Percentage`
+	PERC=`upower_device_get_property "${BATTERY}" string:Percentage | dbus-getv double`
 
-        case `upower_device_get_property "${BATTERY}" State` in
+        case `upower_device_get_property "${BATTERY}" string:State | dbus-getv uint` in
             1) STATE="Charging" ;;
             2) STATE="Discharging" ;;
             3) STATE="Empty" ;;
@@ -217,7 +221,7 @@ function upower_battery_info {
         esac
 
 	echo "Battery$C:"
-	echo -e "\t Remaining percent: $PERC"
+	echo -e "\t Remaining percent: $PERC%"
 	echo -e "\t Remaining minutes: $MIN"
 	echo -e "\t Charging state: $STATE"
 
