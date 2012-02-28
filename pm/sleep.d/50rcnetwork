@@ -16,21 +16,23 @@
 [ -r /etc/sysconfig/network/config ] && . /etc/sysconfig/network/config
 [ -r /etc/sysconfig/network/scripts/functions ] && . /etc/sysconfig/network/scripts/functions
 
-command_exists dhcp_clients || exit $NA
-
 # NetworkManager is handled by 55NetworkManager, so skip this script if
 # nm is enabled in sysconfig ...
-[ x"${NETWORKMANAGER}" -eq x"yes" ] && exit $NA
+[ x"${NETWORKMANAGER}" = x"yes" ] && exit $NA
 # ... or if is running
 command_exists nm_running && nm_running && exit $NA
 
+# check network/scripts/function provides dhcp_interfaces()
+# function returning a list of interfaces with running dhcp.
+command_exists dhcp_interfaces || exit $NA
+
 case "$1" in
     hibernate|suspend)
-        save_state "dhcp_clients" "`dhcp_clients`"
+        savestate "dhcp_interfaces" "`dhcp_interfaces`"
         service network stop-all-dhcp-clients
         ;;
     thaw|resume)
-        for interface in `restore_state "dhcp_clients"`; do
+        for interface in `restorestate "dhcp_interfaces"`; do
             service network restart ${interface}
         done
         ;;
