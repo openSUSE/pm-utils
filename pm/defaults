@@ -27,8 +27,26 @@
 #   tuxonice  If your system has support for tuxonice, use this.
 #
 # The system defaults to "kernel" if this is commented out.
-# SLEEP_MODULE="kernel"
+SLEEP_MODULE="uswsusp"
 
+#######################################################################
+# the variables below here are specific to the SUSE package right now
+# and are used only if SLEEP_MODULE is uswsusp
+
+# what options should be passed to s2ram?
+# see http://en.opensuse.org/S2ram for more information
+# If this option is set, it overrides S2RAM_QUIRKS_SOURCE below
+S2RAM_OPTS=""
+
+# where should pm-utils get the s2ram quirks from?
+# s2ram - use the whitelist in s2ram, if the machine is known.
+# hal   - ignored, exists only for comparibility purposes pm-utils 1.3.0+ has
+#         HAL quirks built-in
+# everything else: try to be smart in figuring out the correct quirks.
+# if S2RAM_OPTS is set, it overrides S2RAM_QUIRKS_SOURCE!
+S2RAM_QUIRKS_SOURCE=""
+
+#######################################################################
 # These variables will be handled specially when we load files in 
 # /etc/pm/config.d.
 # Multiple declarations of these environment variables will result in 
