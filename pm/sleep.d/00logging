@@ -1,14 +1,33 @@
 #!/bin/sh
 # Log some extra information at the beginning of a suspend/resume cycle.
 # TODO: Make this hook only run when PM_DEBUG is true?
+# SUSE: setup also kernel loglevel to show a progress bar
 
 . "${PM_FUNCTIONS}"
 
 case "$1" in
         hibernate|suspend)
 		[ -n "$PM_LOGFILE" ] || exit 0
-		/bin/uname -a
-		lsmod
-		free
+		# save the old loglevel
+		read KERNEL_LOGLEVEL DUMMY < /proc/sys/kernel/printk
+		echo "export KERNEL_LOGLEVEL=$KERNEL_LOGLEVEL" >> /var/run/pm-suspend
+		# set the loglevel so we see the progress bar.
+		# if the level is higher than needed, we leave it alone.
+		if [ $KERNEL_LOGLEVEL -lt 5 ]; then
+        		 echo 5 > /proc/sys/kernel/printk
+		fi
+		echo "$1 initiated: `date`"
+		echo
+		echo "`/bin/uname -a`"
+		echo "kernel command line: '`cat /proc/cmdline`'"
+		echo "`lsmod`"
+		echo
+		echo "`free`"
+		echo
+		;;
+	thaw|resume)
+		if [ -n "$KERNEL_LOGLEVEL" ] ; then
+		 	echo $KERNEL_LOGLEVEL > /proc/sys/kernel/printk
+		fi
 		;;
 esac
