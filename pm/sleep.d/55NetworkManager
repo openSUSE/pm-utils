@@ -16,7 +16,7 @@ suspend_nm()
                 --print-reply --reply-timeout=200      \
 		--dest=org.freedesktop.NetworkManager  \
 		/org/freedesktop/NetworkManager        \
-		org.freedesktop.NetworkManager.sleep && \
+		org.freedesktop.NetworkManager.Sleep boolean:true && \
 	    echo Done. || echo Failed.
 }
 
@@ -28,7 +28,7 @@ resume_nm()
 		--dest=org.freedesktop.NetworkManager \
                 --print-reply --reply-timeout=200      \
 		/org/freedesktop/NetworkManager       \
-		org.freedesktop.NetworkManager.wake && \
+		org.freedesktop.NetworkManager.Sleep boolean:false && \
 	    echo Done. || echo Failed.
 }
 
