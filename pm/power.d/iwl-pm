@@ -36,7 +36,7 @@ esac
 for I in $IFACE; do
  	# skip if killswitch is on
  	RF_KILL="${I%/*}/rfkill/rfkill?/state"
-	read DUMMY < $RF_KILL
+	[ -r "${RF_KILL}" ] && read DUMMY < $RF_KILL
 	[ "$DUMMY" = "1" ] && echo $IWL_PM > $I
 done
 
