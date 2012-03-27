@@ -28,12 +28,15 @@ command_exists dhcp_interfaces || exit $NA
 
 case "$1" in
     hibernate|suspend)
-        savestate "dhcp_interfaces" "`dhcp_interfaces`"
-        service network stop-all-dhcp-clients
+	_dhcp_interfaces=`dhcp_interfaces`
+	if test "x$_dhcp_interfaces" != x ; then
+            savestate "dhcp_interfaces" "`dhcp_interfaces`"
+	fi
+	SYSTEMD_NO_WRAP=yes service network stop-all-dhcp-clients
         ;;
     thaw|resume)
         for interface in `restorestate "dhcp_interfaces"`; do
-            service network restart ${interface}
+            SYSTEMD_NO_WRAP=yes service network restart ${interface}
         done
         ;;
     *) exit $NA

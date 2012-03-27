@@ -146,13 +146,13 @@ stopservice()
 	if service "$1" status 2>/dev/null | grep -q -e running -e started
 	then
 		touch "${STORAGEDIR}/service:$1"
-		service "$1" stop
+		SYSTEMD_NO_WRAP=yes service "$1" stop
 	fi
 }
 
 restartservice()
 {
-	[ -O "${STORAGEDIR}/service:$1" ] && service "$1" start
+	[ -O "${STORAGEDIR}/service:$1" ] && SYSTEMD_NO_WRAP=yes service "$1" start
 }
 
 # Disable a hook.
