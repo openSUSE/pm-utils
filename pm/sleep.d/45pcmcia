@@ -1,0 +1,21 @@
+#!/bin/bash
+
+case "$1" in
+ 	hibernate|suspend)
+		if [ -x "/sbin/pccardctl" ]; then
+			echo "ejecting PCMCIA cards..."
+			/sbin/pccardctl eject
+		fi
+		;;
+	thaw|resume)
+		if [ -x "/sbin/pccardctl" ]; then
+			echo "inserting PCMCIA cards..."
+			/sbin/pccardctl insert
+		fi
+		;;
+	*)
+		;;
+esac
+
+
+exit 0

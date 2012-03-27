@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# be nice to the user and tell him that something is going on...
+
+case "$1" in
+	thaw|resume)
+		echo "resuming..." > /dev/tty0
+		;;
+	*)
+		;;
+esac

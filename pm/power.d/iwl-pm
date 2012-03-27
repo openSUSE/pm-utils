@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Script to set the power mode for the iwl drivers
+#
+# Copyright (C) 2008 Holger Macht <hmacht@suse.de>
+#
+# This file is released under the GPLv2.
+#
+
+. /usr/lib/pm-utils/functions
+
+IFACE=""
+
+if [ -z "$IWL_PM" ]; then
+	exit 0
+fi
+
+for I in /sys/bus/pci/drivers/iwl*/000*/power_level; do
+	if [ ! -e "$I" ]; then
+		# no wildcard match
+		exit 0
+	fi
+ 	IFACE="$IFACE $I"
+done
+[ -z "$IFACE" ] && exit 0
+
+case "$1" in
+	true)
+		echo "**set power mode for iwl driver to $IWL_PM" ;;
+	false)
+		IWL_PM="6"
+		echo "**set power mode for iwl driver to $IWL_PM (pm disabled)"
+		;;
+esac
+
+for I in $IFACE; do
+ 	# skip if killswitch is on
+ 	RF_KILL="${I%/*}/rfkill/rfkill?/state"
+	read DUMMY < $RF_KILL
+	[ "$DUMMY" = "1" ] && echo $IWL_PM > $I
+done
+

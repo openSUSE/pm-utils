@@ -1,0 +1,16 @@
+#!/bin/bash
+
+. /usr/lib/pm-utils/functions
+
+case "$1" in
+	hibernate|suspend)
+		stopservice autofs
+		;;
+	thaw|resume)
+		restartservice autofs
+		;;
+	*)
+		;;
+esac
+
+exit $?

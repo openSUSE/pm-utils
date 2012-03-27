@@ -1,0 +1,73 @@
+"Smart" selections of parameters for suspend to RAM
+===================================================
+
+This release of pm-utils implements a "smart" selection of the best
+parameters for suspend to RAM. See http://en.opensuse.org/S2ram for
+more information on the possible parameters.
+
+How does it work?
+=================
+There are several sources of so called "quirk lists", which describe
+what special hacks are necessary on a given machine:
+- the s2ram whitelist, compiled into the s2ram binary
+- HAL's quirk list
+- drivers for specific chipsets that know how to bring the video card
+  back to life.
+
+When preparing suspend, pm-suspend goes through the following workflow:
+
+1) It checks if the S2RAM_OPTS variable is set in a configuration file
+   in /etc/pm/config.d/. If it is, the options in that variable are
+   used for suspend.
+2) It checks if one of the card specific modules is loaded (right now
+   those are i915 (for Intel graphics), nvidia and fglrx (for ATI).
+   If it finds one of those, it assumes that they can handle suspend
+   and uses no other options.
+3) It checks if the machine is in the s2ram whitelist. If the machine
+   is known there, the s2ram whitelist is used.
+4) It get the options that HAL passed on the pm-suspend command line
+   and uses those.
+5) If nothing is found yet, suspend will fail.
+
+How can I influence it, in case something goes wrong?
+=====================================================
+In case one of the card specific modules is loaded, but unable to restore
+after suspend, and the machine is known to either HAL or s2ram, you can
+select the source of quirks with the variable S2RAM_QUIRKS_SOURCE. Set
+it like this:
+
+	S2RAM_QUIRKS_SOURCE="hal"	# for HAL
+or
+	S2RAM_QUIRKS_SOURCE="s2ram"	# for the s2ram whitelist
+
+Note that the s2ram whitelist is only used if the machine is actually
+known by s2ram.
+
+In case the machine is unknown, try to find out the correct options (see
+http://en.opensuse.org/S2ram for details) and put them into S2RAM_OPTS.
+
+Where do I put those variables?
+===============================
+Just create a file in /etc/pm/config.d/, e.g. named "suspend":
+
+/etc/pm/config.d/suspend
+
+and put the variable in there. This config file is sourced by a shell,
+so it needs to have valid shell syntax.
+
+Under the hood
+==============
+Note that the "low level" suspend stuff is still done by the s2ram and
+s2disk tools and that pm-utils is usually called by the desktop applets
+(like "gnome-power-manager", "powerdevil" (KDE4) or "kpowersave" (KDE3)
+via HAL. Keep this in mind when debugging suspend problems ;)
+
+Further reading
+===============
+Up to date documentation is available at
+
+	http://en.opensuse.org/S2ram
+	http://en.opensuse.org/Pm-utils
+
+
+Have a lot of fun...

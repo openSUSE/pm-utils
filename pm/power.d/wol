@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# Script to set the wake on lan state
+#
+# Copyright (C) 2009 Holger Macht <hmacht@suse.de>
+#
+# This file is released under the GPLv2.
+#
+
+. /usr/lib/pm-utils/functions
+
+[ -z "$WOL" ] && exit 0
+
+function set_wol() {
+for I in `hal-find-by-capability --capability wake_on_lan`; do
+	IFACE=`hal-get-property --udi $I --key net.interface`
+	ethtool -s $IFACE wol $1
+done
+}
+
+case "$1" in
+	true)
+		echo "**wol -> disable"
+		set_wol d
+		;;
+	false)
+		echo "**wol -> enable, set flags $WOL"
+		set_wol $WOL
+		;;
+esac
+

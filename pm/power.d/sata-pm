@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Script to set sata power management options
+#
+# Copyright (C) 2008 Holger Macht <hmacht@suse.de>
+#
+# This file is released under the GPLv2.
+#
+
+. /usr/lib/pm-utils/functions
+
+IFACE=""
+
+[ -z "$SATA_PM" ] && exit 0
+
+UDI=`hal-find-by-property --key volume.mount_point --string /`
+[ -z "$UDI" ] && exit 0
+
+ST_DEV=`hal-get-property --udi $UDI --key block.storage_device`
+DEV=`hal-get-property --udi $ST_DEV --key linux.sysfs_path`
+HOST=`echo $DEV | sed -e 's:/sys/devices.*\(host.\)/target.*:\1:g'`
+[ -z "$HOST" ] && exit 0
+[ -e /sys/class/scsi_host/$HOST/link_power_management_policy ] || exit 0
+
+case "$1" in
+	true)
+		echo "**set power mode for sata device to $SATA_PM" ;;
+	false)
+		SATA_PM="max_performance"
+		echo "**set power mode for sata device to $SATA_PM"
+		;;
+esac
+
+echo $SATA_PM > /sys/class/scsi_host/$HOST/link_power_management_policy
+

@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# Script to set the power mode for audio devices
+#
+# Copyright (C) 2008 Holger Macht <hmacht@suse.de>
+#
+# This file is released under the GPLv2.
+#
+
+. /usr/lib/pm-utils/functions
+
+IFACE=""
+
+[ -z "$SOUND_PM" ] && exit 0
+
+for I in /sys/module/snd_*/parameters/power_save; do
+	if [ ! -e "$I" ]; then
+		# no wildcard match
+		exit 0
+	fi
+	IFACE="$IFACE $I"
+done
+[ -z "$IFACE" ] && exit 0
+
+case "$1" in
+	true)
+		echo "**set power mode for sound driver to $SOUND_PM seconds" ;;
+	false)
+		SOUND_PM="0"
+		echo "**set power mode for sound driver to $SOUND_PM seconds"
+		;;
+esac
+
+for I in $IFACE; do
+	echo $SOUND_PM > $I
+done
+
