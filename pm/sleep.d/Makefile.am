@@ -3,7 +3,7 @@ sleepdir = $(libdir)/pm-utils/sleep.d
 sleep_SCRIPTS =			\
 	00logging		\
 	00powersave		\
-	01grub			\
+	99Zgrub			\
 	49bluetooth		\
 	55NetworkManager	\
 	75modules		\
