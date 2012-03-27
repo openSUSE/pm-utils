@@ -132,6 +132,8 @@ if [ -z "$HIBERNATE_MODULE" ] && \
 	HIBERNATE_MODULE="uswsusp"
 	do_hibernate()
 	{
+		# bnc#304995 workaround
+		export SUSE_IGNORE_FBMODES="true"
 		get_s2ram_opts
 		if [ -z "${S2DISK_CONF}" ]; then
 			s2disk
@@ -148,6 +150,8 @@ if [ -z "$SUSPEND_HYBRID_MODULE" ] &&
 	SUSPEND_HYBRID_MODULE="uswsusp"
 	do_suspend_hybrid()
 	{
+		# bnc#304995 workaround
+		export SUSE_IGNORE_FBMODES="true"
 		get_s2ram_opts
 		if [ -z "${S2DISK_CONF}" ]; then
 			s2both --force $S2RAM_OPTS
