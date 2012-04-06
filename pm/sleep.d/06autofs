@@ -10,12 +10,12 @@ case "$1" in
                         savestate autofs running
                         SYSTEMD_NO_WRAP=yes service autofs stop     
                 else
-                        savestate autofs ""
+                        savestate autofs notrunning
                 fi
 		;;
 	thaw|resume)
 		 _autofs_state=`restorestate autofs`
-                if test "x$_autofs_state" != x ; then
+                if test "$_autofs_state" = "running" ; then
                         SYSTEMD_NO_WRAP=yes service autofs start
                 fi
 		;;
