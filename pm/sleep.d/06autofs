@@ -6,18 +6,10 @@ command_exists rcautofs || exit $NA
 
 case "$1" in
 	hibernate|suspend)
-		if SYSTEMD_NO_WRAP=yes service autofs status &> /dev/null; then
-                        savestate autofs running
-                        SYSTEMD_NO_WRAP=yes service autofs stop     
-                else
-                        savestate autofs notrunning
-                fi
+		stopservice autofs
 		;;
 	thaw|resume)
-		 _autofs_state=`restorestate autofs`
-                if test "$_autofs_state" = "running" ; then
-                        SYSTEMD_NO_WRAP=yes service autofs start
-                fi
+		restartservice autofs
 		;;
 	*) exit $NA
 		;;

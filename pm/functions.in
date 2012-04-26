@@ -143,16 +143,36 @@ modreload()
 
 stopservice()
 {
-	if service "$1" status 2>/dev/null | grep -q -e running -e started
+	if test `cat /proc/1/comm` = "systemd"
 	then
-		touch "${STORAGEDIR}/service:$1"
-		SYSTEMD_NO_WRAP=yes service "$1" stop
+		
+		if systemctl status "$1".service
+		then 
+			touch "${STORAGEDIR}/service:$1"
+			systemctl stop "$1".service
+		fi
+	
+	else	
+		if service "$1" status 2>/dev/null | grep -q -e running -e started
+		then
+			touch "${STORAGEDIR}/service:$1"
+			service "$1" stop
+		fi
 	fi
 }
 
 restartservice()
 {
-	[ -O "${STORAGEDIR}/service:$1" ] && SYSTEMD_NO_WRAP=yes service "$1" start
+	if [ -O "${STORAGEDIR}/service:$1" ] 
+	then
+		if test `cat /proc/1/comm` = "systemd"
+		then
+			systemctl start "$1".service
+		else
+			service "$1" start
+
+		fi
+	fi
 }
 
 # Disable a hook.

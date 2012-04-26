@@ -26,17 +26,19 @@ command_exists nm_running && nm_running && exit $NA
 # function returning a list of interfaces with running dhcp.
 command_exists dhcp_interfaces || exit $NA
 
+test `cat /proc/1/comm` = "systemd" && SYSTEMD_NO_WRAP=yes
+
 case "$1" in
     hibernate|suspend)
 	_dhcp_interfaces=`dhcp_interfaces`
 	if test "x$_dhcp_interfaces" != x ; then
             savestate "dhcp_interfaces" "`dhcp_interfaces`"
 	fi
-	SYSTEMD_NO_WRAP=yes service network stop-all-dhcp-clients
+	service network stop-all-dhcp-clients
         ;;
     thaw|resume)
         for interface in `restorestate "dhcp_interfaces"`; do
-            SYSTEMD_NO_WRAP=yes service network restart ${interface}
+            service network restart ${interface}
         done
         ;;
     *) exit $NA
