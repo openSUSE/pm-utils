@@ -68,7 +68,7 @@ laptop_mode_ac() {
     else
 	write_values 0 10 5 500
     fi	
-    sysctl -e --system
+    command_exists sysctl && sysctl -e --system
     echo "Laptop mode disabled."
 }
 
