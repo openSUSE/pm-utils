@@ -68,15 +68,13 @@ laptop_mode_ac() {
     else
 	write_values 0 10 5 500
     fi	
-    command_exists sysctl && sysctl -e --system
     echo "Laptop mode disabled."
 }
 
 laptop_mode_battery() {
     # enable laptop mode, set vm parameters to buffer as many writes as 
     # possible.
-    state_exists laptop_mode_default || \
-	read_values | savestate laptop_mode_default
+    read_values | savestate laptop_mode_default
     write_values "$LAPTOP_MODE" "$LAPTOP_DIRTY_RATIO" \
 	"$LAPTOP_DIRTY_BG_RATIO" "$LAPTOP_DIRTY_WRITEBACK"
     echo "Laptop mode enabled."
