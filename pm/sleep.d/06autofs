@@ -9,7 +9,7 @@ case "$1" in
 		stopservice autofs
 		;;
 	thaw|resume)
-		restartservice autofs
+		checkproc NetworkManager || restartservice autofs
 		;;
 	*) exit $NA
 		;;
