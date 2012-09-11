@@ -3,14 +3,38 @@
 # Stefan Seyfried, SUSE Linux Products GmbH 2006, GPL v2
 # mostly taken from the powersave project.
 
-GRUBONCE="/usr/sbin/grubonce"
-GRUBDEFAULT="/boot/grub/default"
-GRUBDEFSAVE="/var/run/suspend.grubonce.default"
+prepare-parameters()
+{
+	eval `grep LOADER_TYPE= /etc/sysconfig/bootloader`
+
+	if [ x"$LOADER_TYPE" = "xgrub" ]; then
+		GRUBONCE="/usr/sbin/grubonce"
+		GRUBDEFAULT="/boot/grub/default"
+		GRUBDEFSAVE="/var/run/suspend.grubonce.default"
+		getkernels="getkernels-grub"
+	elif [ x"$LOADER_TYPE" = "xgrub2" ]; then
+		GRUBONCE="/usr/sbin/grub2-once"
+		GRUBDEFAULT="/boot/grub2/grubenv"
+		GRUBDEFSAVE="/var/run/suspend.grubonce.default"
+		GRUB2EDITENV="/usr/bin/grub2-editenv"
+		GRUB2CONF="/boot/grub2/grub.cfg"
+		BLKID="/usr/sbin/blkid"
+		getkernels="getkernels-grub2"
+	elif [ x"$LOADER_TYPE" = "xgrub2-efi" ]; then
+		GRUBONCE="/usr/sbin/grub2-once"
+		GRUBDEFAULT="/boot/grub2-efi/grubenv"
+		GRUBDEFSAVE="/var/run/suspend.grubonce.default"
+		GRUB2EDITENV="/usr/bin/grub2-efi-editenv"
+		GRUB2CONF="/boot/grub2-efi/grub.cfg"
+		BLKID="/usr/sbin/blkid"
+		getkernels="getkernels-grub2"
+	fi
+}
 
 #####################################################################
 # gets a list of available kernels from /boot/grub/menu.lst
 # kernels are in the array $KERNELS, output to stdout to be eval-ed.
-getkernels()
+getkernels-grub()
 {
 	# DEBUG "Running getkernels()" INFO
 	local MENU_LST="/boot/grub/menu.lst"
@@ -66,6 +90,74 @@ getkernels()
 		*)  ;;
 		esac
 	done < $MENU_LST
+}
+
+#####################################################################
+# gets a list of available kernels from /boot/grub2/grub.cfg
+# kernels are in the array $KERNELS, output to stdout to be eval-ed.
+getkernels-grub2()
+{
+	local I DUMMY MNT ROOTDEV
+	declare -i I=0 J=-1
+
+	# we need the root partition later to decide if this is the kernel to select
+	while read ROOTDEV MNT DUMMY; do
+	    [ "$ROOTDEV" = "rootfs" ] && continue # not what we are searching for
+	    if [ "$MNT" = "/" ]; then
+		break
+	    fi
+	done < /proc/mounts
+
+	while read LINE; do
+	    case $LINE in
+	    menuentry\ *)
+		let J++
+		;;
+	    set\ default*)
+	        local DEFAULT=${LINE#*default=}
+
+		if echo $DEFAULT | grep -q saved_entry ; then
+		    local SAVED=`$GRUB2EDITENV list | sed -n s/^saved_entry=//p`
+		    if [ -n "$SAVED" ]; then
+			DEFAULT_BOOT=$($GRUBONCE --show-mapped "$SAVED")
+		    fi
+		fi
+
+                ;;
+	    linux*noresume*)
+		echo "  Skipping grub entry #${J}, because it has the noresume option" >&2
+		;;
+	    linux*root=*)
+		local ROOT
+		ROOT=${LINE#*root=}
+		DUMMY=($ROOT)
+		ROOT=${DUMMY[0]}
+
+		if [ x"${ROOT:0:5}" = "xUUID=" ]; then
+		    UUID=${ROOT#UUID=}
+		    if [ -n "$UUID" ]; then
+			ROOT=$($BLKID -U $UUID)
+		    fi
+		fi
+
+		if [ "$(stat -Lc '%t:%T' $ROOT)" != "$(stat -Lc '%t:%T' $ROOTDEV)" ]; then
+			echo "  Skipping grub entry #${J}, because its root= parameter ($ROOT)" >&2
+			echo "    does not match the current root device ($ROOTDEV)." >&2
+			continue
+		fi
+		DUMMY=($LINE) # kernel (hd0,1)/boot/vmlinuz-ABC root=/dev/hda2
+		echo "KERNELS[$I]='${DUMMY[1]##*/}'" # vmlinuz-ABC
+		echo "MENU_ENTRIES[$I]=$J"
+		# DEBUG "Found kernel entry #${I}: '${DUMMY[1]##*/}'" INFO
+		let I++
+		;;
+	    linux*)
+		# a kernel without "root="? We better skip that one...
+		echo "  Skipping grub entry #${J}, because it has no root= option" >&2
+		;;
+	    *)  ;;
+	    esac
+	done < "$GRUB2CONF"
 }
 
 #############################################################
@@ -144,7 +236,8 @@ find-kernel-entry()
 prepare-grub()
 {
 	echo "INFO: running prepare-grub"
-	eval `getkernels`
+	prepare-parameters
+	eval `$getkernels`
 	RUNNING=`uname -r`
 	find-kernel-entry
 
