@@ -12,20 +12,12 @@ prepare-parameters()
 		GRUBDEFAULT="/boot/grub/default"
 		GRUBDEFSAVE="/var/run/suspend.grubonce.default"
 		getkernels="getkernels-grub"
-	elif [ x"$LOADER_TYPE" = "xgrub2" ]; then
+	elif [ x"$LOADER_TYPE" = "xgrub2" -o x"$LOADER_TYPE" = "xgrub2-efi" ]; then
 		GRUBONCE="/usr/sbin/grub2-once"
 		GRUBDEFAULT="/boot/grub2/grubenv"
 		GRUBDEFSAVE="/var/run/suspend.grubonce.default"
 		GRUB2EDITENV="/usr/bin/grub2-editenv"
 		GRUB2CONF="/boot/grub2/grub.cfg"
-		BLKID="/usr/sbin/blkid"
-		getkernels="getkernels-grub2"
-	elif [ x"$LOADER_TYPE" = "xgrub2-efi" ]; then
-		GRUBONCE="/usr/sbin/grub2-once"
-		GRUBDEFAULT="/boot/grub2-efi/grubenv"
-		GRUBDEFSAVE="/var/run/suspend.grubonce.default"
-		GRUB2EDITENV="/usr/bin/grub2-efi-editenv"
-		GRUB2CONF="/boot/grub2-efi/grub.cfg"
 		BLKID="/usr/sbin/blkid"
 		getkernels="getkernels-grub2"
 	fi
