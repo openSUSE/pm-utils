@@ -3,44 +3,33 @@
 # Prevent lease timing out for networks controlled by ifup/ifdown
 # bnc#603291
 #
-# needs bash, because /etc/sysconfig/network/scripts/functions uses stuff
-# only bash provides
-# otherwise, you'll get this in the log:
-# /usr/lib/pm-utils/sleep.d/50rcnetwork suspend suspend:/etc/sysconfig/network/scripts/functions: line 287: syntax error near unexpected token `<'
-# /etc/sysconfig/network/scripts/functions: line 287: `   done < <(LC_ALL=POSIX ip -4 address list "$1" 2>/dev/null)'
 
 . "${PM_FUNCTIONS}"
 
 # Sanity checks
 [ -x /etc/init.d/network ] || exit $NA
-[ -r /etc/sysconfig/network/config ] && . /etc/sysconfig/network/config
-[ -r /etc/sysconfig/network/scripts/functions ] && . /etc/sysconfig/network/scripts/functions
 
-# NetworkManager is handled by 55NetworkManager, so skip this script if
-# nm is enabled in sysconfig ...
-[ x"${NETWORKMANAGER}" = x"yes" ] && exit $NA
-# ... or if is running
-command_exists nm_running && nm_running && exit $NA
-
-# check network/scripts/function provides dhcp_interfaces()
-# function returning a list of interfaces with running dhcp.
-command_exists dhcp_interfaces || exit $NA
-
-test `cat /proc/1/comm` = "systemd" && SYSTEMD_NO_WRAP=yes
+# NetworkManager is handled by 55NetworkManager via dbus.
+# This script handles only netcontrol alias sysconfig alias ifup.
+network_service_id=`systemctl --no-pager -p Id show network.service 2>/dev/null`
+case ${network_service_id#Id=} in
+	# /etc/init.d/network is active
+	network.service)	;;
+	# network.service is an alias link
+	# e.g. to the NetworkManager
+	*) exit $NA		;;
+esac
 
 case "$1" in
     hibernate|suspend)
-	_dhcp_interfaces=`dhcp_interfaces`
-	if test "x$_dhcp_interfaces" != x ; then
-            savestate "dhcp_interfaces" "`dhcp_interfaces`"
-	fi
-	service network stop-all-dhcp-clients
+	# use /etc/init.d/network directly here
+	/etc/init.d/network stop-all-dhcp-clients
         ;;
     thaw|resume)
-        for interface in `restorestate "dhcp_interfaces"`; do
-            service network restart ${interface}
-        done
+	# use /etc/init.d/network directly here
+	/etc/init.d/network restart-all-dhcp-clients
         ;;
     *) exit $NA
         ;;
 esac
+
