@@ -5,7 +5,6 @@ sleep_SCRIPTS =			\
 	00powersave		\
 	99Zgrub			\
 	49bluetooth		\
-	55NetworkManager	\
 	75modules		\
 	90clock			\
 	94cpufreq		\
