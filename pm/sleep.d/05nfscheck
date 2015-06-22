@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Abort the hibernation process of there are NFS mounts
 # https://bugzilla.novell.com/show_bug.cgi?id=568132
 # Author Carlos Robinson <carlos.e.r@opensuse.org>
@@ -6,7 +6,7 @@
 . "${PM_FUNCTIONS}"
 
 
-function checknfsmount() {
+checknfsmount() {
     [ -n "`mount | grep "type nfs" | grep -v "/proc/fs/nfsd"`" ]
 }
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Prevent lease timing out for networks controlled by ifup/ifdown
 # bnc#603291

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # The ndiswrapper hook - relead the ndiswrapper module
 # TODO: use module_reload from PM_FUNCTIONS
 

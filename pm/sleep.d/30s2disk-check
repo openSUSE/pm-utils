@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Stefan Seyfried, SUSE Linux Products GmbH, 2006
 # mostly taken from the powersave project
@@ -47,9 +47,9 @@ checkhibernate()
 		fi
 		[ "$TYPE" != "partition" ] && continue
 		[ "$DEV" != "$RESUME" ] && continue
-		FREE=$[($SIZE-$USED)*1024]  # get free space on DEV
+		FREE=$((($SIZE - $USED) * 1024))  # get free space on DEV
 		if [ $FREE -lt $IMAGE_SIZE ]; then
-			IMAGE_SIZE=$[$FREE-10*1024*1024]
+			IMAGE_SIZE=$(($FREE - 10 * 1024 * 1024))
 		fi
                 OK=1
 		break   # we found the partition, no need to look further

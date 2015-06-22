@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Stefan Seyfried, SUSE Linux Products GmbH, 2006
 # mostly taken from the powersave project
@@ -8,7 +8,7 @@
 #############################################################################
 # if the system is configured for 855resolution, we first patch the BIOS
 # to avoid that the X server crashes after switching back to X
-patch-bios()
+patch_bios()
 {
 	if [ -e /etc/sysconfig/videobios ]; then
 		. /etc/sysconfig/videobios
@@ -22,11 +22,11 @@ patch-bios()
 
 case $1 in
 	thaw)
-		patch-bios
+		patch_bios
 		;;
 	resume)
 		if [ "$2" = suspend_hybrid ]; then
-			patch-bios
+			patch_bios
 		fi
 		;;
         *) exit $NA

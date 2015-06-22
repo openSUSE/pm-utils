@@ -18,19 +18,19 @@ command_exists $rtcwake_cmd || exit $NA
 
 rtcwake_config_file="/etc/pm/config.d/rtcwake.config"
 
-function start_of_day {
+start_of_day() {
 	echo `date -d "$1" "+%D"`
 }
 
-function since_epoch {
+since_epoch() {
 	echo `date -d "$1" "+%s"`
 }
 
-function day_of_week {
+day_of_week() {
 	echo `date -d "$1" "+%u"`
 }
 
-function isAlarmDow {
+isAlarmDow() {
 	is=0
 	for dow in $RTCWAKE_DAYS; do
 		if test "x$dow" = "x$1"; then
@@ -41,7 +41,7 @@ function isAlarmDow {
 	echo $is
 }
 
-function set_alarm
+set_alarm()
 {
 	# If USER_RTCWAKE_ALLOWED is yes and the user passed in a num_seconds_to_sleep variable, then
 	# we will respect it (and ignore the system config)
