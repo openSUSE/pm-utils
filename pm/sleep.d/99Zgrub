@@ -175,6 +175,7 @@ grub-once()
 grub-once-restore()
 {
 	echo "INFO: running grub-once-restore"
+	prepare-parameters
 	rm -f "$GRUBDEFAULT"
 	if [ -e "$GRUBDEFSAVE" ]; then
 		echo "  restoring original $GRUBDEFAULT"
